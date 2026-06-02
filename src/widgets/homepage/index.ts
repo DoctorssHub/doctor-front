@@ -1,0 +1,10 @@
+export { FaqSection } from "./faq";
+export { FeaturesSection } from "./features";
+export { Footer } from "./footer";
+export { GamesSection } from "./games";
+export { HeroSection } from "./hero";
+export { LeaderboardSection } from "./leaderboard";
+export { OnboardingSection } from "./onboarding";
+export { RewardsBanner } from "./rewards";
+export { Sidebar } from "./sidebar";
+export { HomeHeader } from "./header";
