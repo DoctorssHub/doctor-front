@@ -4,7 +4,7 @@ const socials = ["f", "ig", "x", "tg", "dc"];
 
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--color-border-strong)] bg-[var(--color-surface)] px-4 py-8 sm:px-8">
+    <footer className="border-t border-(--color-border-strong) bg-(--color-surface) px-4 py-8 sm:px-8">
       <div className="mx-auto flex max-w-[1210px] flex-col gap-8">
         <div className="grid gap-8 md:grid-cols-[1fr_1fr_2fr]">
           <FooterColumn items={about} title="About" />
@@ -13,14 +13,14 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-bold uppercase text-white">Socials</h3>
             <div className="flex flex-wrap gap-2">
               {socials.map((social) => (
-                <span className="grid size-9 place-items-center rounded-lg bg-[var(--color-surface-icon)] text-xs font-bold text-[var(--color-text-muted)]" key={social}>
+                <span className="grid size-9 place-items-center rounded-lg bg-(--color-surface-icon) text-xs font-bold text-(--color-text-muted)" key={social}>
                   {social}
                 </span>
               ))}
             </div>
           </div>
         </div>
-        <div className="rounded-xl bg-[var(--color-page-raised)] p-5 text-xs leading-5 text-[var(--color-text-disabled)]">
+        <div className="rounded-xl bg-(--color-page-raised) p-5 text-xs leading-5 text-(--color-text-disabled)">
           <p>
             Copyright 2025 www.thedoctor.com is owned and operated by Wild Technology Ltd. registration number: 3-102-898807 registered
             address: San Rafael, Edificio, Fuentecantos, San Jose.
@@ -39,7 +39,7 @@ function FooterColumn({ items, title }: { items: string[]; title: string }) {
   return (
     <div>
       <h3 className="mb-4 text-sm font-bold uppercase text-white">{title}</h3>
-      <ul className="space-y-2 text-sm text-[var(--color-text-muted)]">
+      <ul className="space-y-2 text-sm text-(--color-text-muted)">
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}

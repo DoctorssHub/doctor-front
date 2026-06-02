@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Logo from "@/shared/assets/Logo.svg";
+import Logo from "@/assets/Logo.svg";
 import { Button } from "@/shared/ui/button";
 import Link from "next/link";
 
@@ -7,7 +7,7 @@ export function HomeHeader() {
   return (
     <header
       className="
-    flex items-center justify-between h-16 px-8
+    sticky top-0 z-30 flex h-16 items-center justify-between px-8
     border-b border-(--color-border-strong) bg-(--color-header-surface)
     "
     >
@@ -17,8 +17,7 @@ export function HomeHeader() {
       />
       <div>
         <Link href="/login">
-          
-          <Button className="h-10 w-full text-[16px] text-[#07111a] font-medium cursor-pointer">Log In</Button>
+          <Button className="h-10 w-full cursor-pointer text-[16px] font-medium text-(--color-brand-contrast)">Log In</Button>
         </Link>
       </div>
     </header>
