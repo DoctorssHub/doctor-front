@@ -1,24 +1,40 @@
 import Image from "next/image";
 
-import rewardMoney from "@/assets/homepage/reward-money.png";
+import rewardMoney from "@/assets/dollar-coins.png";
+
+import { RewardCounter } from "./reward-counter";
 
 export function RewardsBanner() {
   return (
-    <section className="relative -mt-3 overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface-soft) p-5 shadow-(--shadow-inset-soft)">
-      <Image alt="" className="absolute -left-8 -top-12 object-contain opacity-70" height={144} src={rewardMoney} width={176} />
-      <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="pl-16">
-          <h2 className="text-lg font-black uppercase text-(--color-brand)">Total rewards given back!</h2>
-          <p className="text-sm text-(--color-text-muted)">To The Doctors community</p>
+    <section
+      className="
+    relative mt-8 overflow-hidden 
+    rounded-xl  
+     py-5 pl-31 pr-5 
+    "
+      style={{
+        backgroundImage:
+          "linear-gradient(147deg, rgba(27, 209, 103, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%)",
+        backgroundColor: "#11121a",
+      }}
+    >
+      <Image
+        alt=""
+        className="absolute -left-12 -top-5 rotate-9"
+        width={148}
+        height={148}
+        src={rewardMoney}
+      />
+      <div className="relative flex flex-col  sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-[28px] font-black uppercase text-(--color-brand)">
+            Total rewards given back!
+          </h2>
+          <p className="text-[18px] text-(--color-text-muted)">
+            to The Doctors community
+          </p>
         </div>
-        <div className="flex items-center gap-2 rounded-lg bg-(--color-surface-counter) px-4 py-3">
-          <span className="text-2xl font-black text-(--color-brand)">$</span>
-          {"1836855".split("").map((digit, index) => (
-            <span className="grid size-8 place-items-center rounded bg-(--color-surface-chip) text-lg font-black" key={`${digit}-${index}`}>
-              {digit}
-            </span>
-          ))}
-        </div>
+        <RewardCounter />
       </div>
     </section>
   );

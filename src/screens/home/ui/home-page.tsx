@@ -19,7 +19,7 @@ export function HomePage() {
         <Sidebar />
         <div className="min-w-0 flex-1">
           <HeroSection />
-          <div className="mx-auto flex w-full max-w-302.5 flex-col gap-7 px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-[1150px] flex-col gap-8 px-4 pb-12 sm:px-6 lg:px-8">
             <RewardsBanner />
             <FeaturesSection />
             <OnboardingSection />
