@@ -1,18 +1,24 @@
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import Image from "next/image";
+
 type SectionTitleProps = {
-  centered?: boolean;
-  icon?: string;
-  kicker?: string;
+  icon: string | StaticImport;
   title: string;
 };
 
-export function SectionTitle({ centered = false, icon = "*", kicker, title }: SectionTitleProps) {
+export function SectionTitle({ icon, title }: SectionTitleProps) {
   return (
-    <div className={`flex gap-2 ${centered ? "flex-col items-center text-center" : "items-center"}`}>
-      {centered ? null : <span className="text-(--color-brand)">{icon}</span>}
-      <div>
-        {kicker ? <p className="text-sm text-(--color-text-subtle)">{kicker}</p> : null}
-        <h2 className="text-base font-black uppercase tracking-normal text-white sm:text-xl">{title}</h2>
-      </div>
+    <div className="flex gap-2 items-center">
+      <Image
+        alt=""
+        src={icon}
+        height={24}
+        width={24}
+      />
+
+      <h2 className="text-[20px] font-semibold tracking-normal text-(--color-text-primary)">
+        {title}
+      </h2>
     </div>
   );
 }
