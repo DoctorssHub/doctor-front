@@ -56,7 +56,6 @@
   --gradient-game-overlay: linear-gradient(to top, rgb(11 16 27 / 80%), transparent);
   --gradient-claim-panel: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
   --gradient-nav-item: linear-gradient(180deg, rgb(27 31 38 / 40%) 0%, rgb(43 48 59 / 40%) 100%);
-  
   --font-sans: 'Outfit', sans-serif;
 
 }
