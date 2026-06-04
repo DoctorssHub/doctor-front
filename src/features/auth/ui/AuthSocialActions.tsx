@@ -25,7 +25,7 @@ export function AuthSocialActions({ flow }: AuthSocialActionsProps) {
           aria-label="Continue with Google"
         >
           <Image
-            src="/google-icon.svg"
+            src="/google.webp"
             alt=""
             width={22}
             height={22}
@@ -38,7 +38,7 @@ export function AuthSocialActions({ flow }: AuthSocialActionsProps) {
           aria-label="Continue with Discord"
         >
           <Image
-            src="/discord-icon.svg"
+            src="/discord.webp"
             alt=""
             width={24}
             height={24}
@@ -51,7 +51,7 @@ export function AuthSocialActions({ flow }: AuthSocialActionsProps) {
           aria-label="Continue with Steam"
         >
           <Image
-            src="/steam-icon.svg"
+            src="/steam.webp"
             alt=""
             width={24}
             height={24}

@@ -18,7 +18,7 @@ export function AuthPage() {
   return (
     <main className="flex min-h-screen items-center justify-center overflow-hidden bg-[#050812] text-white lg:p-4">
       <section
-        className="flex h-[961px] max-h-screen w-full max-w-[768px] overflow-hidden rounded-4xl lg:h-[660px] lg:max-w-[1000px]"
+        className="flex h-[961px] max-h-screen w-full max-w-[768px] overflow-hidden rounded-4xl lg:h-[695px] lg:max-w-[1000px]"
         role="dialog"
         aria-modal="true"
         aria-label="Authentication"
