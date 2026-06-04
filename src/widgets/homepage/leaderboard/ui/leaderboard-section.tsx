@@ -15,9 +15,9 @@ const players = [
 
 export function LeaderboardSection() {
   return (
-    <section className="relative overflow-hidden py-10 text-center">
-      <div className="absolute inset-x-0 bottom-0 mx-auto h-64 max-w-4xl rounded-full bg-(--color-accent-blue)/20 blur-3xl" />
-      <div className="relative">
+    <section className="relative py-10 text-center">
+      <LeaderboardGlow />
+      <div className="relative z-10">
         <h2 className="text-3xl font-black uppercase text-white sm:text-4xl">Monthly Leaderboard</h2>
         <p className="mt-3 text-sm text-(--color-text-muted)">
           Players who wager using code <span className="font-bold text-white">THEDOCTOR</span> on DegenCity are automatically entered
@@ -44,5 +44,60 @@ export function LeaderboardSection() {
         </Button>
       </div>
     </section>
+  );
+}
+
+function LeaderboardGlow() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="pointer-events-none absolute left-1/2 top-[-120px] z-0 h-[800px] w-[1213px] max-w-none -translate-x-1/2 overflow-visible"
+      fill="none"
+      viewBox="0 0 1213 800"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#leaderboard-glow-blur)">
+        <path
+          d="M-353 679.153L532.729 120H718.5L1660 679.153H-353Z"
+          fill="url(#leaderboard-glow-gradient)"
+          fillOpacity="0.3"
+        />
+      </g>
+      <defs>
+        <filter
+          colorInterpolationFilters="sRGB"
+          filterUnits="userSpaceOnUse"
+          height="799.153"
+          id="leaderboard-glow-blur"
+          width="2253"
+          x="-473"
+          y="0"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feBlend
+            in="SourceGraphic"
+            in2="BackgroundImageFix"
+            mode="normal"
+            result="shape"
+          />
+          <feGaussianBlur
+            result="effect1_foregroundBlur_10050_976"
+            stdDeviation="60"
+          />
+        </filter>
+        <linearGradient
+          gradientUnits="userSpaceOnUse"
+          id="leaderboard-glow-gradient"
+          x1="668.349"
+          x2="666.297"
+          y1="143.788"
+          y2="636.959"
+        >
+          <stop stopColor="#00FFAA" stopOpacity="0.5" />
+          <stop offset="0.34" stopColor="#24A6C7" />
+          <stop offset="1" stopColor="#6A00FF" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
   );
 }
