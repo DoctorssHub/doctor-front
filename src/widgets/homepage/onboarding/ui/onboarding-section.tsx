@@ -1,28 +1,61 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 
-import onboardAccount from "@/assets/homepage/onboard-account.png";
-import onboardConnect from "@/assets/homepage/onboard-connect.png";
-import onboardDiscord from "@/assets/homepage/onboard-discord.png";
+import onboardAccount from "@/assets/onboardingBg_1.webp";
+import onboardDiscord from "@/assets/onboardingBg_2.webp";
+import onboardConnect from "@/assets/onboardingBg_3.webp";
+import OnboardingIcon from "@/assets/onboardingIcon.svg";
 import { Button } from "@/shared/ui/button";
 import { SectionTitle } from "@/shared/ui/section-title";
 
-const steps = [
+import { CopyButton } from "./copy-button";
+
+type Step = {
+  action: string;
+  image: typeof onboardAccount;
+  text: ReactNode;
+  title: string;
+};
+
+const steps: Step[] = [
   {
     action: "Register",
     image: onboardAccount,
-    text: "Register on DegenCity using promo code THEDOCTOR.",
+    text: (
+      <>
+        Register on DegenCity using promo code{" "}
+        <span className="font-black text-(--color-brand-strong)">
+          THEDOCTOR
+        </span>
+        <CopyButton value="THEDOCTOR" /><br />
+        Please clear your browser cache and/or cookies before creating your account.
+      </>
+    ),
     title: "Create your DegenCity account",
   },
   {
     action: "Join Discord",
     image: onboardDiscord,
-    text: "Make sure you have confirmed the private Doctor Verify Giveaway and Announcement channels.",
+    text: (
+      <>
+        Make sure you’re Super Confirmed to be eligible. Weekly giveaways and
+        promotions are posted in Discord under{" "}
+        <span className="font-semibold text-(--color-brand-strong)">
+          Giveaways
+        </span>{" "}
+        and{" "}
+        <span className="font-semibold text-(--color-brand-strong)">
+          Announcements
+        </span>
+        .
+      </>
+    ),
     title: "Join TheDoctor's Discord",
   },
   {
     action: "Connect Account",
     image: onboardConnect,
-    text: "Link your Discord to your TheDoctor profile.",
+    text: <>Link your Discord to your  <span className="font-semibold text-(--color-brand-strong)">thedoctor.net</span> profile</>,
     title: "Connect your account",
   },
 ];
@@ -30,17 +63,33 @@ const steps = [
 export function OnboardingSection() {
   return (
     <section className="flex flex-col gap-3">
-      <SectionTitle title="How to get started?" />
-      <div className="grid gap-4 lg:grid-cols-3">
+      <SectionTitle
+        title="How to get started?"
+        icon={OnboardingIcon}
+      />
+      <div className="grid gap-4 lg:grid-cols-3 ">
         {steps.map((step) => (
-          <article className="overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface-soft)" key={step.title}>
-            <div className="relative h-40 w-full">
-              <Image alt="" className="object-cover" fill src={step.image} />
+          <article
+            className="overflow-hidden h-[418px] rounded-xl border border-(--color-border) bg-(--color-surface-soft)"
+            key={step.title}
+          >
+            <div className="relative h-[210px] w-full">
+              <Image
+                alt=""
+                className="object-cover"
+                fill
+                src={step.image}
+              />
             </div>
-            <div className="flex min-h-[154px] flex-col gap-2 p-4">
-              <h3 className="font-black text-white">{step.title}</h3>
-              <p className="flex-1 text-sm leading-5 text-(--color-text-muted)">{step.text}</p>
-              <Button className="h-9 w-full text-xs">{step.action}</Button>
+            <div className="flex flex-col gap-2 p-4 justify-between h-[calc(100%-210px)]">
+              <div>
+
+              <h3 className="font-semibold text-[18px] text-(--color-text-primary)">{step.title}</h3>
+              <p className="flex-1 mt-2 text-sm font-normal text-(--color-text-muted)">
+                {step.text}
+              </p>
+              </div>
+              <Button className="h-12 w-full text-[18px] font-medium cursor-pointer">{step.action}</Button>
             </div>
           </article>
         ))}
