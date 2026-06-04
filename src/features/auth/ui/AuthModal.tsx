@@ -1,0 +1,109 @@
+"use client";
+
+import { useState } from "react";
+import { AuthCloseButton } from "./AuthCloseButton";
+import { AuthSocialActions } from "./AuthSocialActions";
+import { AuthTabs } from "./AuthTabs";
+import { AuthVisualPanel } from "./AuthVisualPanel";
+import { RegisterForm } from "./RegisterForm";
+import { VerifyEmailForm } from "./VerifyEmailForm";
+import { LoginForm } from "./LoginForm";
+import { ForgotPasswordForm } from "./ForgotPasswordForm";
+import { ResetPasswordForm } from "./ResetPasswordForm";
+import { useAuthModalStore } from "../model/auth-modal-store";
+import type { AuthFlow } from "./types";
+
+export function AuthModal() {
+  const isOpen = useAuthModalStore((state) => state.isOpen);
+  const openKey = useAuthModalStore((state) => state.openKey);
+  const initialFlow = useAuthModalStore((state) => state.initialFlow);
+  const closeAuthModal = useAuthModalStore((state) => state.closeAuthModal);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <AuthModalContent
+      key={openKey}
+      initialFlow={initialFlow}
+      onClose={closeAuthModal}
+    />
+  );
+}
+
+type AuthModalContentProps = {
+  initialFlow: Extract<AuthFlow, "login" | "register">;
+  onClose: () => void;
+};
+
+function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
+  const [flow, setFlow] = useState<AuthFlow>(initialFlow);
+  const [verificationToken, setVerificationToken] = useState("");
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050812]/80 p-4 text-white backdrop-blur-sm">
+      <section
+        className="flex h-[961px] max-h-screen w-full max-w-[768px] overflow-hidden rounded-4xl lg:h-[749px] lg:max-w-[1000px]"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Authentication"
+      >
+        <AuthVisualPanel />
+
+        <div className="relative flex h-full w-full items-start justify-center overflow-hidden bg-[#0A0D19] px-8 py-10 sm:px-10 lg:w-[500px]">
+          <AuthCloseButton onClose={onClose} />
+
+          <section className="flex h-full w-full max-w-none flex-col lg:max-w-[420px]">
+            <AuthTabs flow={flow} onChange={setFlow} />
+
+            <div className="min-h-0 flex-1">
+              {flow === "register" ? (
+                <RegisterForm
+                  onRegistered={(token) => {
+                    setVerificationToken(token);
+                    setFlow("verify-email");
+                  }}
+                />
+              ) : null}
+
+              {flow === "verify-email" ? (
+                <VerifyEmailForm
+                  verificationToken={verificationToken}
+                  onVerified={() => setFlow("login")}
+                  onBack={() => {
+                    setVerificationToken("");
+                    setFlow("register");
+                  }}
+                />
+              ) : null}
+
+              {flow === "login" ? (
+                <LoginForm
+                  onLoggedIn={() => setFlow("login")}
+                  onForgotPasswordClick={() => setFlow("forgot-password")}
+                />
+              ) : null}
+
+              {flow === "forgot-password" ? (
+                <ForgotPasswordForm
+                  onSubmitted={() => setFlow("reset-password")}
+                  onBack={() => setFlow("login")}
+                />
+              ) : null}
+
+              {flow === "reset-password" ? (
+                <ResetPasswordForm
+                  onReset={() => setFlow("login")}
+                  onBack={() => setFlow("login")}
+                />
+              ) : null}
+            </div>
+
+            <AuthSocialActions flow={flow} />
+          </section>
+        </div>
+      </section>
+    </div>
+  );
+}

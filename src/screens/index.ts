@@ -1,1 +1,1 @@
-export { LoginRegisterScreen } from "./login-register";
+export { HomeScreen } from "./home";
