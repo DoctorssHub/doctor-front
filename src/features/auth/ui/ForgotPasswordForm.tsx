@@ -1,6 +1,48 @@
-export function ForgotPasswordForm() {
+import { FormEvent, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { forgotPassword } from "../api/auth-api";
+import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
+import { parseAuthError } from "../lib/parse-auth-error";
+
+type ForgotPasswordFormProps = {
+  onSubmitted: () => void;
+  onBack: () => void;
+};
+
+export function ForgotPasswordForm({
+  onSubmitted,
+  onBack,
+}: ForgotPasswordFormProps) {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const forgotMutation = useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: (response) => {
+      logAuthSuccess("forgot-password", response);
+      onSubmitted();
+    },
+    onError: (error) => {
+      logAuthError("forgot-password", error);
+      setErrorMessage(parseAuthError(error));
+    },
+  });
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setErrorMessage("");
+
+    const formData = new FormData(event.currentTarget);
+
+    forgotMutation.mutate({
+      email: String(formData.get("email") || ""),
+    });
+  }
+
   return (
-    <form className="rounded-xl border border-[#1c2333] bg-[#0b101d] p-6">
+    <form
+      className="rounded-xl border border-[#1c2333] bg-[#0b101d] p-6"
+      onSubmit={handleSubmit}
+    >
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold text-white">Forgot password</h1>
         <p className="text-sm text-[#8f98ad]">
@@ -20,16 +62,22 @@ export function ForgotPasswordForm() {
         </label>
       </div>
 
+      {errorMessage ? (
+        <p className="mt-4 text-sm text-red-400">{errorMessage}</p>
+      ) : null}
+
       <button
         className="mt-6 h-14 w-full rounded-lg bg-[#c82831] px-4 text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43] disabled:cursor-not-allowed disabled:opacity-60"
-        type="button"
+        type="submit"
+        disabled={forgotMutation.isPending}
       >
-        Send reset link
+        {forgotMutation.isPending ? "Sending..." : "Send reset link"}
       </button>
 
       <button
         className="mt-4 w-full text-sm font-medium text-[#8f98ad] transition hover:text-white"
         type="button"
+        onClick={onBack}
       >
         Back to log in
       </button>

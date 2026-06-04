@@ -1,6 +1,80 @@
-export function RegisterForm() {
+import { FormEvent, useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import type ReCAPTCHA from "react-google-recaptcha";
+import { registerUser } from "../api/auth-api";
+import { getVerificationToken } from "../lib/get-verification-token";
+import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
+import { parseAuthError } from "../lib/parse-auth-error";
+import { AuthRecaptcha } from "./AuthRecaptcha";
+
+type RegisterFormProps = {
+  onRegistered: (verificationToken: string) => void;
+};
+
+export function RegisterForm({ onRegistered }: RegisterFormProps) {
+  const [errorMessage, setErrorMessage] = useState("");
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+
+  const registerMutation = useMutation({
+    mutationFn: (variables: {
+      username: string;
+      email: string;
+      password: string;
+      recaptchaToken: string;
+    }) =>
+      registerUser(
+        {
+          username: variables.username,
+          email: variables.email,
+          password: variables.password,
+          affiliateCode: "doctor",
+        },
+        variables.recaptchaToken,
+      ),
+    onSuccess: (response) => {
+      logAuthSuccess("register", response);
+      const verificationToken = getVerificationToken(response.data);
+
+      if (!verificationToken) {
+        setErrorMessage(
+          "Verification token was not returned by the server. Check the register response in console.",
+        );
+        return;
+      }
+
+      onRegistered(verificationToken);
+    },
+    onError: (error) => {
+      logAuthError("register", error);
+      setErrorMessage(parseAuthError(error));
+    },
+    onSettled: () => {
+      recaptchaRef.current?.reset();
+    },
+  });
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setErrorMessage("");
+
+    const recaptchaToken = recaptchaRef.current?.getValue();
+    if (!recaptchaToken) {
+      setErrorMessage("Please complete the reCAPTCHA.");
+      return;
+    }
+
+    const formData = new FormData(event.currentTarget);
+
+    registerMutation.mutate({
+      username: String(formData.get("username") || ""),
+      email: String(formData.get("email") || ""),
+      password: String(formData.get("password") || ""),
+      recaptchaToken,
+    });
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="space-y-3">
         <label className="block font-light text-(--color-text-muted) leading-4.5">
           Username
@@ -57,11 +131,20 @@ export function RegisterForm() {
         </label>
       </div>
 
+      <div className="mt-4">
+        <AuthRecaptcha ref={recaptchaRef} />
+      </div>
+
+      {errorMessage ? (
+        <p className="mt-4 text-sm text-red-400">{errorMessage}</p>
+      ) : null}
+
       <button
         className="mt-5 h-12 w-full rounded-lg bg-[#c82831] px-4 text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43] disabled:cursor-not-allowed disabled:opacity-60"
-        type="button"
+        type="submit"
+        disabled={registerMutation.isPending}
       >
-        Register
+        {registerMutation.isPending ? "Creating account..." : "Register"}
       </button>
     </form>
   );
