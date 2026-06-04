@@ -10,7 +10,7 @@ export function AuthVisualPanel() {
           alt="McQueen logo"
           width={190}
           height={90}
-          className="h-auto w-[124px]"
+          className="h-auto w-31"
           priority
         />
       </div>
@@ -20,7 +20,7 @@ export function AuthVisualPanel() {
         alt="Racing flag"
         width={260}
         height={220}
-        className="absolute left-[5%] top-[24%] h-[100px] w-[210px] opacity-90"
+        className="absolute left-[5%] top-[24%] h-25 w-52.5 opacity-90"
         aria-hidden="true"
       />
       <Image
@@ -28,16 +28,16 @@ export function AuthVisualPanel() {
         alt="Racing flag"
         width={360}
         height={220}
-        className="absolute right-3 top-[24%] h-[100px] w-[210px] opacity-90"
+        className="absolute right-3 top-[24%] h-25 w-52.5 opacity-90"
         aria-hidden="true"
       />
-      <div className="absolute left-[52%] top-[72%] h-12 w-[300px] -translate-x-1/2 rounded-full bg-black/35 blur-xl" />
+      <div className="absolute left-[52%] top-[72%] h-12 w-75 -translate-x-1/2 rounded-full bg-black/35 blur-xl" />
       <Image
         src="/lightning-mcqueen.png"
         alt="mcqueen"
         width={430}
         height={260}
-        className="absolute left-[52%] top-[60%] h-auto w-[390px] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_22px_42px_rgba(0,0,0,0.42)]"
+        className="absolute left-[52%] top-[60%] h-auto w-97.5 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_22px_42px_rgba(0,0,0,0.42)]"
         aria-hidden="true"
         priority
       />
@@ -46,7 +46,7 @@ export function AuthVisualPanel() {
         alt="gas station"
         width={260}
         height={220}
-        className="absolute -bottom-5 -left-15 h-auto w-[230px] opacity-86 drop-shadow-[0_0_20px_rgba(196,32,38,0.14)]"
+        className="absolute -bottom-5 -left-15 h-auto w-57.5 opacity-86 drop-shadow-[0_0_20px_rgba(196,32,38,0.14)]"
         aria-hidden="true"
       />
       <Image
@@ -54,7 +54,7 @@ export function AuthVisualPanel() {
         alt="wheel"
         width={170}
         height={170}
-        className="absolute bottom-0 -right-3 h-auto w-[180px]"
+        className="absolute bottom-0 -right-3 h-auto w-45"
         aria-hidden="true"
       />
     </div>

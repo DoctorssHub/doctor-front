@@ -40,40 +40,56 @@ type AuthModalContentProps = {
 function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
   const [flow, setFlow] = useState<AuthFlow>(initialFlow);
   const [verificationToken, setVerificationToken] = useState("");
+  const [verificationEmail, setVerificationEmail] = useState("");
+
+  if (flow === "verify-email") {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050812]/80 p-4 text-white backdrop-blur-sm">
+        <section
+          className="relative w-full max-w-140 overflow-hidden rounded-3xl bg-[#0A0D19] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.46)] sm:px-8 sm:py-9"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Verify email"
+        >
+          <AuthCloseButton onClose={onClose} />
+          <VerifyEmailForm
+            verificationToken={verificationToken}
+            email={verificationEmail}
+            onVerified={() => setFlow("login")}
+            onBack={() => {
+              setVerificationToken("");
+              setVerificationEmail("");
+              setFlow("login");
+            }}
+          />
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050812]/80 p-4 text-white backdrop-blur-sm">
       <section
-        className="flex h-[961px] max-h-screen w-full max-w-[768px] overflow-hidden rounded-4xl lg:h-[749px] lg:max-w-[1000px]"
+        className="flex h-240.25 max-h-screen w-full max-w-3xl overflow-hidden rounded-4xl lg:h-187.25 lg:max-w-250"
         role="dialog"
         aria-modal="true"
         aria-label="Authentication"
       >
         <AuthVisualPanel />
 
-        <div className="relative flex h-full w-full items-start justify-center overflow-hidden bg-[#0A0D19] px-8 py-10 sm:px-10 lg:w-[500px]">
+        <div className="relative flex h-full w-full items-start justify-center overflow-hidden bg-[#0A0D19] px-8 py-10 sm:px-10 lg:w-125">
           <AuthCloseButton onClose={onClose} />
 
-          <section className="flex h-full w-full max-w-none flex-col lg:max-w-[420px]">
+          <section className="flex h-full w-full max-w-none flex-col lg:max-w-105">
             <AuthTabs flow={flow} onChange={setFlow} />
 
             <div className="min-h-0 flex-1">
               {flow === "register" ? (
                 <RegisterForm
-                  onRegistered={(token) => {
+                  onRegistered={(token, email) => {
                     setVerificationToken(token);
+                    setVerificationEmail(email);
                     setFlow("verify-email");
-                  }}
-                />
-              ) : null}
-
-              {flow === "verify-email" ? (
-                <VerifyEmailForm
-                  verificationToken={verificationToken}
-                  onVerified={() => setFlow("login")}
-                  onBack={() => {
-                    setVerificationToken("");
-                    setFlow("register");
                   }}
                 />
               ) : null}

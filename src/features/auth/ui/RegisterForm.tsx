@@ -8,7 +8,7 @@ import { parseAuthError } from "../lib/parse-auth-error";
 import { AuthRecaptcha } from "./AuthRecaptcha";
 
 type RegisterFormProps = {
-  onRegistered: (verificationToken: string) => void;
+  onRegistered: (verificationToken: string, email: string) => void;
 };
 
 export function RegisterForm({ onRegistered }: RegisterFormProps) {
@@ -31,7 +31,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
         },
         variables.recaptchaToken,
       ),
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
       logAuthSuccess("register", response);
       const verificationToken = getVerificationToken(response.data);
 
@@ -42,7 +42,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
         return;
       }
 
-      onRegistered(verificationToken);
+      onRegistered(verificationToken, variables.email);
     },
     onError: (error) => {
       logAuthError("register", error);
@@ -65,9 +65,11 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
 
     const formData = new FormData(event.currentTarget);
 
+    const email = String(formData.get("email") || "");
+
     registerMutation.mutate({
       username: String(formData.get("username") || ""),
-      email: String(formData.get("email") || ""),
+      email,
       password: String(formData.get("password") || ""),
       recaptchaToken,
     });
