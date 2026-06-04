@@ -1,1 +1,1 @@
-export {};
+export { LoginRegisterScreen } from "./login-register";
