@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 import type ReCAPTCHA from "react-google-recaptcha";
 import { registerUser } from "../api/auth-api";
 import { getVerificationToken } from "../lib/get-verification-token";
-import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
 import { parseAuthError } from "../lib/parse-auth-error";
 import { AuthRecaptcha } from "./AuthRecaptcha";
 
@@ -36,7 +35,6 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
         variables.recaptchaToken,
       ),
     onSuccess: (response, variables) => {
-      logAuthSuccess("register", response);
       const verificationToken = getVerificationToken(response.data);
 
       if (!verificationToken) {
@@ -53,7 +51,6 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
       });
     },
     onError: (error) => {
-      logAuthError("register", error);
       setErrorMessage(parseAuthError(error));
     },
     onSettled: () => {

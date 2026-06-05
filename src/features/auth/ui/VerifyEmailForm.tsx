@@ -9,7 +9,6 @@ import {
 } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getCurrentUser, verifyEmail } from "../api/auth-api";
-import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
 import { parseAuthError } from "../lib/parse-auth-error";
 import { readUsername } from "../lib/read-auth-response";
 
@@ -42,20 +41,16 @@ export function VerifyEmailForm({
       verificationToken: string;
       code: string;
     }) => {
-      const verifyResponse = await verifyEmail(payload);
-      logAuthSuccess("verify-email", verifyResponse);
+      await verifyEmail(payload);
 
       const meResponse = await getCurrentUser();
 
-      return { meResponse, verifyResponse };
+      return meResponse;
     },
-    onSuccess: ({ meResponse }) => {
-      logAuthSuccess("me", meResponse);
-
+    onSuccess: (meResponse) => {
       onVerified(readUsername(meResponse.data) || fallbackUsername);
     },
     onError: (error) => {
-      logAuthError("verify-email", error);
       setErrorMessage(parseAuthError(error));
     },
   });

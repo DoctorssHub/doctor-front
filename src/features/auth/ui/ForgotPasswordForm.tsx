@@ -1,7 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { forgotPassword } from "../api/auth-api";
-import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
 import { parseAuthError } from "../lib/parse-auth-error";
 
 type ForgotPasswordFormProps = {
@@ -17,12 +16,10 @@ export function ForgotPasswordForm({
 
   const forgotMutation = useMutation({
     mutationFn: forgotPassword,
-    onSuccess: (response) => {
-      logAuthSuccess("forgot-password", response);
+    onSuccess: () => {
       onSubmitted();
     },
     onError: (error) => {
-      logAuthError("forgot-password", error);
       setErrorMessage(parseAuthError(error));
     },
   });

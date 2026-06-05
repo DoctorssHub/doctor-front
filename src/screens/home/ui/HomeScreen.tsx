@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
 import { getCurrentUser, logoutUser } from "@/features/auth/api/auth-api";
-import { logAuthError, logAuthSuccess } from "@/features/auth/lib/log-auth-response";
 import { readUsername } from "@/features/auth/lib/read-auth-response";
 
 export function HomeScreen() {
@@ -18,12 +17,10 @@ export function HomeScreen() {
   const displayUsername = username && !username.includes("@") ? username : null;
   const logoutMutation = useMutation({
     mutationFn: logoutUser,
-    onSuccess: (response) => {
-      logAuthSuccess("logout", response);
+    onSuccess: () => {
       clearSession();
     },
-    onError: (error) => {
-      logAuthError("logout", error);
+    onError: () => {
       clearSession();
     },
   });

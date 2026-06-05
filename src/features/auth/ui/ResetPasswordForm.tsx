@@ -1,7 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { resetPassword } from "../api/auth-api";
-import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
 import { parseAuthError } from "../lib/parse-auth-error";
 
 type ResetPasswordFormProps = {
@@ -14,12 +13,10 @@ export function ResetPasswordForm({ onReset, onBack }: ResetPasswordFormProps) {
 
   const resetMutation = useMutation({
     mutationFn: resetPassword,
-    onSuccess: (response) => {
-      logAuthSuccess("reset-password", response);
+    onSuccess: () => {
       onReset();
     },
     onError: (error) => {
-      logAuthError("reset-password", error);
       setErrorMessage(parseAuthError(error));
     },
   });

@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type ReCAPTCHA from "react-google-recaptcha";
 import { getCurrentUser, loginUser } from "../api/auth-api";
-import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
 import { parseAuthError } from "../lib/parse-auth-error";
 import { readUsername } from "../lib/read-auth-response";
 import { AuthRecaptcha } from "./AuthRecaptcha";
@@ -26,24 +25,19 @@ export function LoginForm({
       password: string;
       recaptchaToken: string;
     }) => {
-      const loginResponse = await loginUser(
+      await loginUser(
         { email: variables.email, password: variables.password },
         variables.recaptchaToken,
       );
-      logAuthSuccess("login", loginResponse);
-
       try {
         const meResponse = await getCurrentUser();
 
         return meResponse;
       } catch (error) {
-        logAuthError("me", error);
         throw error;
       }
     },
     onSuccess: (meResponse) => {
-      logAuthSuccess("me", meResponse);
-
       const username = readUsername(meResponse.data);
 
       if (!username) {
@@ -54,10 +48,6 @@ export function LoginForm({
       onLoggedIn(username);
     },
     onError: (error) => {
-      if (axios.isAxiosError(error) && error.config?.url !== "/user/query/me") {
-        logAuthError("login", error);
-      }
-
       setErrorMessage(
         axios.isAxiosError(error) && error.config?.url === "/user/query/me"
           ? "Login successful, but the profile request is unauthorized."
