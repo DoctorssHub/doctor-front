@@ -2,9 +2,9 @@ export function LeaderboardGlow() {
   return (
     <svg
       aria-hidden="true"
-      className="pointer-events-none absolute left-1/2 top-[-50px] z-0 h-[800px] w-[1213px] max-w-none -translate-x-1/2 overflow-visible"
+      className="pointer-events-none absolute left-1/2 top-[90px] z-0 h-[1213px] w-[1213px] max-w-none -translate-x-1/2 overflow-visible"
       fill="none"
-      viewBox="0 0 1213 800"
+      viewBox="0 0 1213 1213"
       xmlns="http://www.w3.org/2000/svg"
     >
       <g filter="url(#leaderboard-glow-blur)">
@@ -18,7 +18,7 @@ export function LeaderboardGlow() {
         <filter
           colorInterpolationFilters="sRGB"
           filterUnits="userSpaceOnUse"
-          height="799.153"
+          height="1213"
           id="leaderboard-glow-blur"
           width="2253"
           x="-473"
