@@ -3,44 +3,52 @@
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
-import {
-  clearAuthToken,
-  logoutUser,
-  setAuthToken,
-} from "@/features/auth/api/auth-api";
+import { getCurrentUser, logoutUser } from "@/features/auth/api/auth-api";
 import { logAuthError, logAuthSuccess } from "@/features/auth/lib/log-auth-response";
+import { readUsername } from "@/features/auth/lib/read-auth-response";
 
 export function HomeScreen() {
   const openAuthModal = useAuthModalStore((state) => state.openAuthModal);
   const username = useAuthSessionStore((state) => state.username);
-  const accessToken = useAuthSessionStore((state) => state.accessToken);
   const isAuthenticated = useAuthSessionStore(
     (state) => state.isAuthenticated,
   );
+  const setSession = useAuthSessionStore((state) => state.setSession);
   const clearSession = useAuthSessionStore((state) => state.clearSession);
   const displayUsername = username && !username.includes("@") ? username : null;
   const logoutMutation = useMutation({
     mutationFn: logoutUser,
     onSuccess: (response) => {
       logAuthSuccess("logout", response);
-      clearAuthToken();
       clearSession();
     },
     onError: (error) => {
       logAuthError("logout", error);
-      clearAuthToken();
       clearSession();
     },
   });
 
   useEffect(() => {
-    if (accessToken) {
-      setAuthToken(accessToken);
-      return;
-    }
+    let isMounted = true;
 
-    clearAuthToken();
-  }, [accessToken]);
+    getCurrentUser()
+      .then((response) => {
+        const nextUsername = readUsername(response.data);
+
+        if (isMounted && nextUsername) {
+          setSession(nextUsername);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          clearSession();
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [clearSession, setSession]);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#050812] px-6 text-white">

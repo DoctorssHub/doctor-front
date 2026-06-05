@@ -15,17 +15,9 @@ import type {
 } from "./auth-types";
 
 const authClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
+  baseURL: "/api",
   withCredentials: true,
 });
-
-export function setAuthToken(token: string) {
-  authClient.defaults.headers.common.Authorization = `Bearer ${token}`;
-}
-
-export function clearAuthToken() {
-  delete authClient.defaults.headers.common.Authorization;
-}
 
 export function registerUser(payload: RegisterRequest, recaptchaToken: string) {
   return authClient.post<RegisterResponse>("/auth/local/register", payload, {

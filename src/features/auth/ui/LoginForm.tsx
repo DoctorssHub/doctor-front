@@ -2,14 +2,14 @@ import { FormEvent, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type ReCAPTCHA from "react-google-recaptcha";
-import { getCurrentUser, loginUser, setAuthToken } from "../api/auth-api";
+import { getCurrentUser, loginUser } from "../api/auth-api";
 import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
 import { parseAuthError } from "../lib/parse-auth-error";
-import { readAccessToken, readUsername } from "../lib/read-auth-response";
+import { readUsername } from "../lib/read-auth-response";
 import { AuthRecaptcha } from "./AuthRecaptcha";
 
 type LoginFormProps = {
-  onLoggedIn: (session: { username: string; accessToken: string | null }) => void;
+  onLoggedIn: (username: string) => void;
   onForgotPasswordClick: () => void;
 };
 
@@ -32,22 +32,16 @@ export function LoginForm({
       );
       logAuthSuccess("login", loginResponse);
 
-      const accessToken = readAccessToken(loginResponse.data);
-
-      if (accessToken) {
-        setAuthToken(accessToken);
-      }
-
       try {
         const meResponse = await getCurrentUser();
 
-        return { accessToken, meResponse };
+        return meResponse;
       } catch (error) {
         logAuthError("me", error);
         throw error;
       }
     },
-    onSuccess: ({ accessToken, meResponse }) => {
+    onSuccess: (meResponse) => {
       logAuthSuccess("me", meResponse);
 
       const username = readUsername(meResponse.data);
@@ -57,7 +51,7 @@ export function LoginForm({
         return;
       }
 
-      onLoggedIn({ username, accessToken });
+      onLoggedIn(username);
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.config?.url !== "/user/query/me") {

@@ -1,25 +1,15 @@
 export function readUsername(data: unknown) {
-  return findStringByKeys(data, ["username", "userName"]);
+  return findUsername(data);
 }
 
-export function readAccessToken(data: unknown) {
-  return findStringByKeys(data, [
-    "accessToken",
-    "access_token",
-    "access",
-    "token",
-    "jwt",
-  ]);
-}
-
-function findStringByKeys(data: unknown, keys: string[]): string | null {
+function findUsername(data: unknown): string | null {
   if (!data || typeof data !== "object") {
     return null;
   }
 
   const record = data as Record<string, unknown>;
 
-  for (const key of keys) {
+  for (const key of ["username", "userName"]) {
     const value = record[key];
 
     if (typeof value === "string" && value.trim() && !value.includes("@")) {
@@ -28,7 +18,7 @@ function findStringByKeys(data: unknown, keys: string[]): string | null {
   }
 
   for (const value of Object.values(record)) {
-    const nestedValue = findStringByKeys(value, keys);
+    const nestedValue = findUsername(value);
 
     if (nestedValue) {
       return nestedValue;

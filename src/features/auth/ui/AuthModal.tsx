@@ -60,7 +60,7 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
             email={verificationEmail}
             fallbackUsername={verificationUsername}
             onVerified={(username) => {
-              setSession(username, null);
+              setSession(username);
               onClose();
             }}
             onBack={() => {
@@ -105,8 +105,8 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
 
               {flow === "login" ? (
                 <LoginForm
-                  onLoggedIn={({ username, accessToken }) => {
-                    setSession(username, accessToken);
+                  onLoggedIn={(username) => {
+                    setSession(username);
                     onClose();
                   }}
                   onForgotPasswordClick={() => setFlow("forgot-password")}
