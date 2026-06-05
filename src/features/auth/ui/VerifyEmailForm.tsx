@@ -59,6 +59,7 @@ export function VerifyEmailForm({
       setErrorMessage(parseAuthError(error));
     },
   });
+  const isConfirmDisabled = !isCodeComplete || verifyMutation.isPending;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -173,9 +174,13 @@ export function VerifyEmailForm({
       ) : null}
 
       <button
-        className="mt-7 h-10 w-full rounded-lg bg-[#3f4a59]/50 px-4 text-sm font-bold text-[#fff7f7] transition hover:bg-[#4b5869]/50 disabled:cursor-not-allowed disabled:opacity-60 sm:h-12 sm:px-8"
+        className={`mt-7 h-10 w-full rounded-lg px-4 text-sm font-bold text-[#fff7f7] transition disabled:cursor-not-allowed disabled:opacity-60 sm:h-12 sm:px-8 ${
+          isConfirmDisabled
+            ? "bg-[#3f4a59]/50 hover:bg-[#4b5869]/50"
+            : "bg-[#c82831] hover:bg-[#d93a43]"
+        }`}
         type="submit"
-        disabled={!isCodeComplete || verifyMutation.isPending}
+        disabled={isConfirmDisabled}
       >
         {verifyMutation.isPending ? "Confirming..." : "Confirm"}
       </button>
