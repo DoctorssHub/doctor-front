@@ -11,6 +11,7 @@ import { LoginForm } from "./LoginForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 import { ResetPasswordForm } from "./ResetPasswordForm";
 import { useAuthModalStore } from "../model/auth-modal-store";
+import { useAuthSessionStore } from "../model/auth-session-store";
 import type { AuthFlow } from "./types";
 
 export function AuthModal() {
@@ -41,6 +42,8 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
   const [flow, setFlow] = useState<AuthFlow>(initialFlow);
   const [verificationToken, setVerificationToken] = useState("");
   const [verificationEmail, setVerificationEmail] = useState("");
+  const [verificationUsername, setVerificationUsername] = useState("");
+  const setSession = useAuthSessionStore((state) => state.setSession);
 
   if (flow === "verify-email") {
     return (
@@ -55,10 +58,15 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
           <VerifyEmailForm
             verificationToken={verificationToken}
             email={verificationEmail}
-            onVerified={() => setFlow("login")}
+            fallbackUsername={verificationUsername}
+            onVerified={(username) => {
+              setSession(username, null);
+              onClose();
+            }}
             onBack={() => {
               setVerificationToken("");
               setVerificationEmail("");
+              setVerificationUsername("");
               setFlow("login");
             }}
           />
@@ -86,9 +94,10 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
             <div className="min-h-0 flex-1">
               {flow === "register" ? (
                 <RegisterForm
-                  onRegistered={(token, email) => {
-                    setVerificationToken(token);
+                  onRegistered={({ verificationToken, email, username }) => {
+                    setVerificationToken(verificationToken);
                     setVerificationEmail(email);
+                    setVerificationUsername(username);
                     setFlow("verify-email");
                   }}
                 />
@@ -96,7 +105,10 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
 
               {flow === "login" ? (
                 <LoginForm
-                  onLoggedIn={() => setFlow("login")}
+                  onLoggedIn={({ username, accessToken }) => {
+                    setSession(username, accessToken);
+                    onClose();
+                  }}
                   onForgotPasswordClick={() => setFlow("forgot-password")}
                 />
               ) : null}

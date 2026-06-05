@@ -1,19 +1,71 @@
 "use client";
 
-import { useAuthModalStore } from "@/features/auth";
+import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
+import {
+  clearAuthToken,
+  logoutUser,
+  setAuthToken,
+} from "@/features/auth/api/auth-api";
+import { logAuthError, logAuthSuccess } from "@/features/auth/lib/log-auth-response";
 
 export function HomeScreen() {
   const openAuthModal = useAuthModalStore((state) => state.openAuthModal);
+  const username = useAuthSessionStore((state) => state.username);
+  const accessToken = useAuthSessionStore((state) => state.accessToken);
+  const isAuthenticated = useAuthSessionStore(
+    (state) => state.isAuthenticated,
+  );
+  const clearSession = useAuthSessionStore((state) => state.clearSession);
+  const displayUsername = username && !username.includes("@") ? username : null;
+  const logoutMutation = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: (response) => {
+      logAuthSuccess("logout", response);
+      clearAuthToken();
+      clearSession();
+    },
+    onError: (error) => {
+      logAuthError("logout", error);
+      clearAuthToken();
+      clearSession();
+    },
+  });
+
+  useEffect(() => {
+    if (accessToken) {
+      setAuthToken(accessToken);
+      return;
+    }
+
+    clearAuthToken();
+  }, [accessToken]);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#050812] px-6 text-white">
-      <button
-        className="h-12 rounded-lg bg-[#c82831] px-8 text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43]"
-        type="button"
-        onClick={() => openAuthModal("login")}
-      >
-        Login
-      </button>
+      {isAuthenticated && displayUsername ? (
+        <div className="rounded-lg border border-white/10 bg-white/5 px-6 py-4 text-center shadow-[0_24px_80px_rgba(0,0,0,0.32)]">
+          <p className="text-sm text-white/60">Logged in as</p>
+          <p className="mt-1 text-xl font-bold">{displayUsername}</p>
+          <button
+            className="mt-4 h-10 rounded-lg bg-white/10 px-5 text-sm font-bold text-white transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60"
+            type="button"
+            disabled={logoutMutation.isPending}
+            onClick={() => logoutMutation.mutate()}
+          >
+            {logoutMutation.isPending ? "Logging out..." : "Logout"}
+          </button>
+        </div>
+      ) : (
+        <button
+          className="h-12 rounded-lg bg-[#c82831] px-8 text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43]"
+          type="button"
+          onClick={() => openAuthModal("login")}
+        >
+          Login
+        </button>
+      )}
     </main>
   );
 }

@@ -8,7 +8,11 @@ import { parseAuthError } from "../lib/parse-auth-error";
 import { AuthRecaptcha } from "./AuthRecaptcha";
 
 type RegisterFormProps = {
-  onRegistered: (verificationToken: string, email: string) => void;
+  onRegistered: (payload: {
+    verificationToken: string;
+    email: string;
+    username: string;
+  }) => void;
 };
 
 export function RegisterForm({ onRegistered }: RegisterFormProps) {
@@ -42,7 +46,11 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
         return;
       }
 
-      onRegistered(verificationToken, variables.email);
+      onRegistered({
+        verificationToken,
+        email: variables.email,
+        username: variables.username,
+      });
     },
     onError: (error) => {
       logAuthError("register", error);

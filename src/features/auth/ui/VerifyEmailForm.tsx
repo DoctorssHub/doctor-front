@@ -8,22 +8,25 @@ import {
   useState,
 } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { verifyEmail } from "../api/auth-api";
+import { getCurrentUser, verifyEmail } from "../api/auth-api";
 import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
 import { parseAuthError } from "../lib/parse-auth-error";
+import { readUsername } from "../lib/read-auth-response";
 
 const CODE_LENGTH = 6;
 
 type VerifyEmailFormProps = {
   verificationToken: string;
   email: string;
-  onVerified: () => void;
+  fallbackUsername: string;
+  onVerified: (username: string) => void;
   onBack: () => void;
 };
 
 export function VerifyEmailForm({
   verificationToken,
   email,
+  fallbackUsername,
   onVerified,
   onBack,
 }: VerifyEmailFormProps) {
@@ -35,10 +38,21 @@ export function VerifyEmailForm({
   const isCodeComplete = codeDigits.every(Boolean);
 
   const verifyMutation = useMutation({
-    mutationFn: verifyEmail,
-    onSuccess: (response) => {
-      logAuthSuccess("verify-email", response);
-      onVerified();
+    mutationFn: async (payload: {
+      verificationToken: string;
+      code: string;
+    }) => {
+      const verifyResponse = await verifyEmail(payload);
+      logAuthSuccess("verify-email", verifyResponse);
+
+      const meResponse = await getCurrentUser();
+
+      return { meResponse, verifyResponse };
+    },
+    onSuccess: ({ meResponse }) => {
+      logAuthSuccess("me", meResponse);
+
+      onVerified(readUsername(meResponse.data) || fallbackUsername);
     },
     onError: (error) => {
       logAuthError("verify-email", error);

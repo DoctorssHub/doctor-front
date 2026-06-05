@@ -4,6 +4,8 @@ import type {
   ForgotPasswordResponse,
   LoginRequest,
   LoginResponse,
+  LogoutResponse,
+  MeResponse,
   RegisterRequest,
   RegisterResponse,
   ResetPasswordRequest,
@@ -14,7 +16,16 @@ import type {
 
 const authClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
+  withCredentials: true,
 });
+
+export function setAuthToken(token: string) {
+  authClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+}
+
+export function clearAuthToken() {
+  delete authClient.defaults.headers.common.Authorization;
+}
 
 export function registerUser(payload: RegisterRequest, recaptchaToken: string) {
   return authClient.post<RegisterResponse>("/auth/local/register", payload, {
@@ -35,6 +46,10 @@ export function loginUser(payload: LoginRequest, recaptchaToken: string) {
   });
 }
 
+export function getCurrentUser() {
+  return authClient.get<MeResponse>("/user/query/me");
+}
+
 export function forgotPassword(payload: ForgotPasswordRequest) {
   return authClient.post<ForgotPasswordResponse>(
     "/auth/local/forgot-password",
@@ -47,4 +62,8 @@ export function resetPassword(payload: ResetPasswordRequest) {
     "/auth/local/reset-password",
     payload,
   );
+}
+
+export function logoutUser() {
+  return authClient.get<LogoutResponse>("/auth/logout");
 }

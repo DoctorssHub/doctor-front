@@ -1,13 +1,15 @@
 import { FormEvent, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import type ReCAPTCHA from "react-google-recaptcha";
-import { loginUser } from "../api/auth-api";
+import { getCurrentUser, loginUser, setAuthToken } from "../api/auth-api";
 import { logAuthError, logAuthSuccess } from "../lib/log-auth-response";
 import { parseAuthError } from "../lib/parse-auth-error";
+import { readAccessToken, readUsername } from "../lib/read-auth-response";
 import { AuthRecaptcha } from "./AuthRecaptcha";
 
 type LoginFormProps = {
-  onLoggedIn: () => void;
+  onLoggedIn: (session: { username: string; accessToken: string | null }) => void;
   onForgotPasswordClick: () => void;
 };
 
@@ -19,22 +21,54 @@ export function LoginForm({
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const loginMutation = useMutation({
-    mutationFn: (variables: {
+    mutationFn: async (variables: {
       email: string;
       password: string;
       recaptchaToken: string;
-    }) =>
-      loginUser(
+    }) => {
+      const loginResponse = await loginUser(
         { email: variables.email, password: variables.password },
         variables.recaptchaToken,
-      ),
-    onSuccess: (response) => {
-      logAuthSuccess("login", response);
-      onLoggedIn();
+      );
+      logAuthSuccess("login", loginResponse);
+
+      const accessToken = readAccessToken(loginResponse.data);
+
+      if (accessToken) {
+        setAuthToken(accessToken);
+      }
+
+      try {
+        const meResponse = await getCurrentUser();
+
+        return { accessToken, meResponse };
+      } catch (error) {
+        logAuthError("me", error);
+        throw error;
+      }
+    },
+    onSuccess: ({ accessToken, meResponse }) => {
+      logAuthSuccess("me", meResponse);
+
+      const username = readUsername(meResponse.data);
+
+      if (!username) {
+        setErrorMessage("Username was not returned by the server.");
+        return;
+      }
+
+      onLoggedIn({ username, accessToken });
     },
     onError: (error) => {
-      logAuthError("login", error);
-      setErrorMessage(parseAuthError(error));
+      if (axios.isAxiosError(error) && error.config?.url !== "/user/query/me") {
+        logAuthError("login", error);
+      }
+
+      setErrorMessage(
+        axios.isAxiosError(error) && error.config?.url === "/user/query/me"
+          ? "Login successful, but the profile request is unauthorized."
+          : parseAuthError(error),
+      );
     },
     onSettled: () => {
       recaptchaRef.current?.reset();

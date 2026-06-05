@@ -4,6 +4,8 @@ type AuthEndpoint =
   | "register"
   | "verify-email"
   | "login"
+  | "me"
+  | "logout"
   | "forgot-password"
   | "reset-password";
 
