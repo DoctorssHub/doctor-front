@@ -8,7 +8,7 @@ export function RewardsBanner() {
   return (
     <section
       className="
-    relative mt-8 overflow-hidden 
+    relative  overflow-hidden 
     rounded-xl  
      py-5 pl-31 pr-5 
     "

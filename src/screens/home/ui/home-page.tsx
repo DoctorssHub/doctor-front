@@ -6,6 +6,7 @@ import {
   HeroSection,
   LeaderboardSection,
   OnboardingSection,
+  PromotionsSection,
   RewardsBanner,
   Sidebar,
   HomeHeader,
@@ -20,6 +21,7 @@ export function HomePage() {
         <div className="min-w-0 flex-1">
           <HeroSection />
           <div className="mx-auto flex w-full max-w-[1150px] flex-col gap-8  pb-12 ">
+            <PromotionsSection />
             <RewardsBanner />
             <FeaturesSection />
             <OnboardingSection />

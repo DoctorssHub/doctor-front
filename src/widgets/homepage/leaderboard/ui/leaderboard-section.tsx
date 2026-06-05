@@ -46,9 +46,9 @@ export function LeaderboardSection() {
           />
           <Image
             alt=""
-            className="absolute bottom-5 -right-40  max-w-none object-contain rotate-0 opacity-50"
+            className="absolute bottom-5 -right-40  max-w-none object-contain rotate-0 opacity-30"
             src={CardIcon}
-            width={333}
+            width={300}
             height={233}
           />
           <Image
