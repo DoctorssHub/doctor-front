@@ -1,9 +1,9 @@
 import type { StaticImageData } from "next/image";
 
-import gameDice from "@/assets/game_dice.webp";
-import gameKeno from "@/assets/game_keno.webp";
-import gamePlinko from "@/assets/game_plinko.webp";
-import gameRoulette from "@/assets/game_roulette.webp";
+import gameDice from "@/assets/homePage/games/game_dice.webp";
+import gameKeno from "@/assets/homePage/games/game_keno.webp";
+import gamePlinko from "@/assets/homePage/games/game_plinko.webp";
+import gameRoulette from "@/assets/homePage/games/game_roulette.webp";
 
 export type Game = {
   accent: string;

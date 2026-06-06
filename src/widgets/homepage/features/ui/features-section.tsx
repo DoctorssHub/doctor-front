@@ -1,13 +1,13 @@
 import Image from "next/image";
 
-import featuresBackgroundOne from "@/assets/featuresBg_1.webp";
-import featuresBackgroundTwo from "@/assets/featuresBg_2.webp";
-import featuresBackgroundThree from "@/assets/featuresBg_3.webp";
-import featureGames from "@/assets/homepage/feature-games.png";
-import featureLeaderboard from "@/assets/homepage/feature-leaderboard.png";
-import featureRewards from "@/assets/homepage/feature-rewards.png";
+import featuresBackgroundOne from "@/assets/homePage/features/featuresBg_1.webp";
+import featuresBackgroundTwo from "@/assets/homePage/features/featuresBg_2.webp";
+import featuresBackgroundThree from "@/assets/homePage/features/featuresBg_3.webp";
+import featureGames from "@/assets/homePage/features/feature-games.png";
+import featureLeaderboard from "@/assets/homePage/features/feature-leaderboard.png";
+import featureRewards from "@/assets/homePage/features/feature-rewards.png";
 import ArrowIcon from "@/assets/aside/arrowSidebar.svg";
-import FeaturesIcon from "@/assets/featuresIcon.svg";
+import FeaturesIcon from "@/assets/homePage/features/featuresIcon.svg";
 import { SectionTitle } from "@/shared/ui/section-title";
 import Link from "next/link";
 
@@ -70,9 +70,7 @@ export function FeaturesSection() {
               <h3 className="text-[24px] font-semibold text-(--color-text-primary) transition duration-300 group-hover:text-white">
                 {feature.title}
               </h3>
-              <span
-                className="flex h-8 w-8 items-center justify-center rounded-lg bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)] transition duration-300 group-hover:scale-110 group-hover:bg-[linear-gradient(180deg,#4bef82_0%,#22c55e_100%)] group-hover:shadow-[0_0_18px_rgb(34_197_94/45%)]"
-              >
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)] transition duration-300 group-hover:scale-110 group-hover:bg-[linear-gradient(180deg,#4bef82_0%,#22c55e_100%)] group-hover:shadow-[0_0_18px_rgb(34_197_94/45%)]">
                 <Image
                   alt=""
                   height={12}

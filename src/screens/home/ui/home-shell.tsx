@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
-import { HomeHeader, Sidebar } from "@/widgets/homepage";
+import { HomeHeader, Sidebar } from "@/widgets/layout";
 
 type HomeShellProps = {
   children: ReactNode;

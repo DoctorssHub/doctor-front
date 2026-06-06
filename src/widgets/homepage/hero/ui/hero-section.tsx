@@ -1,14 +1,14 @@
 import Image from "next/image";
 
-import heroBg from "@/assets/homepage/hero-bg.svg";
+import heroBg from "@/assets/homePage/heroSection/hero-bg.svg";
 import { Button } from "@/shared/ui/button";
 
-import BgBlur from "@/assets/heroSection/bgBlur.svg";
-import bgIcon_1 from "@/assets/heroSection/bgIcon_1.png";
-import bgIcon_2 from "@/assets/heroSection/bgIcon_2.png";
-import bgIcon_3 from "@/assets/heroSection/bgIcon_3.png";
-import bgIcon_4 from "@/assets/heroSection/bgIcon_4.png";
-import bgIcon_5 from "@/assets/heroSection/bgIcon_5.png";
+import BgBlur from "@/assets/homePage/heroSection/bgBlur.svg";
+import bgIcon_1 from "@/assets/homePage/heroSection/bgIcon_1.png";
+import bgIcon_2 from "@/assets/homePage/heroSection/bgIcon_2.png";
+import bgIcon_3 from "@/assets/homePage/heroSection/bgIcon_3.png";
+import bgIcon_4 from "@/assets/homePage/heroSection/bgIcon_4.png";
+import bgIcon_5 from "@/assets/homePage/heroSection/bgIcon_5.png";
 
 export function HeroSection() {
   return (

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import CopyIcon from "@/assets/copy.svg";
+import CopyIcon from "@/assets/homePage/onboarding/copy.svg";
 
 type CopyButtonProps = {
   value: string;
@@ -48,7 +48,11 @@ export function CopyButton({ value }: CopyButtonProps) {
       title={copied ? "Copied" : "Copy"}
       type="button"
     >
-      <Image alt="" className="size-3.5" src={CopyIcon} />
+      <Image
+        alt=""
+        className="size-3.5"
+        src={CopyIcon}
+      />
     </button>
   );
 }

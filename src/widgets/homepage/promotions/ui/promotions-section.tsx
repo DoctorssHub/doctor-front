@@ -1,9 +1,9 @@
 import Image, { type StaticImageData } from "next/image";
 
-import blockCompetition from "@/assets/blockCompetition.webp";
-import blockFortune from "@/assets/blockFortune.webp";
-import clockFortune from "@/assets/clock_fortune.svg";
-import clockCompetition from "@/assets/clock_competition.svg";
+import blockCompetition from "@/assets/homePage/promotions/blockCompetition.webp";
+import blockFortune from "@/assets/homePage/promotions/blockFortune.webp";
+import clockFortune from "@/assets/homePage/promotions/clock_fortune.svg";
+import clockCompetition from "@/assets/homePage/promotions/clock_competition.svg";
 
 import { PromotionCopyButton } from "./promotion-copy-button";
 

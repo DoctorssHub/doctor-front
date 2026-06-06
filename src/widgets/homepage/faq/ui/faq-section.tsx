@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import arrow from "@/assets/aside/arrowSidebar.svg";
-import FAQIcon from "@/assets/faqIcon.svg";
+import FAQIcon from "@/assets/homePage/faq/faqIcon.svg";
 import { SectionTitle } from "@/shared/ui/section-title";
 
 const questions = [
@@ -40,7 +40,10 @@ export function FaqSection() {
 
   return (
     <section className="mx-auto flex w-full max-w-[928px] flex-col items-center gap-4">
-      <SectionTitle title="Frequently asked questions" icon={FAQIcon} />
+      <SectionTitle
+        title="Frequently asked questions"
+        icon={FAQIcon}
+      />
       <div className="flex w-full flex-col gap-2">
         {questions.map((item, index) => {
           const isOpen = openIndex === index;
@@ -67,7 +70,9 @@ export function FaqSection() {
               </button>
               <div
                 className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${
-                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  isOpen
+                    ? "grid-rows-[1fr] opacity-100"
+                    : "grid-rows-[0fr] opacity-0"
                 }`}
               >
                 <div className="overflow-hidden">

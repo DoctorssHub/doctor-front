@@ -1,10 +1,10 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 
-import onboardAccount from "@/assets/onboardingBg_1.webp";
-import onboardDiscord from "@/assets/onboardingBg_2.webp";
-import onboardConnect from "@/assets/onboardingBg_3.webp";
-import OnboardingIcon from "@/assets/onboardingIcon.svg";
+import onboardAccount from "@/assets/homePage/onboarding/onboardingBg_1.webp";
+import onboardDiscord from "@/assets/homePage/onboarding/onboardingBg_2.webp";
+import onboardConnect from "@/assets/homePage/onboarding/onboardingBg_3.webp";
+import OnboardingIcon from "@/assets/homePage/onboarding/onboardingIcon.svg";
 import { Button } from "@/shared/ui/button";
 import { SectionTitle } from "@/shared/ui/section-title";
 
@@ -27,8 +27,10 @@ const steps: Step[] = [
         <span className="font-black text-(--color-brand-strong)">
           THEDOCTOR
         </span>
-        <CopyButton value="THEDOCTOR" /><br />
-        Please clear your browser cache and/or cookies before creating your account.
+        <CopyButton value="THEDOCTOR" />
+        <br />
+        Please clear your browser cache and/or cookies before creating your
+        account.
       </>
     ),
     title: "Create your DegenCity account",
@@ -55,7 +57,15 @@ const steps: Step[] = [
   {
     action: "Connect Account",
     image: onboardConnect,
-    text: <>Link your Discord to your  <span className="font-semibold text-(--color-brand-strong)">thedoctor.net</span> profile</>,
+    text: (
+      <>
+        Link your Discord to your{" "}
+        <span className="font-semibold text-(--color-brand-strong)">
+          thedoctor.net
+        </span>{" "}
+        profile
+      </>
+    ),
     title: "Connect your account",
   },
 ];
@@ -83,13 +93,16 @@ export function OnboardingSection() {
             </div>
             <div className="flex h-[calc(100%-210px)] flex-col justify-between gap-2 p-4 min-[768px]:max-[1023px]:h-[calc(100%-160px)]">
               <div>
-
-              <h3 className="font-semibold text-[18px] text-(--color-text-primary)">{step.title}</h3>
-              <p className="flex-1 mt-2 text-sm font-normal text-(--color-text-muted)">
-                {step.text}
-              </p>
+                <h3 className="font-semibold text-[18px] text-(--color-text-primary)">
+                  {step.title}
+                </h3>
+                <p className="flex-1 mt-2 text-sm font-normal text-(--color-text-muted)">
+                  {step.text}
+                </p>
               </div>
-              <Button className="h-12 w-full cursor-pointer text-[18px] font-medium min-[768px]:max-[1023px]:h-10 min-[768px]:max-[1023px]:text-[16px]">{step.action}</Button>
+              <Button className="h-12 w-full cursor-pointer text-[18px] font-medium min-[768px]:max-[1023px]:h-10 min-[768px]:max-[1023px]:text-[16px]">
+                {step.action}
+              </Button>
             </div>
           </article>
         ))}

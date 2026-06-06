@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Logo from "@/assets/Logo_footer.webp";
+import Logo from "@/assets/footer/Logo_footer.webp";
 
 export function FooterBrand() {
   return (

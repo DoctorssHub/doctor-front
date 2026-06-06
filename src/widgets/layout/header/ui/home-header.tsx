@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Logo from "@/assets/Logo.svg";
-import BurgerMenuIcon from "@/assets/burgerMenu.svg";
+import Logo from "@/assets/header/Logo.svg";
+import BurgerMenuIcon from "@/assets/header/burgerMenu.svg";
 import { Button } from "@/shared/ui/button";
 import Link from "next/link";
 
@@ -9,7 +9,10 @@ type HomeHeaderProps = {
   onMenuClick?: () => void;
 };
 
-export function HomeHeader({ isSidebarOpen = false, onMenuClick }: HomeHeaderProps) {
+export function HomeHeader({
+  isSidebarOpen = false,
+  onMenuClick,
+}: HomeHeaderProps) {
   return (
     <header
       className="
@@ -43,7 +46,9 @@ export function HomeHeader({ isSidebarOpen = false, onMenuClick }: HomeHeaderPro
       </div>
       <div className="max-[767px]:self-center max-[767px]:justify-self-end">
         <Link href="/login">
-          <Button className="h-10 w-full cursor-pointer text-[16px] font-medium text-(--color-brand-contrast) max-[767px]:h-9 max-[767px]:px-4 max-[767px]:text-[14px] max-[767px]:leading-none">Log In</Button>
+          <Button className="h-10 w-full cursor-pointer text-[16px] font-medium text-(--color-brand-contrast) max-[767px]:h-9 max-[767px]:px-4 max-[767px]:text-[14px] max-[767px]:leading-none">
+            Log In
+          </Button>
         </Link>
       </div>
     </header>

@@ -58,9 +58,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
               src={child.icon}
               width={20}
             />
-            <span className={isCollapsed ? "sr-only" : ""}>
-              {child.title}
-            </span>
+            <span className={isCollapsed ? "sr-only" : ""}>{child.title}</span>
           </a>
         ))}
       </div>

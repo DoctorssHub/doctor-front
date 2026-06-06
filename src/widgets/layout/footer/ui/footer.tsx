@@ -1,14 +1,13 @@
-import DiscordIcon from "@/assets/discordIcon.svg";
-import FacebookIcon from "@/assets/facebookIcon.svg";
-import InstIcon from "@/assets/instIcon.svg";
-import TelegramIcon from "@/assets/telegramIcon.svg";
-import TviterIcon from "@/assets/twiterIcon.svg";
+import DiscordIcon from "@/assets/footer/discordIcon.svg";
+import FacebookIcon from "@/assets/footer/facebookIcon.svg";
+import InstIcon from "@/assets/footer/instIcon.svg";
+import TelegramIcon from "@/assets/footer/telegramIcon.svg";
+import TviterIcon from "@/assets/footer/twiterIcon.svg";
 
 import { FooterBrand } from "./footer-brand";
 import { FooterColumn } from "./footer-column";
 import { FooterLegal } from "./footer-legal";
 import { FooterSocials } from "./footer-socials";
-
 
 const about = ["Pointshop", "Leaderboard", "Games", "Rewards", "Bonuses"];
 const terms = ["Terms and Conditions", "Privacy Policy"];

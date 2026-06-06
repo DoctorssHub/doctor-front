@@ -1,7 +1,6 @@
 import {
   FaqSection,
   FeaturesSection,
-  Footer,
   GamesSection,
   HeroSection,
   LeaderboardSection,
@@ -9,6 +8,7 @@ import {
   PromotionsSection,
   RewardsBanner,
 } from "@/widgets/homepage";
+import { Footer } from "@/widgets/layout";
 import { HomeShell } from "./home-shell";
 
 export function HomePage() {

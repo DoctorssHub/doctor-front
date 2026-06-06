@@ -1,15 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import CoinsLeft from "@/assets/coins_left.webp";
-import CoinsRight from "@/assets/coins_right.webp";
-import Rocket from "@/assets/rocket.webp";
-import CardIcon from "@/assets/cardIcon.svg"
+import CoinsLeft from "@/assets/homePage/leaderboardSection/coins_left.webp";
+import CoinsRight from "@/assets/homePage/leaderboardSection/coins_right.webp";
+import Rocket from "@/assets/homePage/leaderboardSection/rocket.webp";
+import CardIcon from "@/assets/homePage/leaderboardSection/cardIcon.svg";
 import { players } from "../model/players";
 import { LeaderboardCard } from "./leaderboard-card";
 import { LeaderboardGlow } from "./leaderboard-glow";
 
-const mobileCardOrder = ["max-[767px]:order-2", "max-[767px]:order-1", "max-[767px]:order-3"];
+const mobileCardOrder = [
+  "max-[767px]:order-2",
+  "max-[767px]:order-1",
+  "max-[767px]:order-3",
+];
 
 export function LeaderboardSection() {
   return (
@@ -60,14 +64,14 @@ export function LeaderboardSection() {
             width={133}
             height={233}
           />
-           <Image
+          <Image
             alt=""
             className="absolute bottom-5 -left-20  max-w-none object-contain -rotate-45 opacity-50"
             src={CardIcon}
             width={233}
             height={233}
           />
-         <Image
+          <Image
             alt=""
             className="absolute -top-50 left-50  max-w-none object-contain -rotate-45 opacity-40"
             src={CardIcon}

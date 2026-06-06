@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import rewardMoney from "@/assets/dollar-coins.png";
+import rewardMoney from "@/assets/homePage/rewards/dollar-coins.png";
 
 import { RewardCounter } from "./reward-counter";
 

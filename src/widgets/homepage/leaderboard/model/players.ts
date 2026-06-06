@@ -1,14 +1,14 @@
 import type { StaticImageData } from "next/image";
 
-import avatarOne from "@/assets/avatar_1.webp";
-import avatarThree from "@/assets/avatar_3.webp";
-import avatarTwo from "@/assets/avatar_2.webp";
-import rankOne from "@/assets/rank_1.webp";
-import rankThree from "@/assets/rank_3.webp";
-import rankTwo from "@/assets/rank_2.webp";
-import trophyOne from "@/assets/trophy_1.svg";
-import trophyThree from "@/assets/trophy_3.svg";
-import trophyTwo from "@/assets/trophy_2.svg";
+import avatarOne from "@/assets/homePage/leaderboardSection/avatar_1.webp";
+import avatarThree from "@/assets/homePage/leaderboardSection/avatar_3.webp";
+import avatarTwo from "@/assets/homePage/leaderboardSection/avatar_2.webp";
+import rankOne from "@/assets/homePage/leaderboardSection/rank_1.webp";
+import rankThree from "@/assets/homePage/leaderboardSection/rank_3.webp";
+import rankTwo from "@/assets/homePage/leaderboardSection/rank_2.webp";
+import trophyOne from "@/assets/homePage/leaderboardSection/trophy_1.svg";
+import trophyThree from "@/assets/homePage/leaderboardSection/trophy_3.svg";
+import trophyTwo from "@/assets/homePage/leaderboardSection/trophy_2.svg";
 
 export type Player = {
   avatar: StaticImageData;

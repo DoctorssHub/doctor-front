@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import copyIcon from "@/assets/copy-purple.svg";
+import copyIcon from "@/assets/homePage/promotions/copy-purple.svg";
 
 type PromotionCopyButtonProps = {
   value: string;
