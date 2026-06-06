@@ -5,7 +5,7 @@ import Logo from "@/assets/Logo_footer.webp";
 
 export function FooterBrand() {
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-6">
+    <div className="flex min-w-0 flex-1 flex-col gap-6 max-[767px]:items-start max-[767px]:gap-5">
       <Link
         aria-label="The Doctor home"
         className="relative block "
@@ -13,7 +13,7 @@ export function FooterBrand() {
       >
         <Image
           alt=""
-          className=""
+          className="max-[767px]:h-auto max-[767px]:w-[150px]"
           width={140}
           height={74}
           src={Logo}

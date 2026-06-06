@@ -8,12 +8,13 @@ type SocialLink = {
 };
 
 type FooterSocialsProps = {
+  className?: string;
   socials: SocialLink[];
 };
 
-export function FooterSocials({ socials }: FooterSocialsProps) {
+export function FooterSocials({ className = "", socials }: FooterSocialsProps) {
   return (
-    <div className="pt-0 sm:pt-3.5">
+    <div className={`pt-0 sm:pt-3.5 ${className}`}>
       <h3 className="mb-4 text-[16px] leading-5 font-medium text-(--color-text-primary) uppercase">
         Socials
       </h3>

@@ -55,7 +55,7 @@ function PromotionTimer({
 function PromotionCardView({ promotion }: { promotion: PromotionCard }) {
   return (
     <article
-      className="relative mt-8 flex flex-col justify-between h-[220px] overflow-hidden rounded-xl bg-cover bg-center p-4 text-left sm:p-5"
+      className="relative mt-8 flex h-[220px] flex-col justify-between overflow-hidden rounded-xl bg-cover bg-center p-4 text-left sm:p-5 max-[1023px]:h-[212px]"
       style={{ backgroundImage: `url(${promotion.background.src})` }}
     >
       <div className="flex min-h-[132px] flex-col items-start">

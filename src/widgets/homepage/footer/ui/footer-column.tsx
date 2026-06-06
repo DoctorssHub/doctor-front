@@ -1,13 +1,14 @@
 import Link from "next/link";
 
 type FooterColumnProps = {
+  className?: string;
   items: string[];
   title: string;
 };
 
-export function FooterColumn({ items, title }: FooterColumnProps) {
+export function FooterColumn({ className = "", items, title }: FooterColumnProps) {
   return (
-    <div className="pt-0 sm:pt-3.5">
+    <div className={`pt-0 sm:pt-3.5 ${className}`}>
       <h3 className="mb-4 text-[16px] leading-5 font-medium text-(--color-text-primary) uppercase">
         {title}
       </h3>
