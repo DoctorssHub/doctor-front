@@ -16,7 +16,7 @@ export function HomeHeader({
   return (
     <header
       className="
-    sticky top-0 z-30 flex h-16 items-center justify-between px-8
+    fixed inset-x-0 top-0 z-80 flex h-16 items-center justify-between px-8
     border-b border-(--color-border-strong) bg-(--color-header-surface)
     max-[767px]:grid max-[767px]:grid-cols-[40px_1fr_auto] max-[767px]:items-center max-[767px]:overflow-hidden max-[767px]:px-4
     "

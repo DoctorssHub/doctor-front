@@ -75,8 +75,8 @@ export function RewardCounter() {
   }, [targetRewards]);
 
   return (
-    <div className="flex items-center gap-0.5 rounded-lg bg-(--color-page-raised) pr-3 pl-5 py-3 min-[1024px]:max-[1279px]:w-[450px] min-[768px]:max-[1023px]:w-[398px] min-[768px]:max-[1023px]:py-[9px] min-[768px]:max-[1023px]:pr-[9px] min-[768px]:max-[1023px]:pl-4 max-[767px]:w-[255px] max-[767px]:py-[6px] max-[767px]:pr-[6px] max-[767px]:pl-[10px]">
-      <span className="mr-5 text-[36px] font-black text-(--color-brand) min-[1024px]:max-[1279px]:text-[33px] min-[768px]:max-[1023px]:text-[29px] max-[767px]:mr-2 max-[767px]:text-[19px]">
+    <div className="flex items-center gap-0.5 rounded-lg bg-(--color-page-raised) pr-3 pl-5 py-3 min-[1024px]:max-[1439px]:w-[450px] min-[768px]:max-[1023px]:w-[398px] min-[768px]:max-[1023px]:py-[9px] min-[768px]:max-[1023px]:pr-[9px] min-[768px]:max-[1023px]:pl-4 max-[767px]:w-[255px] max-[767px]:py-[6px] max-[767px]:pr-[6px] max-[767px]:pl-[10px]">
+      <span className="mr-5 text-[36px] font-black text-(--color-brand) min-[1024px]:max-[1439px]:text-[33px] min-[768px]:max-[1023px]:text-[29px] max-[767px]:mr-2 max-[767px]:text-[19px]">
         $
       </span>
       {rewardCharacters.map((character, index) =>

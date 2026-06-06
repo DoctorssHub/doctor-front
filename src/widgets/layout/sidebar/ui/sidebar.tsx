@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 
 import { navItems } from "../model/nav-items";
@@ -11,13 +10,18 @@ import ArrowIcon from "@/assets/aside/arrowSidebar.svg";
 import HelpIcon from "@/assets/aside/helpIcon.svg";
 
 type SidebarProps = {
+  isCollapsed?: boolean;
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
+  onToggleCollapse?: () => void;
 };
 
-export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
+export function Sidebar({
+  isCollapsed = false,
+  isMobileOpen = false,
+  onMobileClose,
+  onToggleCollapse,
+}: SidebarProps) {
   return (
     <>
       {isMobileOpen ? (
@@ -29,7 +33,7 @@ export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
         />
       ) : null}
       <aside
-        className={`fixed left-0 top-16 z-90 flex h-[calc(100vh-4rem)] w-[227px] shrink-0 border-r border-(--color-border-sidebar) bg-(--color-surface)/95 px-4 backdrop-blur transition-transform duration-300 max-[1279px]:overflow-y-auto max-[767px]:w-full min-[1280px]:sticky min-[1280px]:z-20 min-[1280px]:translate-x-0 min-[1280px]:transition-[width] ${
+        className={`fixed left-0 top-16 z-90 flex h-[calc(100vh-4rem)] w-[227px] shrink-0 border-r border-(--color-border-sidebar) bg-(--color-surface)/95 px-4 backdrop-blur transition-transform duration-300 max-[1279px]:overflow-y-auto max-[767px]:w-full min-[1280px]:z-20 min-[1280px]:translate-x-0 min-[1280px]:transition-[width] ${
           isMobileOpen ? "max-[1279px]:translate-x-0" : "max-[1279px]:-translate-x-full"
         } ${isCollapsed ? "min-[1280px]:w-[84px] min-[1280px]:px-3" : "min-[1280px]:w-[227px] min-[1280px]:px-4"}`}
       >
@@ -37,7 +41,7 @@ export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
           aria-expanded={!isCollapsed}
           aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
           className="absolute -right-16 top-6 z-30 hidden size-10 cursor-pointer items-center justify-center rounded-lg border border-(--color-border-sidebar) bg-(--color-surface-elevated) shadow-[0_0_24px_rgb(0_0_0/35%)] transition hover:border-(--color-border-control) hover:bg-(--color-surface-hover) min-[1280px]:flex"
-          onClick={() => setIsCollapsed((current) => !current)}
+          onClick={onToggleCollapse}
           type="button"
         >
           <Image

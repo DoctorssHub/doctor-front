@@ -10,7 +10,7 @@ export function RewardsBanner() {
       className="
     relative  overflow-hidden 
     rounded-xl  
-     py-5 pl-31 pr-5 min-[1024px]:max-[1279px]:p-4 min-[1024px]:max-[1279px]:pl-[109px] min-[768px]:max-[1023px]:p-4 min-[768px]:max-[1023px]:pl-[94px] max-[767px]:p-4 max-[767px]:pl-[52px]
+     py-5 pl-31 pr-5 min-[1024px]:max-[1439px]:p-4 min-[1024px]:max-[1439px]:pl-[109px] min-[768px]:max-[1023px]:p-4 min-[768px]:max-[1023px]:pl-[94px] max-[767px]:p-4 max-[767px]:pl-[52px]
     "
       style={{
         backgroundImage:
@@ -27,7 +27,7 @@ export function RewardsBanner() {
       />
       <div className="relative flex flex-col  sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-[28px] font-black uppercase text-(--color-brand) min-[1024px]:max-[1279px]:text-[24px] min-[768px]:max-[1023px]:text-[20px] max-[767px]:text-[20px]">
+          <h2 className="text-[28px] font-black uppercase text-(--color-brand) min-[1024px]:max-[1439px]:text-[24px] min-[768px]:max-[1023px]:text-[20px] max-[767px]:text-[20px]">
             Total rewards given back!
           </h2>
           <p className="text-[18px] text-(--color-text-muted) min-[768px]:max-[1023px]:text-[14px] max-[767px]:text-[14px]">

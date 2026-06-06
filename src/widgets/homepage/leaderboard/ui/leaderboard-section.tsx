@@ -17,9 +17,9 @@ const mobileCardOrder = [
 
 export function LeaderboardSection() {
   return (
-    <section className="relative py-10 text-center max-[1279px]:ml-[calc(50%-50dvw)] max-[1279px]:w-[100dvw] max-[1279px]:max-w-[100dvw] max-[1279px]:overflow-hidden">
+    <section className="relative py-10 text-center max-[1439px]:ml-[calc(50%-50dvw)] max-[1439px]:w-[100dvw] max-[1439px]:max-w-[100dvw] max-[1439px]:overflow-hidden">
       <LeaderboardGlow />
-      <div className="relative z-10 max-[1279px]:mx-auto max-[1279px]:max-w-[960px] min-[768px]:max-[1023px]:max-w-[720px] max-[767px]:px-4">
+      <div className="relative z-10 max-[1439px]:mx-auto max-[1439px]:max-w-[960px] min-[768px]:max-[1023px]:max-w-[720px] max-[767px]:px-4">
         <h2 className="text-[40px] font-black uppercase text-(--color-text-primary) max-[767px]:text-[36px]">
           Monthly Leaderboard
         </h2>

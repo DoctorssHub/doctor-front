@@ -11,6 +11,7 @@ type HomeShellProps = {
 
 export function HomeShell({ children }: HomeShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     if (!isSidebarOpen) {
@@ -33,10 +34,20 @@ export function HomeShell({ children }: HomeShellProps) {
       />
       <div className="min-[1280px]:flex">
         <Sidebar
+          isCollapsed={isSidebarCollapsed}
           isMobileOpen={isSidebarOpen}
           onMobileClose={() => setIsSidebarOpen(false)}
+          onToggleCollapse={() => setIsSidebarCollapsed((current) => !current)}
         />
-        <div className="min-w-0 flex-1">{children}</div>
+        <div
+          className={`min-w-0 flex-1 pt-16 transition-[margin] duration-300 ${
+            isSidebarCollapsed
+              ? "min-[1280px]:ml-[84px]"
+              : "min-[1280px]:ml-[227px]"
+          }`}
+        >
+          {children}
+        </div>
       </div>
     </>
   );
