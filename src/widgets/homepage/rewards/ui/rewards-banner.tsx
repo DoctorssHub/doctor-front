@@ -10,7 +10,7 @@ export function RewardsBanner() {
       className="
     relative  overflow-hidden 
     rounded-xl  
-     py-5 pl-31 pr-5 
+     py-5 pl-31 pr-5 min-[1024px]:max-[1279px]:p-4 min-[1024px]:max-[1279px]:pl-[109px]
     "
       style={{
         backgroundImage:
@@ -27,7 +27,7 @@ export function RewardsBanner() {
       />
       <div className="relative flex flex-col  sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-[28px] font-black uppercase text-(--color-brand)">
+          <h2 className="text-[28px] font-black uppercase text-(--color-brand) min-[1024px]:max-[1279px]:text-[24px]">
             Total rewards given back!
           </h2>
           <p className="text-[18px] text-(--color-text-muted)">

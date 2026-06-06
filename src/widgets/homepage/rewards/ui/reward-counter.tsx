@@ -75,8 +75,8 @@ export function RewardCounter() {
   }, [targetRewards]);
 
   return (
-    <div className="flex items-center gap-0.5 rounded-lg bg-(--color-page-raised) pr-3 pl-5 py-3">
-      <span className="text-[36px] font-black text-(--color-brand) mr-5">
+    <div className="flex items-center gap-0.5 rounded-lg bg-(--color-page-raised) pr-3 pl-5 py-3 min-[1024px]:max-[1279px]:w-[450px]">
+      <span className="text-[36px] font-black text-(--color-brand) mr-5 min-[1024px]:max-[1279px]:text-[33px]">
         $
       </span>
       {rewardCharacters.map((character, index) =>

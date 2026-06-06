@@ -8,30 +8,25 @@ import {
   OnboardingSection,
   PromotionsSection,
   RewardsBanner,
-  Sidebar,
-  HomeHeader,
 } from "@/widgets/homepage";
+import { HomeShell } from "./home-shell";
 
 export function HomePage() {
   return (
-    <main className="min-h-screen bg-(--color-page) text-white">
-      <HomeHeader />
-      <div className="lg:flex">
-        <Sidebar />
-        <div className="min-w-0 flex-1">
-          <HeroSection />
-          <div className="mx-auto flex w-full max-w-[1150px] flex-col gap-8  pb-12 ">
-            <PromotionsSection />
-            <RewardsBanner />
-            <FeaturesSection />
-            <OnboardingSection />
-            <GamesSection />
-            <LeaderboardSection />
-            <FaqSection />
-          </div>
-          <Footer />
+    <main className="min-h-screen bg-(--color-page) text-white max-[1279px]:overflow-x-hidden">
+      <HomeShell>
+        <HeroSection />
+        <div className="mx-auto flex w-full max-w-[1150px] flex-col gap-8 pb-12 min-[1024px]:max-[1279px]:max-w-[960px] min-[768px]:max-[1023px]:max-w-[720px] max-[767px]:max-w-none max-[767px]:px-4">
+          <PromotionsSection />
+          <RewardsBanner />
+          <FeaturesSection />
+          <OnboardingSection />
+          <GamesSection />
+          <LeaderboardSection />
+          <FaqSection />
         </div>
-      </div>
+        <Footer />
+      </HomeShell>
     </main>
   );
 }
