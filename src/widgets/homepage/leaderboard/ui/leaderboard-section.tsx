@@ -9,20 +9,22 @@ import { players } from "../model/players";
 import { LeaderboardCard } from "./leaderboard-card";
 import { LeaderboardGlow } from "./leaderboard-glow";
 
+const mobileCardOrder = ["max-[767px]:order-2", "max-[767px]:order-1", "max-[767px]:order-3"];
+
 export function LeaderboardSection() {
   return (
     <section className="relative py-10 text-center max-[1279px]:ml-[calc(50%-50dvw)] max-[1279px]:w-[100dvw] max-[1279px]:max-w-[100dvw] max-[1279px]:overflow-hidden">
       <LeaderboardGlow />
       <div className="relative z-10 max-[1279px]:mx-auto max-[1279px]:max-w-[960px] min-[768px]:max-[1023px]:max-w-[720px] max-[767px]:px-4">
-        <h2 className="text-[40px] font-black uppercase text-(--color-text-primary)">
+        <h2 className="text-[40px] font-black uppercase text-(--color-text-primary) max-[767px]:text-[36px]">
           Monthly Leaderboard
         </h2>
-        <p className="mt-2 text-[18px] text-(--color-text-muted)">
+        <p className="mt-2 text-[18px] text-(--color-text-muted) max-[767px]:text-[14px]">
           Players who wager using code{" "}
           <span className="uppercase">THEDOCTOR</span> on DegenCity are
           automatically entered
         </p>
-        <div className="relative mt-24 flex flex-col items-center justify-center gap-5 md:flex-row md:items-end">
+        <div className="relative mt-24 flex flex-col items-center justify-center gap-5 md:flex-row md:items-end max-[767px]:mt-4 max-[767px]:gap-3">
           <Image
             alt=""
             className="absolute left-0 bottom-0 h-[233px] w-[233px] max-w-none object-contain"
@@ -74,6 +76,7 @@ export function LeaderboardSection() {
           />
           {players.map((player, index) => (
             <LeaderboardCard
+              className={mobileCardOrder[index]}
               key={`${player.score}-${index}`}
               player={player}
             />
@@ -81,7 +84,7 @@ export function LeaderboardSection() {
         </div>
         <Link
           href="/"
-          className="mt-4 inline-block w-50 rounded-lg border border-(--color-border-strong) px-6 py-3 text-[20px] font-semibold text-(--color-text-primary) transition hover:bg-(--color-border-strong)"
+          className="mt-4 inline-block w-50 rounded-lg border border-(--color-border-strong) px-6 py-3 text-[20px] font-semibold text-(--color-text-primary) transition hover:bg-(--color-border-strong) max-[767px]:w-full"
           style={{
             backgroundImage:
               "linear-gradient(180deg, rgba(27, 31, 38, 0.4) 0%, rgba(43, 48, 59, 0.4) 100%)",

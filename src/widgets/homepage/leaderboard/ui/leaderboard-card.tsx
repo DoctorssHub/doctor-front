@@ -5,36 +5,37 @@ import { AvatarRank } from "./avatar-rank";
 import BetIcon from "@/assets/betIcon.svg";
 
 type LeaderboardCardProps = {
+  className?: string;
   player: Player;
 };
 
-export function LeaderboardCard({ player }: LeaderboardCardProps) {
+export function LeaderboardCard({ className = "", player }: LeaderboardCardProps) {
   const cardBackground = player.winner
     ? "bg-[linear-gradient(180deg,#0f1228_0%,#1a2f58_100%)]"
     : "bg-[linear-gradient(180deg,#0f1228_0%,#212551_100%)]";
 
   return (
     <article
-      className={`relative z-30  w-[250px] rounded-[18px] border border-(--color-border-leaderboard) p-6 shadow-(--shadow-inset-soft) ${cardBackground} ${
+      className={`relative z-30 w-[250px] rounded-[18px] border border-(--color-border-leaderboard) p-6 shadow-(--shadow-inset-soft) max-[767px]:h-[296px] max-[767px]:w-[343px] max-[767px]:p-4 ${cardBackground} ${
         player.winner ? "md:-translate-y-8" : ""
-      }`}
+      } ${className}`}
     >
       <AvatarRank avatar={player.avatar} rank={player.rank} />
-      <h3 className="mt-4 font-semibold text-[24px] text-(--color-text-primary)">
+      <h3 className="mt-4 font-semibold text-[24px] text-(--color-text-primary) max-[767px]:text-[20px]">
         {player.username}
       </h3>
-      <p className="text-sm uppercase text-(--color-text-muted) mt-4">wagered</p>
+      <p className="mt-4 text-sm uppercase text-(--color-text-muted) max-[767px]:text-[14px]">wagered</p>
       <div className="flex items-center justify-center gap-1.5">
         <Image
           alt=""
           className="h-5 w-5 shrink-0"
           src={BetIcon}
         />
-      <p className=" text-[20px] font-semibold text-(--color-text-primary)">
+      <p className=" text-[20px] font-semibold text-(--color-text-primary) max-[767px]:text-[16px]">
         {player.score}
       </p>
       </div>
-      <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#060e16]  py-4 font-semibold text-2xl text-(--color-text-primary)">
+      <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#060e16] py-4 font-semibold text-2xl text-(--color-text-primary) max-[767px]:py-3 max-[767px]:text-[20px]">
         <Image
           alt=""
           className="h-auto w-5 shrink-0"

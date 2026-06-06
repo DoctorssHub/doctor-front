@@ -23,9 +23,10 @@ export function ClaimCard({ isCollapsed = false }: ClaimCardProps) {
   }
 
   return (
-    <div className="relative">
+    <div className="relative max-[767px]:h-[124px] max-[767px]:w-[327px]">
       <Image
         alt="Claim Background"
+        className="max-[767px]:h-full max-[767px]:w-full max-[767px]:object-cover"
         src={ClaimBg}
       />
       <div className="absolute top-0 flex h-full flex-col justify-between p-3">
