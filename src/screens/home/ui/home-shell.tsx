@@ -32,7 +32,7 @@ export function HomeShell({ children }: HomeShellProps) {
         isSidebarOpen={isSidebarOpen}
         onMenuClick={() => setIsSidebarOpen((current) => !current)}
       />
-      <div className="min-[1280px]:flex">
+      <div className="desktop:flex">
         <Sidebar
           isCollapsed={isSidebarCollapsed}
           isMobileOpen={isSidebarOpen}
@@ -42,8 +42,8 @@ export function HomeShell({ children }: HomeShellProps) {
         <div
           className={`min-w-0 flex-1 pt-16 transition-[margin] duration-300 ${
             isSidebarCollapsed
-              ? "min-[1280px]:ml-[84px]"
-              : "min-[1280px]:ml-[227px]"
+              ? "desktop:ml-[84px]"
+              : "desktop:ml-[227px]"
           }`}
         >
           {children}

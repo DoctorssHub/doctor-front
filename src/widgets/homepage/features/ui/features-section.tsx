@@ -39,10 +39,10 @@ export function FeaturesSection() {
         title="Features"
         icon={FeaturesIcon}
       />
-      <div className="flex items-center gap-4 min-[1024px]:max-[1439px]:grid min-[1024px]:max-[1439px]:grid-cols-3 min-[768px]:max-[1023px]:grid min-[768px]:max-[1023px]:grid-cols-2 max-[767px]:grid max-[767px]:grid-cols-1">
+      <div className="flex items-center gap-4 laptop:max-large:grid laptop:max-large:grid-cols-3 tablet:max-laptop:grid tablet:max-laptop:grid-cols-2 max-tablet:grid max-tablet:grid-cols-1">
         {features.map((feature) => (
           <Link
-            className="group relative h-[270px] w-[275px] overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface-soft) transition duration-300 hover:-translate-y-1 hover:border-(--color-brand)/60 hover:shadow-[0_18px_50px_rgb(34_197_94/18%)] min-[1024px]:max-[1439px]:h-[303px] min-[1024px]:max-[1439px]:w-full min-[768px]:max-[1023px]:h-[171px] min-[768px]:max-[1023px]:w-full max-[767px]:h-[171px] max-[767px]:w-full"
+            className="group relative h-[270px] w-[275px] overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface-soft) transition duration-300 hover:-translate-y-1 hover:border-(--color-brand)/60 hover:shadow-[0_18px_50px_rgb(34_197_94/18%)] laptop:max-large:h-[303px] laptop:max-large:w-full tablet:max-laptop:h-[171px] tablet:max-laptop:w-full max-tablet:h-[171px] max-tablet:w-full"
             href={feature.href}
             key={feature.title}
           >

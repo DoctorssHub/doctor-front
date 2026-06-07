@@ -19,7 +19,7 @@ export function LeaderboardCard({
 
   return (
     <article
-      className={`relative z-30 w-[250px] rounded-[18px] border border-(--color-border-leaderboard) p-6 shadow-(--shadow-inset-soft) max-[767px]:h-[296px] max-[767px]:w-[343px] max-[767px]:p-4 ${cardBackground} ${
+      className={`relative z-30 w-[250px] rounded-[18px] border border-(--color-border-leaderboard) p-6 shadow-(--shadow-inset-soft) max-tablet:h-[296px] max-tablet:w-[343px] max-tablet:p-4 ${cardBackground} ${
         player.winner ? "md:-translate-y-8" : ""
       } ${className}`}
     >
@@ -27,10 +27,10 @@ export function LeaderboardCard({
         avatar={player.avatar}
         rank={player.rank}
       />
-      <h3 className="mt-4 font-semibold text-[24px] text-(--color-text-primary) max-[767px]:text-[20px]">
+      <h3 className="mt-4 font-semibold text-[24px] text-(--color-text-primary) max-tablet:text-[20px]">
         {player.username}
       </h3>
-      <p className="mt-4 text-sm uppercase text-(--color-text-muted) max-[767px]:text-[14px]">
+      <p className="mt-4 text-sm uppercase text-(--color-text-muted) max-tablet:text-[14px]">
         wagered
       </p>
       <div className="flex items-center justify-center gap-1.5">
@@ -39,11 +39,11 @@ export function LeaderboardCard({
           className="h-5 w-5 shrink-0"
           src={BetIcon}
         />
-        <p className=" text-[20px] font-semibold text-(--color-text-primary) max-[767px]:text-[16px]">
+        <p className=" text-[20px] font-semibold text-(--color-text-primary) max-tablet:text-[16px]">
           {player.score}
         </p>
       </div>
-      <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#060e16] py-4 font-semibold text-2xl text-(--color-text-primary) max-[767px]:py-3 max-[767px]:text-[20px]">
+      <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#060e16] py-4 font-semibold text-2xl text-(--color-text-primary) max-tablet:py-3 max-tablet:text-[20px]">
         <Image
           alt=""
           className="h-auto w-5 shrink-0"

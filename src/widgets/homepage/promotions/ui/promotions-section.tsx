@@ -39,7 +39,7 @@ function PromotionTimer({
   timer,
 }: Pick<PromotionCard, "accent" | "timer">) {
   return (
-    <div className="inline-flex h-[30px] items-center gap-2 rounded-md bg-[#2B303B]/50 px-3 text-[12px] font-medium text-(--color-text-muted) max-[767px]:text-[14px]">
+    <div className="inline-flex h-[30px] items-center gap-2 rounded-md bg-[#2B303B]/50 px-3 text-[12px] font-medium text-(--color-text-muted) max-tablet:text-[14px]">
       <Image
         alt=""
         src={accent === "purple" ? clockFortune : clockCompetition}
@@ -55,18 +55,18 @@ function PromotionTimer({
 function PromotionCardView({ promotion }: { promotion: PromotionCard }) {
   return (
     <article
-      className="relative mt-8 flex h-[220px] flex-col justify-between overflow-hidden rounded-xl bg-cover bg-center p-4 text-left sm:p-5 max-[1023px]:h-[212px]"
+      className="relative mt-8 flex h-[220px] flex-col justify-between overflow-hidden rounded-xl bg-cover bg-center p-4 text-left sm:p-5 max-laptop:h-[212px]"
       style={{ backgroundImage: `url(${promotion.background.src})` }}
     >
       <div className="flex min-h-[132px] flex-col items-start">
-        <p className="text-[18px] leading-none font-normal text-(--color-text-muted) max-[767px]:text-[16px]">
+        <p className="text-[18px] leading-none font-normal text-(--color-text-muted) max-tablet:text-[16px]">
           {promotion.eyebrow}
         </p>
-        <h2 className="mt-1 text-[36px] font-black text-(--color-text-primary) max-[767px]:text-[24px]">
+        <h2 className="mt-1 text-[36px] font-black text-(--color-text-primary) max-tablet:text-[24px]">
           {promotion.title}
         </h2>
         {promotion.code ? (
-          <p className="mt-1 flex items-center gap-1 text-[16px] leading-none font-medium text-(--color-text-primary) max-[767px]:text-[14px]">
+          <p className="mt-1 flex items-center gap-1 text-[16px] leading-none font-medium text-(--color-text-primary) max-tablet:text-[14px]">
             Use code:
             <span className="text-[#8d3cff]">{promotion.code}</span>
             <PromotionCopyButton value={promotion.code} />

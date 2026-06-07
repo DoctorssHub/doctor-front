@@ -8,7 +8,7 @@ export function DigitWheel({ digit }: DigitWheelProps) {
   const digitIndex = Number(digit);
 
   return (
-    <span className="relative grid h-[var(--reward-digit-height)] w-12 overflow-hidden rounded bg-(--color-surface-chip) text-[36px] font-black leading-none tabular-nums [--reward-digit-height:3.5rem] min-[1024px]:max-[1439px]:h-[51px] min-[1024px]:max-[1439px]:w-[46px] min-[1024px]:max-[1439px]:text-[33px] min-[1024px]:max-[1439px]:[--reward-digit-height:51px] min-[768px]:max-[1023px]:h-[46px] min-[768px]:max-[1023px]:w-[40px] min-[768px]:max-[1023px]:text-[29px] min-[768px]:max-[1023px]:[--reward-digit-height:46px] max-[767px]:h-[30px] max-[767px]:w-[26px] max-[767px]:text-[19px] max-[767px]:[--reward-digit-height:30px]">
+    <span className="relative grid h-[var(--reward-digit-height)] w-12 overflow-hidden rounded bg-(--color-surface-chip) text-[36px] font-black leading-none tabular-nums [--reward-digit-height:3.5rem] laptop:max-large:h-[51px] laptop:max-large:w-[46px] laptop:max-large:text-[33px] laptop:max-large:[--reward-digit-height:51px] tablet:max-laptop:h-[46px] tablet:max-laptop:w-[40px] tablet:max-laptop:text-[29px] tablet:max-laptop:[--reward-digit-height:46px] max-tablet:h-[30px] max-tablet:w-[26px] max-tablet:text-[19px] max-tablet:[--reward-digit-height:30px]">
       <span
         className="grid transition-transform duration-700 ease-out"
         style={{

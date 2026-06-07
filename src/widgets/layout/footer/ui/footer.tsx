@@ -21,24 +21,24 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-(--color-border-strong) bg-(--color-surface) px-6 py-7 sm:px-8 max-[767px]:px-4 max-[767px]:py-8">
-      <div className="mx-auto flex flex-col gap-6 max-[767px]:max-w-[339px]">
-        <div className="flex flex-col gap-10 pb-6 pt-3 min-[768px]:max-[1023px]:grid min-[768px]:max-[1023px]:grid-cols-[minmax(220px,1fr)_minmax(150px,auto)_minmax(260px,auto)] min-[768px]:max-[1023px]:items-start lg:flex-row lg:items-start lg:justify-between max-[767px]:gap-9 max-[767px]:pb-0 max-[767px]:pt-0">
+    <footer className="border-t border-(--color-border-strong) bg-(--color-surface) px-6 py-7 sm:px-8 max-tablet:px-4 max-tablet:py-8">
+      <div className="mx-auto flex flex-col gap-6 max-tablet:max-w-[339px]">
+        <div className="flex flex-col gap-10 pb-6 pt-3 tablet:max-laptop:grid tablet:max-laptop:grid-cols-[minmax(220px,1fr)_minmax(150px,auto)_minmax(260px,auto)] tablet:max-laptop:items-start lg:flex-row lg:items-start lg:justify-between max-tablet:gap-9 max-tablet:pb-0 max-tablet:pt-0">
           <FooterBrand />
 
-          <div className="grid w-full sm:grid-cols-3 min-[768px]:max-[1023px]:contents lg:w-[614px] max-[767px]:grid-cols-2 max-[767px]:gap-x-8 max-[767px]:gap-y-8">
+          <div className="grid w-full sm:grid-cols-3 tablet:max-laptop:contents lg:w-[614px] max-tablet:grid-cols-2 max-tablet:gap-x-8 max-tablet:gap-y-8">
             <FooterColumn
-              className="min-[768px]:max-[1023px]:col-start-2"
+              className="tablet:max-laptop:col-start-2"
               items={about}
               title="About"
             />
-            <div className="min-[768px]:max-[1023px]:col-start-3 min-[768px]:max-[1023px]:flex min-[768px]:max-[1023px]:flex-col min-[768px]:max-[1023px]:gap-8 lg:contents max-[767px]:contents">
+            <div className="tablet:max-laptop:col-start-3 tablet:max-laptop:flex tablet:max-laptop:flex-col tablet:max-laptop:gap-8 lg:contents max-tablet:contents">
               <FooterColumn
                 items={terms}
                 title="Terms"
               />
               <FooterSocials
-                className="max-[767px]:col-span-2"
+                className="max-tablet:col-span-2"
                 socials={socials}
               />
             </div>

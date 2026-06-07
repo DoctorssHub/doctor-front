@@ -77,13 +77,13 @@ export function OnboardingSection() {
         title="How to get started?"
         icon={OnboardingIcon}
       />
-      <div className="grid gap-4 min-[768px]:max-[1023px]:grid-cols-2 lg:grid-cols-3 ">
+      <div className="grid gap-4 tablet:max-laptop:grid-cols-2 lg:grid-cols-3 ">
         {steps.map((step) => (
           <article
-            className="h-[418px] overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface-soft) min-[768px]:max-[1023px]:h-[360px]"
+            className="h-[418px] overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface-soft) tablet:max-laptop:h-[360px]"
             key={step.title}
           >
-            <div className="relative h-[210px] w-full min-[768px]:max-[1023px]:h-[160px]">
+            <div className="relative h-[210px] w-full tablet:max-laptop:h-[160px]">
               <Image
                 alt=""
                 className="object-cover"
@@ -91,7 +91,7 @@ export function OnboardingSection() {
                 src={step.image}
               />
             </div>
-            <div className="flex h-[calc(100%-210px)] flex-col justify-between gap-2 p-4 min-[768px]:max-[1023px]:h-[calc(100%-160px)]">
+            <div className="flex h-[calc(100%-210px)] flex-col justify-between gap-2 p-4 tablet:max-laptop:h-[calc(100%-160px)]">
               <div>
                 <h3 className="font-semibold text-[18px] text-(--color-text-primary)">
                   {step.title}
@@ -100,7 +100,7 @@ export function OnboardingSection() {
                   {step.text}
                 </p>
               </div>
-              <Button className="h-12 w-full cursor-pointer text-[18px] font-medium min-[768px]:max-[1023px]:h-10 min-[768px]:max-[1023px]:text-[16px]">
+              <Button className="h-12 w-full cursor-pointer text-[18px] font-medium tablet:max-laptop:h-10 tablet:max-laptop:text-[16px]">
                 {step.action}
               </Button>
             </div>

@@ -12,7 +12,7 @@ export function GameCard({ game }: GameCardProps) {
   return (
     <Link
       aria-label={`Play ${game.title}`}
-      className="group relative block h-[230px] w-[275px] overflow-hidden rounded-xl border border-(--color-border) border-b-[3px] bg-(--color-surface-game) transition duration-300 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-text-primary) min-[1024px]:max-[1439px]:h-[190px] min-[1024px]:max-[1439px]:w-[228px] min-[768px]:max-[1023px]:h-[191px] min-[768px]:max-[1023px]:w-full max-[767px]:h-[191px] max-[767px]:w-full"
+      className="group relative block h-[230px] w-[275px] overflow-hidden rounded-xl border border-(--color-border) border-b-[3px] bg-(--color-surface-game) transition duration-300 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-text-primary) laptop:max-large:h-[190px] laptop:max-large:w-[228px] tablet:max-laptop:h-[191px] tablet:max-laptop:w-full max-tablet:h-[191px] max-tablet:w-full"
       href={game.href}
       style={{
         background: "#0e1519",
