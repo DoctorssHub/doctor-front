@@ -44,18 +44,18 @@ export function ForgotPasswordForm({
     const formData = new FormData(event.currentTarget);
 
     forgotMutation.mutate({
-      email: String(formData.get("email") || ""),
+      email: String(formData.get("email") || "").trim(),
       recaptchaToken,
     });
   }
 
   return (
     <form
-      className="rounded-xl border border-[#1c2333] bg-[#0b101d] p-6"
+      className="rounded-xl border border-(--color-auth-form-border) bg-(--color-hero-surface) p-6"
       onSubmit={handleSubmit}
     >
       <button
-        className="mb-8 flex size-12 items-center justify-center rounded-lg bg-[#0d121e] text-[#d9e0ef] transition hover:bg-[#151b29] hover:text-white"
+        className="mb-8 flex size-12 items-center justify-center rounded-lg bg-(--color-auth-field) text-(--color-text-muted) transition hover:bg-(--color-border-sidebar) hover:text-(--color-text-primary)"
         type="button"
         aria-label="Back to log in"
         onClick={onBack}
@@ -77,18 +77,18 @@ export function ForgotPasswordForm({
       </button>
 
       <div className="space-y-3">
-        <h1 className="text-2xl font-semibold text-white">Forgot password</h1>
-        <p className="text-sm text-[#8f98ad]">
+        <h1 className="text-2xl font-semibold text-(--color-text-primary)">Forgot password</h1>
+        <p className="text-sm text-(--color-text-subtle)">
           Enter your email and we will send a password reset link if an account
           exists.
         </p>
       </div>
 
       <div className="mt-6 space-y-4">
-        <label className="block text-xs font-medium text-[#aeb6c9]">
+        <label className="block text-xs font-medium text-(--color-auth-label)">
           Email
           <input
-            className="mt-2 h-12 w-full rounded-lg border border-[#1c2333] bg-[#0d121e] px-4 text-sm text-white outline-none transition placeholder:text-[#6f778c] focus:border-[#c82831]"
+            className="mt-2 h-12 w-full rounded-lg border border-(--color-auth-form-border) bg-(--color-auth-field) px-4 text-sm text-(--color-text-primary) outline-none transition placeholder:text-(--color-auth-placeholder) focus:border-(--color-auth-action)"
             name="email"
             placeholder="Enter your email"
             type="email"
@@ -106,7 +106,7 @@ export function ForgotPasswordForm({
       ) : null}
 
       <button
-        className="mt-6 h-14 w-full rounded-lg bg-[#c82831] px-4 text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-6 h-14 w-full rounded-lg bg-(--color-auth-action) px-4 text-sm font-bold text-(--color-auth-action-contrast) transition hover:bg-(--color-auth-action-hover) disabled:cursor-not-allowed disabled:opacity-60"
         type="submit"
         disabled={forgotMutation.isPending}
       >

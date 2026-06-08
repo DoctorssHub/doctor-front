@@ -7,8 +7,7 @@ type AuthTabsProps = {
 };
 
 const activeTabStyle: CSSProperties = {
-  background:
-    "linear-gradient(180deg, #1B1F26 0%, #2B303B 100%) padding-box, linear-gradient(180deg, #1B1F26 0%, #2B303B 100%) border-box",
+  background: "var(--gradient-nav-item) padding-box, var(--gradient-nav-item) border-box",
 };
 
 export function AuthTabs({ flow, onChange }: AuthTabsProps) {
@@ -22,7 +21,7 @@ export function AuthTabs({ flow, onChange }: AuthTabsProps) {
         className={`rounded-lg text-[16px] leading-5 font-medium transition ${
           flow === "login"
             ? "text-(--color-text-primary) shadow-sm"
-            : "text-(--color-text-muted) hover:text-white"
+            : "text-(--color-text-muted) hover:text-(--color-text-primary)"
         }`}
         style={flow === "login" ? activeTabStyle : undefined}
         type="button"
@@ -34,7 +33,7 @@ export function AuthTabs({ flow, onChange }: AuthTabsProps) {
         className={`rounded-lg text-[16px] leading-5 font-medium transition ${
           flow === "register"
             ? "text-(--color-text-primary) shadow-sm"
-            : "text-(--color-text-muted) hover:text-white"
+            : "text-(--color-text-muted) hover:text-(--color-text-primary)"
         }`}
         style={flow === "register" ? activeTabStyle : undefined}
         type="button"

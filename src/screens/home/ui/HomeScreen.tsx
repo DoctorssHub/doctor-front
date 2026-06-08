@@ -48,13 +48,13 @@ export function HomeScreen() {
   }, [clearSession, setSession]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#050812] px-6 text-white">
+    <main className="flex min-h-screen items-center justify-center bg-(--color-auth-backdrop) px-6 text-(--color-text-primary)">
       {isAuthenticated && displayUsername ? (
-        <div className="rounded-lg border border-white/10 bg-white/5 px-6 py-4 text-center shadow-[0_24px_80px_rgba(0,0,0,0.32)]">
-          <p className="text-sm text-white/60">Logged in as</p>
+        <div className="rounded-lg border border-(--color-border-control) bg-(--color-surface-card) px-6 py-4 text-center shadow-(--shadow-auth-card)">
+          <p className="text-sm text-(--color-text-muted)">Logged in as</p>
           <p className="mt-1 text-xl font-bold">{displayUsername}</p>
           <button
-            className="mt-4 h-10 rounded-lg bg-white/10 px-5 text-sm font-bold text-white transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-4 h-10 rounded-lg bg-(--color-auth-control) px-5 text-sm font-bold text-(--color-text-primary) transition hover:bg-(--color-auth-control-hover) disabled:cursor-not-allowed disabled:opacity-60"
             type="button"
             disabled={logoutMutation.isPending}
             onClick={() => logoutMutation.mutate()}
@@ -64,7 +64,7 @@ export function HomeScreen() {
         </div>
       ) : (
         <button
-          className="h-12 rounded-lg bg-[#c82831] px-8 text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43]"
+          className="h-12 rounded-lg bg-(--color-auth-action) px-8 text-sm font-bold text-(--color-auth-action-contrast) transition hover:bg-(--color-auth-action-hover)"
           type="button"
           onClick={() => openAuthModal("login")}
         >

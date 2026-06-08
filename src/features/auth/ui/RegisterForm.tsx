@@ -70,7 +70,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
 
     const formData = new FormData(event.currentTarget);
 
-    const email = String(formData.get("email") || "");
+    const email = String(formData.get("email") || "").trim();
 
     registerMutation.mutate({
       username: String(formData.get("username") || ""),
@@ -86,7 +86,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
         <label className="block font-light text-(--color-text-muted) leading-4.5">
           Username
           <input
-            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-[#6f778c] focus:border-[#c82831]"
+            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-(--color-auth-placeholder) focus:border-(--color-auth-action)"
             name="username"
             placeholder="Enter your username"
             required
@@ -96,7 +96,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
         <label className="block font-light text-(--color-text-muted) leading-4.5">
           Email
           <input
-            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-[#6f778c] focus:border-[#c82831]"
+            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-(--color-auth-placeholder) focus:border-(--color-auth-action)"
             name="email"
             placeholder="Enter your email"
             type="email"
@@ -107,7 +107,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
         <label className="block font-light text-(--color-text-muted) leading-4.5">
           Password
           <input
-            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-[#6f778c] focus:border-[#c82831]"
+            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-(--color-auth-placeholder) focus:border-(--color-auth-action)"
             name="password"
             placeholder="Enter your password"
             type="password"
@@ -147,7 +147,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
       ) : null}
 
       <button
-        className="mt-5 h-12 w-full rounded-lg bg-[#c82831] px-4 text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-5 h-12 w-full rounded-lg bg-(--color-auth-action) px-4 text-sm font-bold text-(--color-auth-action-contrast) transition hover:bg-(--color-auth-action-hover) disabled:cursor-not-allowed disabled:opacity-60"
         type="submit"
         disabled={registerMutation.isPending}
       >

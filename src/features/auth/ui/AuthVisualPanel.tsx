@@ -2,8 +2,8 @@ import Image from "next/image";
 
 export function AuthVisualPanel() {
   return (
-    <div className="relative hidden h-full flex-1 overflow-hidden bg-[#13070b] lg:block">
-      <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(88,12,18,0.74)_0%,rgba(45,10,16,0.92)_30%,#13070b_62%,#13070b_100%)]" />
+    <div className="relative hidden h-full flex-1 overflow-hidden bg-(--color-auth-visual-base) lg:block">
+      <div className="absolute inset-0 bg-(--gradient-auth-visual)" />
       <div className="absolute left-1/2 top-8 z-10 -translate-x-1/2">
         <Image
           src="/mcqueen-logo.png"
@@ -37,7 +37,7 @@ export function AuthVisualPanel() {
         alt="mcqueen"
         width={430}
         height={260}
-        className="absolute left-[52%] top-[60%] h-auto w-97.5 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_22px_42px_rgba(0,0,0,0.42)]"
+        className="absolute left-[52%] top-[60%] h-auto w-97.5 -translate-x-1/2 -translate-y-1/2 drop-shadow-(--shadow-auth-image)"
         aria-hidden="true"
         priority
       />
@@ -46,7 +46,7 @@ export function AuthVisualPanel() {
         alt="gas station"
         width={260}
         height={220}
-        className="absolute -bottom-5 -left-15 h-auto w-57.5 opacity-86 drop-shadow-[0_0_20px_rgba(196,32,38,0.14)]"
+        className="absolute -bottom-5 -left-15 h-auto w-57.5 opacity-86 drop-shadow-(--shadow-auth-accent)"
         aria-hidden="true"
       />
       <Image

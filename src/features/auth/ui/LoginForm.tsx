@@ -72,7 +72,7 @@ export function LoginForm({
     const formData = new FormData(event.currentTarget);
 
     loginMutation.mutate({
-      email: String(formData.get("email") || ""),
+      email: String(formData.get("email") || "").trim(),
       password: String(formData.get("password") || ""),
       recaptchaToken,
     });
@@ -84,7 +84,7 @@ export function LoginForm({
         <label className="block font-light leading-4.5 text-(--color-text-muted)">
           Email
           <input
-            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-[#6f778c] focus:border-[#c82831]"
+            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-(--color-auth-placeholder) focus:border-(--color-auth-action)"
             name="email"
             placeholder="Enter your email"
             required
@@ -94,7 +94,7 @@ export function LoginForm({
         <label className="block font-light leading-4.5 text-(--color-text-muted)">
           Password
           <input
-            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-[#6f778c] focus:border-[#c82831]"
+            className="mt-1.5 h-11 w-full rounded-lg border border-(--color-surface-icon) bg-(--color-surface) px-3 text-sm text-(--color-text-primary) outline-none transition placeholder:text-(--color-auth-placeholder) focus:border-(--color-auth-action)"
             name="password"
             placeholder="Enter your password"
             type="password"
@@ -126,7 +126,7 @@ export function LoginForm({
       ) : null}
 
       <button
-        className="mt-5 h-12 w-full rounded-lg bg-[#c82831] px-4 text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-5 h-12 w-full rounded-lg bg-(--color-auth-action) px-4 text-sm font-bold text-(--color-auth-action-contrast) transition hover:bg-(--color-auth-action-hover) disabled:cursor-not-allowed disabled:opacity-60"
         type="submit"
         disabled={loginMutation.isPending}
       >
@@ -134,7 +134,7 @@ export function LoginForm({
       </button>
 
       <button
-        className="mt-4 w-full text-sm font-medium text-[#8f98ad] transition hover:text-white"
+        className="mt-4 w-full text-sm font-medium text-(--color-text-subtle) transition hover:text-(--color-text-primary)"
         type="button"
         onClick={onForgotPasswordClick}
       >

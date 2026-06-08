@@ -123,18 +123,18 @@ export function VerifyEmailForm({
           alt="Logo"
           width={190}
           height={90}
-          className="h-auto w-29.5 drop-shadow-[0_0_16px_rgba(200,40,49,0.55)]"
+          className="h-auto w-29.5 drop-shadow-(--shadow-auth-logo)"
           priority
         />
       </div>
 
       <div className="mt-7 w-full text-center">
-        <h1 className="text-lg leading-5 font-semibold text-white sm:text-[22px] sm:leading-6 xl:text-2xl xl:leading-8">
+        <h1 className="text-lg leading-5 font-semibold text-(--color-text-primary) sm:text-[22px] sm:leading-6 xl:text-2xl xl:leading-8">
           Your code is on the way!
         </h1>
-        <p className="mx-auto mt-2 text-xs leading-4 text-[#c7cbd4] sm:text-lg sm:leading-5 xl:leading-6">
+        <p className="mx-auto mt-2 text-xs leading-4 text-(--color-text-muted) sm:text-lg sm:leading-5 xl:leading-6">
           To log in, enter the code we emailed to{" "}
-          <span className="font-medium text-[#d93a43]">{email}</span>
+          <span className="font-medium text-(--color-auth-action-hover)">{email}</span>
           <br />
           It may take a minute to arrive
         </p>
@@ -147,7 +147,7 @@ export function VerifyEmailForm({
             ref={(element) => {
               inputRefs.current[index] = element;
             }}
-            className="h-13 w-12 rounded-lg border border-[#1b1f26] bg-[#0e121c] text-center text-lg font-medium text-white outline-none transition placeholder:text-[#6f778c] focus:border-[#c82831] focus:bg-[#1b1f26] sm:h-15 sm:w-15"
+            className="h-13 w-12 rounded-lg border border-(--color-surface-icon) bg-(--color-surface) text-center text-lg font-medium text-(--color-text-primary) outline-none transition placeholder:text-(--color-auth-placeholder) focus:border-(--color-auth-action) focus:bg-(--color-surface-icon) sm:h-15 sm:w-15"
             value={digit}
             placeholder="-"
             inputMode="numeric"
@@ -169,10 +169,10 @@ export function VerifyEmailForm({
       ) : null}
 
       <button
-        className={`mt-7 h-10 w-full rounded-lg px-4 text-sm font-bold text-[#fff7f7] transition disabled:cursor-not-allowed disabled:opacity-60 sm:h-12 sm:px-8 ${
+        className={`mt-7 h-10 w-full rounded-lg px-4 text-sm font-bold text-(--color-auth-action-contrast) transition disabled:cursor-not-allowed disabled:opacity-60 sm:h-12 sm:px-8 ${
           isConfirmDisabled
-            ? "bg-[#3f4a59]/50 hover:bg-[#4b5869]/50"
-            : "bg-[#c82831] hover:bg-[#d93a43]"
+            ? "bg-(--color-auth-disabled)/50 hover:bg-(--color-auth-disabled-hover)/50"
+            : "bg-(--color-auth-action) hover:bg-(--color-auth-action-hover)"
         }`}
         type="submit"
         disabled={isConfirmDisabled}
@@ -182,7 +182,7 @@ export function VerifyEmailForm({
 
       <div className="mt-5 flex justify-center">
         <button
-          className="text-base font-semibold text-white transition hover:text-[#d93a43] sm:text-lg"
+          className="text-base font-semibold text-(--color-text-primary) transition hover:text-(--color-auth-action-hover) sm:text-lg"
           type="button"
           onClick={onBack}
         >

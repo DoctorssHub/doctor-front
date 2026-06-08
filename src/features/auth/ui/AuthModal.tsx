@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode } from "react";
 import { AuthCloseButton } from "./AuthCloseButton";
 import { AuthSocialActions } from "./AuthSocialActions";
 import { AuthTabs } from "./AuthTabs";
@@ -11,7 +11,7 @@ import { LoginForm } from "./LoginForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 import { ResetPasswordForm } from "./ResetPasswordForm";
 import { useAuthModalStore } from "../model/auth-modal-store";
-import { useAuthSessionStore } from "../model/auth-session-store";
+import { useAuthModalFlow } from "../model/use-auth-modal-flow";
 import type { AuthFlow } from "./types";
 
 export function AuthModal() {
@@ -39,17 +39,55 @@ type AuthModalContentProps = {
 };
 
 function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
-  const [flow, setFlow] = useState<AuthFlow>(initialFlow);
-  const [verificationToken, setVerificationToken] = useState("");
-  const [verificationEmail, setVerificationEmail] = useState("");
-  const [verificationUsername, setVerificationUsername] = useState("");
-  const setSession = useAuthSessionStore((state) => state.setSession);
+  const {
+    flow,
+    setFlow,
+    verificationToken,
+    verificationEmail,
+    verificationUsername,
+    handleRegistered,
+    handleLoggedIn,
+    handleVerified,
+    handleVerifyBack,
+  } = useAuthModalFlow(initialFlow, onClose);
+
+  let authFlowContent: ReactNode = null;
+
+  switch (flow) {
+    case "register":
+      authFlowContent = <RegisterForm onRegistered={handleRegistered} />;
+      break;
+    case "login":
+      authFlowContent = (
+        <LoginForm
+          onLoggedIn={handleLoggedIn}
+          onForgotPasswordClick={() => setFlow("forgot-password")}
+        />
+      );
+      break;
+    case "forgot-password":
+      authFlowContent = (
+        <ForgotPasswordForm
+          onSubmitted={() => setFlow("reset-password")}
+          onBack={() => setFlow("login")}
+        />
+      );
+      break;
+    case "reset-password":
+      authFlowContent = (
+        <ResetPasswordForm
+          onReset={() => setFlow("login")}
+          onBack={() => setFlow("login")}
+        />
+      );
+      break;
+  }
 
   if (flow === "verify-email") {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050812]/80 p-4 text-white backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-(--color-auth-backdrop)/80 p-4 text-(--color-text-primary) backdrop-blur-sm">
         <section
-          className="relative w-full max-w-140 overflow-hidden rounded-3xl bg-[#0A0D19] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.46)] sm:px-8 sm:py-9"
+          className="relative w-full max-w-140 overflow-hidden rounded-3xl bg-(--color-page-raised) p-4 shadow-(--shadow-auth-modal) sm:px-8 sm:py-9"
           role="dialog"
           aria-modal="true"
           aria-label="Verify email"
@@ -59,16 +97,8 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
             verificationToken={verificationToken}
             email={verificationEmail}
             fallbackUsername={verificationUsername}
-            onVerified={(username) => {
-              setSession(username);
-              onClose();
-            }}
-            onBack={() => {
-              setVerificationToken("");
-              setVerificationEmail("");
-              setVerificationUsername("");
-              setFlow("login");
-            }}
+            onVerified={handleVerified}
+            onBack={handleVerifyBack}
           />
         </section>
       </div>
@@ -76,7 +106,7 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050812]/80 p-4 text-white backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-(--color-auth-backdrop)/80 p-4 text-(--color-text-primary) backdrop-blur-sm">
       <section
         className="flex h-240.25 max-h-screen w-full max-w-3xl overflow-hidden rounded-4xl lg:h-187.25 lg:max-w-250"
         role="dialog"
@@ -85,48 +115,13 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
       >
         <AuthVisualPanel />
 
-        <div className="relative flex h-full w-full items-start justify-center overflow-hidden bg-[#0A0D19] px-8 py-10 sm:px-10 lg:w-125">
+        <div className="relative flex h-full w-full items-start justify-center overflow-hidden bg-(--color-page-raised) px-8 py-10 sm:px-10 lg:w-125">
           <AuthCloseButton onClose={onClose} />
 
           <section className="flex h-full w-full max-w-none flex-col lg:max-w-105">
             <AuthTabs flow={flow} onChange={setFlow} />
 
-            <div className="min-h-0 flex-1">
-              {flow === "register" ? (
-                <RegisterForm
-                  onRegistered={({ verificationToken, email, username }) => {
-                    setVerificationToken(verificationToken);
-                    setVerificationEmail(email);
-                    setVerificationUsername(username);
-                    setFlow("verify-email");
-                  }}
-                />
-              ) : null}
-
-              {flow === "login" ? (
-                <LoginForm
-                  onLoggedIn={(username) => {
-                    setSession(username);
-                    onClose();
-                  }}
-                  onForgotPasswordClick={() => setFlow("forgot-password")}
-                />
-              ) : null}
-
-              {flow === "forgot-password" ? (
-                <ForgotPasswordForm
-                  onSubmitted={() => setFlow("reset-password")}
-                  onBack={() => setFlow("login")}
-                />
-              ) : null}
-
-              {flow === "reset-password" ? (
-                <ResetPasswordForm
-                  onReset={() => setFlow("login")}
-                  onBack={() => setFlow("login")}
-                />
-              ) : null}
-            </div>
+            <div className="min-h-0 flex-1">{authFlowContent}</div>
 
             <AuthSocialActions flow={flow} />
           </section>
