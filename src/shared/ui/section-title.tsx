@@ -10,7 +10,7 @@ export function SectionTitle({ icon, title }: SectionTitleProps) {
   return (
     <div className="flex gap-2 items-center">
       <Image
-        alt=""
+        alt={`${title} icon`}
         src={icon}
         height={24}
         width={24}

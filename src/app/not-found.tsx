@@ -67,7 +67,7 @@ export default function NotFound() {
       <section className="relative z-20 mx-auto flex h-[250px] w-[573px] max-w-full flex-col items-center justify-center rounded-[20px] bg-[#0e121c] p-10 text-center max-tablet:h-auto max-tablet:min-h-[220px] max-tablet:p-8 mobile:h-[236px] max-mobile:p-6">
         <Image
           src={CloudIcon}
-          alt="Cloud Error"
+          alt="Cloud error icon"
           width={74}
           height={54}
           className="h-auto w-[74px]  mobile:w-[60px]"
@@ -81,12 +81,12 @@ export default function NotFound() {
       </section>
 
       <Image
-        alt="Top Decorative Image"
+        alt="Floating cash decoration"
         className="pointer-events-none absolute top-0 right-0 z-10 h-auto min-desktop:w-[400px] max-w-none min-tablet:max-w-[200px]  min-tablet:top-[-50px] max-tablet:right-[-50px] min-mobile:w-[150px] min-mobile:top-[-30px] min-mobile:right-[-30px]"
         src={TopImage}
       />
       <Image
-        alt="Bottom Decorative Image"
+        alt="Cash and chip decoration"
         className="pointer-events-none absolute bottom-0 left-0 z-10 h-auto min-desktop:w-[400px] max-w-none min-tablet:max-w-[300px] mobile:w-[250px] "
         src={BottomImage}
       />

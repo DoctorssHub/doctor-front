@@ -30,7 +30,7 @@ export function HomeHeader({
           type="button"
         >
           <Image
-            alt=""
+            alt={isSidebarOpen ? "Close sidebar menu" : "Open sidebar menu"}
             height={24}
             src={BurgerMenuIcon}
             width={24}
@@ -39,7 +39,7 @@ export function HomeHeader({
         <span className="max-tablet:relative max-tablet:block max-tablet:h-10 max-tablet:w-20 max-tablet:self-center max-tablet:justify-self-center max-tablet:overflow-hidden max-tablet:[mask-image:radial-gradient(ellipse_at_center,black_58%,rgba(0,0,0,0.82)_74%,transparent_96%)]">
           <Image
             src={Logo}
-            alt="Logo"
+            alt="The Doctor logo"
             className="max-tablet:absolute max-tablet:left-1/2 max-tablet:top-1/2 max-tablet:max-w-none max-tablet:-translate-x-1/2 max-tablet:-translate-y-1/2 max-tablet:scale-[0.9]"
           />
         </span>

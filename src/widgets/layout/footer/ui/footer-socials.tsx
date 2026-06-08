@@ -27,7 +27,7 @@ export function FooterSocials({ className = "", socials }: FooterSocialsProps) {
             key={social.label}
           >
             <Image
-              alt=""
+              alt={social.label}
               className="size-6"
               src={social.icon}
             />

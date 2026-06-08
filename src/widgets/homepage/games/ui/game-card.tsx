@@ -31,7 +31,7 @@ export function GameCard({ game }: GameCardProps) {
       />
       <div className="absolute right-0 bottom-0 z-20 h-[220px] w-[240px] origin-bottom-right transition-transform duration-500 ease-out group-hover:translate-x-2 group-hover:translate-y-1 group-hover:scale-110">
         <Image
-          alt=""
+          alt={`${game.title} game preview`}
           className="object-contain object-right-bottom"
           fill
           sizes="280px"

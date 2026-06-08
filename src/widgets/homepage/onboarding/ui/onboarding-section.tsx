@@ -12,6 +12,7 @@ import { CopyButton } from "./copy-button";
 
 type Step = {
   action: string;
+  imageAlt: string;
   image: typeof onboardAccount;
   text: ReactNode;
   title: string;
@@ -20,6 +21,7 @@ type Step = {
 const steps: Step[] = [
   {
     action: "Register",
+    imageAlt: "Create account onboarding preview",
     image: onboardAccount,
     text: (
       <>
@@ -37,6 +39,7 @@ const steps: Step[] = [
   },
   {
     action: "Join Discord",
+    imageAlt: "Discord onboarding preview",
     image: onboardDiscord,
     text: (
       <>
@@ -56,6 +59,7 @@ const steps: Step[] = [
   },
   {
     action: "Connect Account",
+    imageAlt: "Connect account onboarding preview",
     image: onboardConnect,
     text: (
       <>
@@ -85,7 +89,7 @@ export function OnboardingSection() {
           >
             <div className="relative h-[210px] w-full tablet:max-laptop:h-[160px]">
               <Image
-                alt=""
+                alt={step.imageAlt}
                 className="object-cover"
                 fill
                 src={step.image}

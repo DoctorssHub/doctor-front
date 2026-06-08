@@ -26,6 +26,7 @@ export function LeaderboardCard({
       <AvatarRank
         avatar={player.avatar}
         rank={player.rank}
+        username={player.username}
       />
       <h3 className="mt-4 font-semibold text-[24px] text-(--color-text-primary) max-tablet:text-[20px]">
         {player.username}
@@ -35,7 +36,7 @@ export function LeaderboardCard({
       </p>
       <div className="flex items-center justify-center gap-1.5">
         <Image
-          alt=""
+          alt="Wager amount"
           className="h-5 w-5 shrink-0"
           src={BetIcon}
         />
@@ -45,7 +46,7 @@ export function LeaderboardCard({
       </div>
       <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#060e16] py-4 font-semibold text-2xl text-(--color-text-primary) max-tablet:py-3 max-tablet:text-[20px]">
         <Image
-          alt=""
+          alt={`Rank ${player.prize} prize trophy`}
           className="h-auto w-5 shrink-0"
           src={player.trophy}
         />

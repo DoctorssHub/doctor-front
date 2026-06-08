@@ -12,7 +12,7 @@ export function FooterBrand() {
         href="#"
       >
         <Image
-          alt=""
+          alt="The Doctor logo"
           className="max-tablet:h-auto max-tablet:w-[150px]"
           width={140}
           height={74}

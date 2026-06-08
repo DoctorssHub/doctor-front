@@ -25,7 +25,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
       >
         <span className={`flex items-center ${isCollapsed ? "" : "gap-3"}`}>
           <Image
-            alt=""
+            alt={`${item.title} menu`}
             height={20}
             src={item.icon}
             width={20}
@@ -34,7 +34,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
         </span>
         {!isCollapsed ? (
           <Image
-            alt=""
+            alt={`${item.title} dropdown arrow`}
             height={20}
             src={ArrowIcon}
             width={20}
@@ -53,7 +53,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
             key={child.title}
           >
             <Image
-              alt=""
+              alt={child.title}
               height={20}
               src={child.icon}
               width={20}

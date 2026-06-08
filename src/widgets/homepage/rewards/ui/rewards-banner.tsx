@@ -19,7 +19,7 @@ export function RewardsBanner() {
       }}
     >
       <Image
-        alt=""
+        alt="Dollar coins"
         className="absolute -left-12 -top-5 rotate-9"
         width={148}
         height={148}

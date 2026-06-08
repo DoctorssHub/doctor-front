@@ -35,7 +35,7 @@ export function Sidebar({
       <aside
         className={`fixed left-0 top-16 z-90 flex h-[calc(100vh-4rem)] w-[227px] shrink-0 border-r border-(--color-border-sidebar) bg-(--color-surface)/95 px-4 backdrop-blur transition-transform duration-300 max-desktop:overflow-y-auto max-tablet:w-full desktop:z-20 desktop:translate-x-0 desktop:transition-[width] ${
           isMobileOpen ? "max-desktop:translate-x-0" : "max-desktop:-translate-x-full"
-        } ${isCollapsed ? "desktop:w-[84px] desktop:px-3" : "desktop:w-[227px] desktop:px-4"}`}
+        } ${isCollapsed ? "desktop:w-[84px] desktop:px-3" : "desktop:w-[227px] desktop:px-3"}`}
       >
         <button
           aria-expanded={!isCollapsed}
@@ -45,7 +45,7 @@ export function Sidebar({
           type="button"
         >
           <Image
-            alt=""
+            alt={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             className={`absolute transition-opacity duration-300 ${isCollapsed ? "rotate-180" : "rotate-0"}`}
             height={20}
             src={ArrowIcon}
@@ -80,7 +80,7 @@ export function Sidebar({
             href="#"
           >
             <Image
-              alt=""
+              alt="Help and support"
               height={16}
               src={HelpIcon}
               width={16}

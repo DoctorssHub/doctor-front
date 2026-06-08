@@ -60,7 +60,8 @@
 
   --shadow-brand-glow: 0 0 24px rgb(34 197 94 / 28%);
   --shadow-inset-soft: inset 0 1px 0 hsla(164, 100%, 88%, 0.14);
-  --shadow-claim-panel: 0 1px 0 #08923a, inset 0 1px 0 hsla(164, 100%, 88%, 0.1);
+  --shadow-claim-panel:
+    0 1px 0 #08923a, inset 0 1px 0 hsla(164, 100%, 88%, 0.1);
   --shadow-nav-active: 0 1px 0 #08923a, inset 0 1px 0 hsla(0, 0%, 100%, 0.04);
   --gradient-hero-overlay: linear-gradient(
     90deg,
@@ -79,11 +80,7 @@
     transparent
   );
   --gradient-claim-panel: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
-  --gradient-nav-item: linear-gradient(
-    180deg,
-    #1b1f2666 0%,
-    #2b303b66 100%
-  );
+  --gradient-nav-item: linear-gradient(180deg, #1b1f2666 0%, #2b303b66 100%);
   --font-sans: "Outfit", sans-serif;
 }
 

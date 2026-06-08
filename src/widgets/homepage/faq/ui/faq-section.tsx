@@ -61,7 +61,7 @@ export function FaqSection() {
               >
                 <span>{item.question}</span>
                 <Image
-                  alt=""
+                  alt={isOpen ? "Collapse answer" : "Expand answer"}
                   className={`shrink-0 rotate-90 transition-transform duration-300 ease-out ${
                     isOpen ? "rotate-270" : ""
                   }`}

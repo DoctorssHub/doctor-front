@@ -41,7 +41,7 @@ function PromotionTimer({
   return (
     <div className="inline-flex h-[30px] items-center gap-2 rounded-md bg-[#2B303B]/50 px-3 text-[12px] font-medium text-(--color-text-muted) max-tablet:text-[14px]">
       <Image
-        alt=""
+        alt={`${accent} promotion timer`}
         src={accent === "purple" ? clockFortune : clockCompetition}
         width={16}
         height={16}

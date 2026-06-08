@@ -47,7 +47,7 @@ export function FeaturesSection() {
             key={feature.title}
           >
             <Image
-              alt=""
+              alt={`${feature.title} feature background`}
               className="z-0 h-full w-full object-cover transition duration-500 group-hover:scale-110"
               width={275}
               height={270}
@@ -72,7 +72,7 @@ export function FeaturesSection() {
               </h3>
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)] transition duration-300 group-hover:scale-110 group-hover:bg-[linear-gradient(180deg,#4bef82_0%,#22c55e_100%)] group-hover:shadow-[0_0_18px_rgb(34_197_94/45%)]">
                 <Image
-                  alt=""
+                  alt={`Open ${feature.title}`}
                   height={12}
                   src={ArrowIcon}
                   width={12}

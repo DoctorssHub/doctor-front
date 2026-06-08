@@ -15,7 +15,7 @@ export function ClaimCard({ isCollapsed = false }: ClaimCardProps) {
         type="button"
       >
         <Image
-          alt=""
+          alt="Daily reward claim"
           src={ClaimBgCollapsed}
         />
       </button>
@@ -25,7 +25,7 @@ export function ClaimCard({ isCollapsed = false }: ClaimCardProps) {
   return (
     <div className="relative max-tablet:h-[124px] max-tablet:w-[327px]">
       <Image
-        alt="Claim Background"
+        alt="Daily claimer reward background"
         className="max-tablet:h-full max-tablet:w-full max-tablet:object-cover"
         src={ClaimBg}
       />
@@ -39,7 +39,7 @@ export function ClaimCard({ isCollapsed = false }: ClaimCardProps) {
         >
           Claim
           <Image
-            alt="Claim Icon"
+            alt="Reward coin"
             className="ml-1 mr-0.5"
             src={ClaimIcon}
           />

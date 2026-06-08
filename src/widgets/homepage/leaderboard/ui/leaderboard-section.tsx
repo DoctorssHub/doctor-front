@@ -30,49 +30,49 @@ export function LeaderboardSection() {
         </p>
         <div className="relative mt-24 flex flex-col items-center justify-center gap-5 md:flex-row md:items-end max-tablet:mt-4 max-tablet:gap-3">
           <Image
-            alt=""
+            alt="Leaderboard coins"
             className="absolute left-0 bottom-0 h-[233px] w-[233px] max-w-none object-contain"
             src={CoinsLeft}
             width={233}
             height={233}
           />
           <Image
-            alt=""
+            alt="Leaderboard coins"
             className="absolute bottom-0 z-15 right-17 h-[145px] w-[145px] max-w-none  object-contain"
             src={CoinsRight}
             width={145}
             height={145}
           />
           <Image
-            alt=""
+            alt="Leaderboard rocket"
             className="absolute bottom-5 z-10 right-0 h-[283px] w-[233px] max-w-none object-contain"
             src={Rocket}
             width={233}
             height={233}
           />
           <Image
-            alt=""
+            alt="Leaderboard card decoration"
             className="absolute bottom-5 -right-40  max-w-none object-contain rotate-0 opacity-30"
             src={CardIcon}
             width={300}
             height={233}
           />
           <Image
-            alt=""
+            alt="Leaderboard card decoration"
             className="absolute -top-20 right-80  max-w-none object-contain -rotate-10 opacity-50"
             src={CardIcon}
             width={133}
             height={233}
           />
           <Image
-            alt=""
+            alt="Leaderboard card decoration"
             className="absolute bottom-5 -left-20  max-w-none object-contain -rotate-45 opacity-50"
             src={CardIcon}
             width={233}
             height={233}
           />
           <Image
-            alt=""
+            alt="Leaderboard card decoration"
             className="absolute -top-50 left-50  max-w-none object-contain -rotate-45 opacity-40"
             src={CardIcon}
             width={133}
