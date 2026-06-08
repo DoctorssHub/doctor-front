@@ -42,10 +42,16 @@ export function getCurrentUser() {
   return authClient.get<MeResponse>("/user/query/me");
 }
 
-export function forgotPassword(payload: ForgotPasswordRequest) {
+export function forgotPassword(
+  payload: ForgotPasswordRequest,
+  recaptchaToken: string,
+) {
   return authClient.post<ForgotPasswordResponse>(
     "/auth/local/forgot-password",
     payload,
+    {
+      headers: { "recaptcha-token": recaptchaToken },
+    },
   );
 }
 

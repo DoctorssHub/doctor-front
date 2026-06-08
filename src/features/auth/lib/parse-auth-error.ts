@@ -6,6 +6,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function readMessage(value: unknown): string | null {
   if (typeof value === "string" && value.trim().length > 0) {
+    if (isHtmlResponse(value)) {
+      return null;
+    }
+
     return value;
   }
 
@@ -32,9 +36,17 @@ function readMessage(value: unknown): string | null {
   return readMessage(value.data) || readMessage(value.errors);
 }
 
+function isHtmlResponse(value: string) {
+  return /<\s*!doctype\s+html|<\s*html[\s>]/i.test(value);
+}
+
 export function parseAuthError(error: unknown) {
   if (!axios.isAxiosError(error)) {
     return "Something went wrong. Please try again.";
+  }
+
+  if (error.response?.status === 503) {
+    return "Service is temporarily unavailable. Please try again later.";
   }
 
   const message = readMessage(error.response?.data);
