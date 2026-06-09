@@ -103,8 +103,8 @@ export function PlinkoScreen() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#080c17] p-4 text-white md:p-5">
-      <section className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-7xl flex-col overflow-hidden rounded-xl border border-[#111827] bg-[#0c111d] shadow-[0_24px_80px_rgb(0_0_0_/_28%)] md:min-h-[calc(100vh-2.5rem)] md:flex-row">
+    <main className="bg-[#080c17] p-4 text-white md:p-5">
+      <section className="mx-auto flex min-h-[640px] max-w-7xl flex-col overflow-hidden rounded-xl border border-[#111827] bg-[#0c111d] shadow-[0_24px_80px_rgb(0_0_0_/_28%)] md:flex-row">
         <GameSidebar
           balance="4,593.24"
           betAmount={betAmount}
@@ -127,7 +127,7 @@ export function PlinkoScreen() {
         />
       </section>
 
-      <footer className="mx-auto mt-2 flex max-w-7xl items-center justify-between rounded-lg bg-[#0c111d] px-4 py-3 text-xs">
+      <div className="mx-auto mt-2 flex max-w-7xl items-center justify-between rounded-lg bg-[#0c111d] px-4 py-3 text-xs">
         <div className="flex gap-2">
           <button
             aria-label="Fullscreen"
@@ -150,7 +150,7 @@ export function PlinkoScreen() {
             OK
           </span>
         </div>
-      </footer>
+      </div>
     </main>
   );
 }
