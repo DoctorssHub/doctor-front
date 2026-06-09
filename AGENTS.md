@@ -18,6 +18,18 @@ notices and prefer the bundled docs over training-data assumptions.
 - Keep root files for configuration and generated framework artifacts. Keep
   application code under `src/`.
 
+## Project skills
+
+- Keep repository-specific Codex skills in `.agents/skills/<skill-name>/`.
+- Do not add new project skills under `.codex/skills`; use `.agents/skills`
+  as the single shared location.
+- Each project skill must include `SKILL.md`. When the skill is exposed in the
+  UI, keep `agents/openai.yaml` in sync with the skill description.
+- Current project skills:
+  - `.agents/skills/pre-commit-review`: review staged changes before commits.
+  - `.agents/skills/responsive-adaptive-safe`: adapt UI for 1024px, 768px, and
+    375px while preserving 1920px and 1440px desktop baselines.
+
 ## Architecture
 
 - Treat `src/app` as the Next.js routing and application shell layer.
