@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pre-Commit Review"
+  short_description: "Review staged changes before committing."
+  default_prompt: "Review staged changes before I commit."

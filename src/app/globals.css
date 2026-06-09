@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+@import "tailwindcss";
+
+:root {
+  --color-page: #080c17;
+  --color-page-raised: #0a0d19;
+  --color-hero-surface: #0b101b;
+  --color-surface: #0e121c;
+  --color-surface-soft: #111722;
+  --color-surface-card: #12182b;
+  --color-surface-control: #121826;
+  --color-surface-elevated: #161b28;
+  --color-surface-hover: #202638;
+  --color-surface-chip: #171d2a;
+  --color-surface-icon: #1b1f26;
+  --color-surface-nav-hover: #1b2131;
+  --color-surface-nav-active: #111722;
+  --color-surface-game: #0e1519;
+  --color-surface-counter: #090d17;
+  --color-surface-prize: #070b13;
+  --color-surface-claim: #0d2619;
+  --color-claim-panel: #09110e;
+  --color-header-surface: #0e121c;
+
+  --color-border: #1a2231;
+  --color-border-strong: #1b1f26;
+  --color-border-hero: #141a28;
+  --color-border-sidebar: #151b29;
+  --color-border-claim: #173d26;
+  --color-border-control: #242b3a;
+  --color-border-button: #2a3040;
+  --color-border-leaderboard: #1c2440;
+
+  --color-brand: #22c55e;
+  --color-brand-strong: #25d967;
+  --color-brand-logo: #19d964;
+  --color-brand-hover: #4bef82;
+  --color-brand-contrast: #06140c;
+
+  --color-text-primary: #fdfdfd;
+  --color-text-muted: #c7cbd4;
+  --color-text-subtle: #8a94a7;
+  --color-text-disabled: #566374;
+
+  --color-accent-purple: #8b5cf6;
+  --color-accent-red: #ef4444;
+  --color-accent-yellow: #facc15;
+  --color-accent-blue: #2538ff;
+
+  --color-auth-backdrop: #050812;
+  --color-auth-action: #c82831;
+  --color-auth-action-hover: #d93a43;
+  --color-auth-action-contrast: #fff7f7;
+  --color-auth-visual-base: #13070b;
+  --color-auth-visual-shadow: #580c12;
+  --color-auth-control: #1b2130;
+  --color-auth-control-hover: #22293a;
+  --color-auth-field: #0d121e;
+  --color-auth-placeholder: #6f778c;
+  --color-auth-divider: #202637;
+  --color-auth-form-border: #1c2333;
+  --color-auth-label: #aeb6c9;
+  --color-auth-icon: #b9c0d4;
+  --color-auth-disabled: #3f4a59;
+  --color-auth-disabled-hover: #4b5869;
+
+  --shadow-brand-glow: 0 0 24px rgb(34 197 94 / 28%);
+  --shadow-inset-soft: inset 0 1px 0 rgb(195 255 239 / 14%);
+  --shadow-auth-modal: 0 24px 80px rgb(0 0 0 / 46%);
+  --shadow-auth-card: 0 24px 80px rgb(0 0 0 / 32%);
+  --shadow-auth-logo: 0 0 16px rgb(200 40 49 / 55%);
+  --shadow-auth-image: 0 22px 42px rgb(0 0 0 / 42%);
+  --shadow-auth-accent: 0 0 20px rgb(196 32 38 / 14%);
+  --shadow-claim-panel: 0 1px 0 #08923a, inset 0 1px 0 rgb(195 255 239 / 10%);
+  --shadow-nav-active: 0 1px 0 #08923a, inset 0 1px 0 rgb(255 255 255 / 4%);
+  --gradient-hero-overlay: linear-gradient(
+    90deg,
+    var(--color-page) 0%,
+    rgb(8 12 23 / 55%) 45%,
+    rgb(34 197 94 / 22%) 100%
+  );
+  --gradient-card-overlay: linear-gradient(
+    to top,
+    var(--color-hero-surface),
+    transparent
+  );
+  --gradient-game-overlay: linear-gradient(
+    to top,
+    rgb(11 16 27 / 80%),
+    transparent
+  );
+  --gradient-claim-panel: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+  --gradient-nav-item: linear-gradient(
+    180deg,
+    rgb(27 31 38 / 40%) 0%,
+    rgb(43 48 59 / 40%) 100%
+  );
+  --gradient-auth-visual: linear-gradient(
+    0deg,
+    rgb(88 12 18 / 74%) 0%,
+    rgb(45 10 16 / 92%) 30%,
+    var(--color-auth-visual-base) 62%,
+    var(--color-auth-visual-base) 100%
+  );
+  --font-sans: "Outfit", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-page);
+}
+
+body {
+  margin: 0;
+  background: var(--color-page);
+  font-family: var(--font-sans);
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+.auth-checkbox {
+  width: 16px;
+  height: 16px;
+  appearance: none;
+  background-color: var(--color-surface-icon);
+  border: 1px solid var(--color-surface-icon);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.auth-checkbox:checked {
+  background-color: var(--color-auth-action);
+  border-color: var(--color-auth-action);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.5 8.5L6.5 11.5L12.5 4.5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 14px;
+}
