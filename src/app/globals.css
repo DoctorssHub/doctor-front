@@ -1,6 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-mobile: 23.4375rem; /* 375px */
+  --breakpoint-tablet: 48rem; /* 768px */
+  --breakpoint-laptop: 64rem; /* 1024px */
+  --breakpoint-desktop: 80rem; /* 1280px */
+  --breakpoint-large: 90rem; /* 1440px */
+  --breakpoint-wide: 120rem; /* 1920px */
+}
+
+@source inline("desktop:hidden desktop:z-20 desktop:translate-x-0 desktop:transition-[width] desktop:w-[84px] desktop:w-[227px] desktop:px-3 desktop:px-4 desktop:flex max-desktop:overflow-y-auto max-desktop:translate-x-0 max-desktop:-translate-x-full max-tablet:w-full");
+
 :root {
   --color-page: #080c17;
   --color-page-raised: #0a0d19;
