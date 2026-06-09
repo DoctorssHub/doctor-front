@@ -56,12 +56,6 @@ export function PlinkoBoard({
 
   return (
     <section className="relative flex min-h-[520px] flex-1 flex-col overflow-hidden bg-[#0f1720] px-4 py-8 md:min-h-[640px] md:px-8">
-      <div className="pointer-events-none absolute top-6 left-1/2 flex -translate-x-1/2 gap-3">
-        <span className="h-3.5 w-3.5 rounded-full border border-[#405169]" />
-        <span className="h-3.5 w-3.5 rounded-full border border-[#405169]" />
-        <span className="h-3.5 w-3.5 rounded-full border border-[#405169]" />
-      </div>
-
       <div className="absolute top-6 right-6 hidden flex-col gap-3 md:flex">
         {recentMultipliers.slice(0, 3).map((multiplier, index) => (
           <div
