@@ -3,13 +3,15 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
-import { HomeHeader, Sidebar } from "@/widgets/layout";
+import { Footer } from "@/widgets/layout/footer";
+import { HomeHeader } from "@/widgets/layout/header";
+import { Sidebar } from "@/widgets/layout/sidebar";
 
-type HomeShellProps = {
+type AppShellProps = {
   children: ReactNode;
 };
 
-export function HomeShell({ children }: HomeShellProps) {
+export function AppShell({ children }: AppShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -41,12 +43,11 @@ export function HomeShell({ children }: HomeShellProps) {
         />
         <div
           className={`min-w-0 flex-1 pt-16 transition-[margin] duration-300 ${
-            isSidebarCollapsed
-              ? "desktop:ml-[84px]"
-              : "desktop:ml-[227px]"
+            isSidebarCollapsed ? "desktop:ml-[84px]" : "desktop:ml-[227px]"
           }`}
         >
           {children}
+          <Footer />
         </div>
       </div>
     </>
