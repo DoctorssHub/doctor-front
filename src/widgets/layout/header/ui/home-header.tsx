@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Logo from "@/assets/header/Logo.svg";
 import BurgerMenuIcon from "@/assets/header/burgerMenu.svg";
-import { Button } from "@/shared/ui/button";
-import Link from "next/link";
+import { HeaderAuthButton } from "./header-auth-button";
 
 type HomeHeaderProps = {
   isSidebarOpen?: boolean;
@@ -45,11 +44,7 @@ export function HomeHeader({
         </span>
       </div>
       <div className="max-tablet:self-center max-tablet:justify-self-end">
-        <Link href="/login">
-          <Button className="h-10 w-full cursor-pointer text-[16px] font-medium text-(--color-brand-contrast) max-tablet:h-9 max-tablet:px-4 max-tablet:text-[14px] max-tablet:leading-none">
-            Log In
-          </Button>
-        </Link>
+        <HeaderAuthButton />
       </div>
     </header>
   );
