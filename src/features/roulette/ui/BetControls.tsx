@@ -1,3 +1,14 @@
+import Image, { type StaticImageData } from "next/image";
+import chip1 from "@/assets/games/roulette/Coint_1.webp";
+import chip5 from "@/assets/games/roulette/Coint_2.webp";
+import chip25 from "@/assets/games/roulette/Coint_3.webp";
+import chip50 from "@/assets/games/roulette/Coint_4.webp";
+import chip250 from "@/assets/games/roulette/Coint_5.webp";
+import chip25k from "@/assets/games/roulette/Coint_6.webp";
+import chip500 from "@/assets/games/roulette/Coint_7.webp";
+import chip2k from "@/assets/games/roulette/Coint_8.webp";
+import chip5k from "@/assets/games/roulette/Coint_9.webp";
+import chip50k from "@/assets/games/roulette/Coint_10.webp";
 import { ROULETTE_CHIP_VALUES } from "../model/roulette-constants";
 
 type BetControlsProps = {
@@ -15,6 +26,19 @@ type BetControlsProps = {
   onUndo: () => void;
   onSubmit: () => void;
 };
+
+const CHIP_IMAGES = new Map<number, StaticImageData>([
+  [1, chip1],
+  [5, chip5],
+  [25, chip25],
+  [50, chip50],
+  [250, chip250],
+  [500, chip500],
+  [2000, chip2k],
+  [5000, chip5k],
+  [25000, chip25k],
+  [50000, chip50k],
+]);
 
 function formatChipLabel(value: number) {
   return value >= 1000 ? `${value / 1000}K` : String(value);
@@ -95,23 +119,33 @@ export function BetControls({
         <div className="grid grid-cols-5 gap-3 pt-2">
           {ROULETTE_CHIP_VALUES.map((chip) => {
             const isSelected = chip === selectedChip;
+            const chipImage = CHIP_IMAGES.get(chip);
 
             return (
               <button
                 className={[
-                  "relative grid aspect-square min-h-10 place-items-center rounded-full border-4 border-dashed text-xs font-bold transition",
+                  "relative grid aspect-square min-h-10 place-items-center rounded-full text-xs font-bold transition",
                   isSelected
-                    ? "border-[var(--color-brand)] bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-brand-glow)]"
-                    : "border-[var(--color-border-button)] bg-[var(--color-surface-chip)] text-[var(--color-text-muted)] hover:border-[var(--color-text-muted)]",
+                    ? "scale-105 text-white drop-shadow-[0_0_14px_rgb(34_197_94_/_34%)]"
+                    : "text-[var(--color-text-muted)] hover:scale-105",
                 ].join(" ")}
                 disabled={isSpinning || isSubmitting}
                 key={chip}
                 onClick={() => onSelectChip(chip)}
                 type="button"
               >
-                <span className="grid h-[72%] w-[72%] place-items-center rounded-full border border-white/20">
-                  {formatChipLabel(chip)}
-                </span>
+                {chipImage ? (
+                  <Image
+                    alt={`${formatChipLabel(chip)} coin`}
+                    className="h-full w-full object-contain"
+                    priority={chip <= 250}
+                    src={chipImage}
+                  />
+                ) : (
+                  <span className="grid h-full w-full place-items-center rounded-full border-4 border-dashed border-[#a78bfa] bg-[var(--color-surface-chip)] text-sm text-white">
+                    {formatChipLabel(chip)}
+                  </span>
+                )}
               </button>
             );
           })}
