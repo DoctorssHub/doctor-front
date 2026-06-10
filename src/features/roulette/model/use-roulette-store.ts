@@ -1,0 +1,87 @@
+import { create } from "zustand";
+import type { RouletteBetResponse } from "../api/roulette-types";
+import type { NewRouletteBet, PlacedRouletteBet } from "./roulette-bets";
+
+export type RouletteResult = {
+  betId: string;
+  number: number;
+  betSize: string;
+  payout: string;
+  multiplier: number;
+  createdAt: string;
+};
+
+type RouletteStore = {
+  selectedChip: number;
+  placedBets: PlacedRouletteBet[];
+  isSpinning: boolean;
+  result: RouletteResult | null;
+  selectChip: (chip: number) => void;
+  placeBet: (bet: NewRouletteBet) => void;
+  clearBets: () => void;
+  undoBet: () => void;
+  startSpin: () => void;
+  finishSpin: (response: RouletteBetResponse) => void;
+  stopSpin: () => void;
+  resetResult: () => void;
+};
+
+function createBetId() {
+  return globalThis.crypto?.randomUUID?.() ?? `roulette-bet-${Date.now()}`;
+}
+
+export const useRouletteStore = create<RouletteStore>()((set, get) => ({
+  selectedChip: 1,
+  placedBets: [],
+  isSpinning: false,
+  result: null,
+  selectChip: (chip) => {
+    set({ selectedChip: chip });
+  },
+  placeBet: (bet) => {
+    const { selectedChip } = get();
+
+    set((state) => ({
+      placedBets: [
+        ...state.placedBets,
+        {
+          ...bet,
+          id: createBetId(),
+          amount: selectedChip,
+        },
+      ],
+      result: null,
+    }));
+  },
+  clearBets: () => {
+    set({ placedBets: [], result: null });
+  },
+  undoBet: () => {
+    set((state) => ({
+      placedBets: state.placedBets.slice(0, -1),
+    }));
+  },
+  startSpin: () => {
+    set({ isSpinning: true, result: null });
+  },
+  finishSpin: (response) => {
+    set({
+      isSpinning: false,
+      result: {
+        betId: response.betId,
+        number: response.randomPosition,
+        betSize: response.betSize,
+        payout: response.payout,
+        multiplier: response.multiplier,
+        createdAt: response.createdAt,
+      },
+      placedBets: [],
+    });
+  },
+  stopSpin: () => {
+    set({ isSpinning: false });
+  },
+  resetResult: () => {
+    set({ result: null });
+  },
+}));
