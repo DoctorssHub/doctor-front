@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import rouletteBall from "@/assets/games/roulette/rouletteBall.svg";
 import rouletteCenter from "@/assets/games/roulette/rouletteCenter.svg";
 import rouletteImage from "@/assets/games/roulette/rouletteImage.svg";
 import { ROULETTE_WHEEL_ORDER } from "../model/roulette-constants";
@@ -313,15 +312,7 @@ export function RouletteWheel({ isSpinning, resultNumber }: RouletteWheelProps) 
           className="pointer-events-none absolute left-1/2 top-1/2 z-[6] h-[10px] w-[10px] rounded-full bg-[radial-gradient(circle_at_35%_28%,#ffffff_0%,#f0f0f0_18%,#c8c8c8_48%,#787878_100%)] shadow-[1px_3px_7px_rgb(0_0_0_/_90%),0_0_10px_2px_rgb(255_255_255_/_25%),inset_-1px_-2px_3px_rgb(0_0_0_/_30%)] will-change-transform"
           ref={ballRef}
           style={{ transform: `translate(0px, -${OUTER_RADIUS}px)` }}
-        >
-          <Image
-            alt=""
-            className="h-full w-full object-contain"
-            draggable={false}
-            priority
-            src={rouletteBall}
-          />
-        </div>
+        />
       </div>
     </div>
   );
