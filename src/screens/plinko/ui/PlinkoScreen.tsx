@@ -8,16 +8,8 @@ import { PlinkoBoard } from "@/widgets/plinko-board/ui/PlinkoBoard";
 import type { ActiveRound } from "@/widgets/plinko-board/model/active-round";
 import { mockGameConfig } from "@/widgets/plinko-board/model/mock-config";
 
-function createMockPath(rows: number) {
-  const directions = Array.from({ length: rows }, () =>
-    Math.random() > 0.5 ? "R" : "L",
-  );
-  const bucketIndex = directions.filter((direction) => direction === "R").length;
-
-  return {
-    bucketIndex,
-    path: directions.join(""),
-  };
+function createMockBucketIndex(rows: number) {
+  return Math.floor(Math.random() * (rows + 1));
 }
 
 function createMockBet({
@@ -29,19 +21,17 @@ function createMockBet({
   risk: Risk;
   rows: number;
 }): Bet {
-  const { bucketIndex, path } = createMockPath(rows);
+  const bucketIndex = createMockBucketIndex(rows);
   const multiplier = mockGameConfig.payoutTables[risk][rows][bucketIndex] ?? 0;
   const normalizedAmount = Number(amount) || 0;
 
   return {
-    amount,
     betId: crypto.randomUUID(),
+    betSize: amount,
     bucketIndex,
+    createdAt: new Date().toISOString(),
     multiplier,
-    path,
     payout: String(normalizedAmount * multiplier),
-    risk,
-    rows,
   };
 }
 

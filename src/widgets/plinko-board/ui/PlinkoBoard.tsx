@@ -76,7 +76,6 @@ export function PlinkoBoard({
             activeRounds={activeRounds}
             layout={boardLayout}
             onAnimationComplete={onRoundAnimationComplete}
-            risk={risk}
             rows={rows}
           />
 
