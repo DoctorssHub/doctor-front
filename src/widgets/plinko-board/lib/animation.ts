@@ -81,7 +81,7 @@ export function getPegRadius(rows: number, layout: BoardLayout = "regular") {
 }
 
 export function getBallRadius(rows: number, layout: BoardLayout = "regular") {
-  return getPegRadius(rows, layout) * 1.75;
+  return getPegRadius(rows, layout) * 2.1;
 }
 
 export function getPegPosition(

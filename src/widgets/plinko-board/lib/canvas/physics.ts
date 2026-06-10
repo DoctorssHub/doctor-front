@@ -516,6 +516,12 @@ export function createBallMotion({
 
   const bestRefinedCandidate = getBestCandidate(refinedCandidates);
   const allCandidates = [...candidates, ...refinedCandidates];
+  // Best of all worlds: the ball reaches the target while only ever bouncing
+  // off pegs (never the containment rail). Fall back progressively if no such
+  // trajectory exists for this bucket.
+  const railFreeCandidates = allCandidates.filter(
+    (candidate) => candidate.isTargetBucketHit && !candidate.touchedRail,
+  );
   const strictValidCandidates = allCandidates.filter(
     (candidate) => candidate.isTargetBucketHit && candidate.staysInPyramid,
   );
@@ -523,11 +529,13 @@ export function createBallMotion({
     (candidate) => candidate.isTargetBucketHit,
   );
   const selectedCandidate =
-    strictValidCandidates.length > 0
-      ? getBestCandidate(strictValidCandidates)
-      : targetBucketCandidates.length > 0
-        ? getBestCandidate(targetBucketCandidates)
-        : bestRefinedCandidate;
+    railFreeCandidates.length > 0
+      ? getBestCandidate(railFreeCandidates)
+      : strictValidCandidates.length > 0
+        ? getBestCandidate(strictValidCandidates)
+        : targetBucketCandidates.length > 0
+          ? getBestCandidate(targetBucketCandidates)
+          : bestRefinedCandidate;
 
   return applyTimingScale(
     selectedCandidate.motion,
@@ -553,13 +561,25 @@ function simulateBallMotion({
   const firstRowLeftPeg = getPegPosition(0, 0, rows, layout);
   const firstRowRightPeg = getPegPosition(0, 2, rows, layout);
   const pegRadius = getPegRadius(rows, layout);
-  // Start the ball 2px above the first peg row at a seeded x somewhere across
-  // the three top pegs (not always dead-centre). This removes the long free
-  // fall where the ball used to fling sideways, and a varied, off-centre drop
-  // makes the first contact a natural glancing deflection instead of a dead-on
-  // trampoline off the centre peg.
+  const firstRowSpan = firstRowRightPeg.x - firstRowLeftPeg.x;
+  // Start the ball 2px above the first peg row, leaning the drop point toward
+  // the target bucket's side (but kept within the three top pegs, plus a little
+  // seeded variety). Starting nearer the target shortens the path and keeps the
+  // ball off the containment rail, so even edge buckets can be reached by pegs
+  // alone. The off-centre drop also makes the first contact a natural glancing
+  // deflection instead of a dead-on trampoline off the centre peg.
+  const targetSpawnFraction = clamp(
+    (target.x - firstRowLeftPeg.x) / (firstRowSpan || 1),
+    0,
+    1,
+  );
+  const spawnFraction = clamp(
+    targetSpawnFraction * 0.65 + seedValue * 0.35,
+    0,
+    1,
+  );
   const position = {
-    x: firstRowLeftPeg.x + (firstRowRightPeg.x - firstRowLeftPeg.x) * seedValue,
+    x: firstRowLeftPeg.x + firstRowSpan * spawnFraction,
     y: firstRowLeftPeg.y - (ballRadius + pegRadius) - 2,
   };
   const velocity = {
@@ -575,6 +595,7 @@ function simulateBallMotion({
   const impactEvents: ImpactEvent[] = [];
   let exitX: number | null = null;
   let hasContacted = false;
+  let touchedRail = false;
   let maxOutsidePyramidDistance = 0;
   let outsidePyramidFrameCount = 0;
 
@@ -611,24 +632,26 @@ function simulateBallMotion({
       outsidePyramidFrameCount += 1;
     }
 
-    // Side rails that hug the outermost pegs, so the ball bounces back at the
-    // pyramid edge instead of drifting into the empty margin and hitting the
-    // far board wall. `getPyramidBounds` pads each row by `ballRadius * 3`, so
-    // adding `ballRadius * 2` back places the rail one ball radius inside the
+    // Side rails placed right on the outermost peg line, so on the rare path
+    // that reaches the edge the bounce coincides with the visible pegs instead
+    // of an invisible wall out in the empty margin. `getPyramidBounds` pads each
+    // row by `ballRadius * 3`, so adding it back lands the rail exactly on the
     // outer peg line. Below the last row there is no bound: fall back to the
     // board walls for the bucket zone.
     const railBound = getInterpolatedPyramidBound(pyramidBounds, position.y);
-    const leftLimit = railBound ? railBound.left + ballRadius * 2 : ballRadius;
+    const leftLimit = railBound ? railBound.left + ballRadius * 3 : ballRadius;
     const rightLimit = railBound
-      ? railBound.right - ballRadius * 2
+      ? railBound.right - ballRadius * 3
       : boardWidth - ballRadius;
 
     if (position.x < leftLimit) {
       position.x = leftLimit;
       velocity.x = Math.abs(velocity.x) * wallRestitution;
+      touchedRail = true;
     } else if (position.x > rightLimit) {
       position.x = rightLimit;
       velocity.x = -Math.abs(velocity.x) * wallRestitution;
+      touchedRail = true;
     }
 
     const impact = getNearestCollidingPeg(
@@ -694,7 +717,7 @@ function simulateBallMotion({
   const minExpectedImpacts = Math.max(3, Math.round(rows * 0.4));
   const sparseImpactPenalty =
     impactEvents.length < minExpectedImpacts
-      ? (minExpectedImpacts - impactEvents.length) * 160
+      ? (minExpectedImpacts - impactEvents.length) * 240
       : 0;
   const outsideBucketPenalty =
     xDistance > ballRadius * 2
@@ -724,6 +747,7 @@ function simulateBallMotion({
     initialVelocityX,
     isTargetBucketHit,
     staysInPyramid,
+    touchedRail,
     motion: {
       durationMs: lastFrameTime,
       finalPosition: lastNaturalPosition,
