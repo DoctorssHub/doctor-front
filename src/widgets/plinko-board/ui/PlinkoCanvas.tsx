@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef } from "react";
 import type { ActiveRound } from "@/widgets/plinko-board/model/active-round";
 import {
   type BoardLayout,
-  getBallPath,
   getBoardHeight,
   getBoardWidth,
 } from "@/widgets/plinko-board/lib/animation";
@@ -14,15 +13,17 @@ import {
   drawBallLayer,
   drawPegLayer,
 } from "@/widgets/plinko-board/lib/canvas/drawing";
-import { getBallFrame } from "@/widgets/plinko-board/lib/canvas/physics";
-import type { Risk } from "@/entities/game/model/types";
+import {
+  createBallMotion,
+  getBallFrame,
+  type BallMotion,
+} from "@/widgets/plinko-board/lib/canvas/physics";
 
 type PlinkoCanvasProps = {
   activeRounds: ActiveRound[];
   layout?: BoardLayout;
   onAnimationComplete: (roundId: string) => void;
   rows: number;
-  risk: Risk;
 };
 
 export function PlinkoCanvas({
@@ -30,14 +31,13 @@ export function PlinkoCanvas({
   layout = "regular",
   onAnimationComplete,
   rows,
-  risk,
 }: PlinkoCanvasProps) {
   const staticCanvasRef = useRef<HTMLCanvasElement>(null);
   const ballCanvasRef = useRef<HTMLCanvasElement>(null);
   const ballContextRef = useRef<CanvasRenderingContext2D | null>(null);
   const activeRoundsRef = useRef(activeRounds);
   const startedAtByRoundRef = useRef(new Map<string, number>());
-  const ballPathByRoundRef = useRef(new Map<string, ReturnType<typeof getBallPath>>());
+  const ballMotionByRoundRef = useRef(new Map<string, BallMotion>());
   const completedRoundIdsRef = useRef(new Set<string>());
   const onAnimationCompleteRef = useRef(onAnimationComplete);
   const animationFrameRef = useRef(0);
@@ -63,9 +63,9 @@ export function PlinkoCanvas({
       }
     });
 
-    ballPathByRoundRef.current.forEach((_, roundId) => {
+    ballMotionByRoundRef.current.forEach((_, roundId) => {
       if (!activeRoundIds.has(roundId)) {
-        ballPathByRoundRef.current.delete(roundId);
+        ballMotionByRoundRef.current.delete(roundId);
       }
     });
 
@@ -92,14 +92,19 @@ export function PlinkoCanvas({
           return;
         }
 
-        let ballPath = ballPathByRoundRef.current.get(round.id);
+        let ballMotion = ballMotionByRoundRef.current.get(round.id);
 
-        if (!ballPath) {
-          ballPath = getBallPath(round.bet, rows, risk, layout);
-          ballPathByRoundRef.current.set(round.id, ballPath);
+        if (!ballMotion) {
+          ballMotion = createBallMotion({
+            bucketIndex: round.bet.bucketIndex,
+            layout,
+            rows,
+            seed: round.bet.betId,
+          });
+          ballMotionByRoundRef.current.set(round.id, ballMotion);
         }
 
-        if (ballPath.length === 0) {
+        if (ballMotion.frames.length === 0) {
           completedRoundIdsRef.current.add(round.id);
           onAnimationCompleteRef.current(round.id);
           return;
@@ -112,7 +117,7 @@ export function PlinkoCanvas({
         const startedAt =
           startedAtByRoundRef.current.get(round.id) ?? timestamp;
         const elapsedMs = timestamp - startedAt;
-        const frame = getBallFrame(ballPath, elapsedMs);
+        const frame = getBallFrame(ballMotion, elapsedMs);
 
         ballFrames.push(frame);
 
@@ -139,7 +144,7 @@ export function PlinkoCanvas({
         runFrameRef.current,
       );
     },
-    [boardHeight, boardWidth, layout, risk, rows],
+    [boardHeight, boardWidth, layout, rows],
   );
 
   useEffect(() => {
@@ -181,7 +186,7 @@ export function PlinkoCanvas({
       return;
     }
 
-    ballPathByRoundRef.current.clear();
+    ballMotionByRoundRef.current.clear();
 
     drawPegLayer(context, {
       height: boardHeight,

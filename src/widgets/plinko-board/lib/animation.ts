@@ -1,7 +1,3 @@
-import type { Bet } from "@/entities/bet/model/types";
-import type { Risk } from "@/entities/game/model/types";
-import { parsePlinkoPath } from "./path";
-
 export type BallPosition = {
   x: number;
   y: number;
@@ -28,11 +24,6 @@ const pyramidWidthByLayout: Record<BoardLayout, number> = {
   compact: 340,
   regular: 540,
   tablet: 430,
-};
-const bucketOffsetByLayout: Record<BoardLayout, number> = {
-  compact: 16,
-  regular: 18,
-  tablet: 17,
 };
 const boardBottomPaddingByLayout: Record<BoardLayout, number> = {
   compact: 46,
@@ -124,47 +115,4 @@ export function getBucketLayout(rows: number, layout: BoardLayout = "regular") {
     bucketWidth,
     totalWidth,
   };
-}
-
-export function getBallPath(
-  bet: Bet | null,
-  rows: number,
-  risk: Risk,
-  layout: BoardLayout = "regular",
-) {
-  if (!bet || bet.rows !== rows || bet.risk !== risk) {
-    return [];
-  }
-
-  const directions = parsePlinkoPath(bet.path, rows);
-
-  if (directions.length === 0) {
-    return [];
-  }
-
-  const positions: BallPosition[] = [
-    { x: boardWidthByLayout[layout] / 2, y: 0 },
-  ];
-  let bucketIndex = 0;
-
-  directions.forEach((direction, rowIndex) => {
-    positions.push(getPegPosition(rowIndex, bucketIndex + 1, rows, layout));
-
-    if (direction === "R") {
-      bucketIndex += 1;
-    }
-  });
-
-  const finalBucketIndex =
-    directions.length === rows ? bet.bucketIndex : bucketIndex;
-  const { bucketGap, bucketWidth, totalWidth } = getBucketLayout(rows, layout);
-  const firstBucketCenter =
-    boardWidthByLayout[layout] / 2 - totalWidth / 2 + bucketWidth / 2;
-
-  positions.push({
-    x: firstBucketCenter + finalBucketIndex * (bucketWidth + bucketGap),
-    y: getBoardHeight(rows, layout) - bucketOffsetByLayout[layout],
-  });
-
-  return positions;
 }
