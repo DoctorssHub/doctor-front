@@ -110,6 +110,7 @@ export function RouletteScreen() {
           <div className="space-y-4">
             <BettingBoard
               disabled={isSpinning || betMutation.isPending}
+              placedBets={placedBets}
               onPlaceBet={placeBet}
             />
             <RouletteResult result={result} />
