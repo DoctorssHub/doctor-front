@@ -67,6 +67,8 @@ const candidateVelocityStep = 20;
 const minRowsForTimingScale = 8;
 const maxRowsForTimingScale = 16;
 const maxRowsTimingScale = 1.45;
+const exitDriftWeight = 0.5;
+const aimInertiaWeight = 0.03;
 
 function easeOutCubic(progress: number) {
   return 1 - Math.pow(1 - progress, 3);
@@ -451,6 +453,12 @@ function getLatestImpact(impactEvents: ImpactEvent[], elapsedMs: number) {
   return null;
 }
 
+function getBestCandidate<T extends { score: number }>(candidates: T[]) {
+  return candidates.reduce((best, candidate) =>
+    candidate.score < best.score ? candidate : best,
+  );
+}
+
 export function createBallMotion({
   bucketIndex,
   layout = "regular",
@@ -487,9 +495,7 @@ export function createBallMotion({
     }),
   );
 
-  const bestCandidate = candidates.reduce((best, candidate) =>
-    candidate.score < best.score ? candidate : best,
-  );
+  const bestCandidate = getBestCandidate(candidates);
   const refinedCandidates = [];
 
   for (
@@ -508,18 +514,20 @@ export function createBallMotion({
     );
   }
 
-  const bestRefinedCandidate = refinedCandidates.reduce((best, candidate) =>
-    candidate.score < best.score ? candidate : best,
+  const bestRefinedCandidate = getBestCandidate(refinedCandidates);
+  const allCandidates = [...candidates, ...refinedCandidates];
+  const strictValidCandidates = allCandidates.filter(
+    (candidate) => candidate.isTargetBucketHit && candidate.staysInPyramid,
   );
-  const validCandidates = [...candidates, ...refinedCandidates].filter(
+  const targetBucketCandidates = allCandidates.filter(
     (candidate) => candidate.isTargetBucketHit,
   );
   const selectedCandidate =
-    validCandidates.length > 0
-      ? validCandidates.reduce((best, candidate) =>
-          candidate.score < best.score ? candidate : best,
-        )
-      : bestRefinedCandidate;
+    strictValidCandidates.length > 0
+      ? getBestCandidate(strictValidCandidates)
+      : targetBucketCandidates.length > 0
+        ? getBestCandidate(targetBucketCandidates)
+        : bestRefinedCandidate;
 
   return applyTimingScale(
     selectedCandidate.motion,
@@ -539,11 +547,20 @@ function simulateBallMotion({
   const pegs = getPegs(rows, layout);
   const pyramidBounds = getPyramidBounds(rows, layout, ballRadius);
   const target = getTargetBucketGeometry(bucketIndex, rows, layout);
+  const lastRowY = getPegPosition(Math.max(0, rows - 1), 0, rows, layout).y;
   const gravity = baseGravity * (0.96 + seedValue * 0.08);
   const initialVelocityY = 72 + seedValue * 34;
+  const firstRowLeftPeg = getPegPosition(0, 0, rows, layout);
+  const firstRowRightPeg = getPegPosition(0, 2, rows, layout);
+  const pegRadius = getPegRadius(rows, layout);
+  // Start the ball 2px above the first peg row at a seeded x somewhere across
+  // the three top pegs (not always dead-centre). This removes the long free
+  // fall where the ball used to fling sideways, and a varied, off-centre drop
+  // makes the first contact a natural glancing deflection instead of a dead-on
+  // trampoline off the centre peg.
   const position = {
-    x: boardWidth / 2,
-    y: 0,
+    x: firstRowLeftPeg.x + (firstRowRightPeg.x - firstRowLeftPeg.x) * seedValue,
+    y: firstRowLeftPeg.y - (ballRadius + pegRadius) - 2,
   };
   const velocity = {
     x: initialVelocityX,
@@ -556,6 +573,8 @@ function simulateBallMotion({
     },
   ];
   const impactEvents: ImpactEvent[] = [];
+  let exitX: number | null = null;
+  let hasContacted = false;
   let maxOutsidePyramidDistance = 0;
   let outsidePyramidFrameCount = 0;
 
@@ -570,7 +589,13 @@ function simulateBallMotion({
     velocity.y += gravity * dtSeconds;
     velocity.x *= horizontalDamping;
     velocity.y *= verticalDamping;
-    position.x += velocity.x * dtSeconds;
+    // Hold the seeded horizontal "aim" velocity until the ball first touches a
+    // peg, so the drop reads as a clean vertical fall onto the first row rather
+    // than sliding sideways. After the first contact the ball moves sideways
+    // only as a consequence of a hit, like a real Plinko drop.
+    if (hasContacted) {
+      position.x += velocity.x * dtSeconds;
+    }
     position.y += velocity.y * dtSeconds;
     const outsidePyramidDistance = getOutsidePyramidDistance(
       position,
@@ -586,11 +611,23 @@ function simulateBallMotion({
       outsidePyramidFrameCount += 1;
     }
 
-    if (position.x < ballRadius) {
-      position.x = ballRadius;
+    // Side rails that hug the outermost pegs, so the ball bounces back at the
+    // pyramid edge instead of drifting into the empty margin and hitting the
+    // far board wall. `getPyramidBounds` pads each row by `ballRadius * 3`, so
+    // adding `ballRadius * 2` back places the rail one ball radius inside the
+    // outer peg line. Below the last row there is no bound: fall back to the
+    // board walls for the bucket zone.
+    const railBound = getInterpolatedPyramidBound(pyramidBounds, position.y);
+    const leftLimit = railBound ? railBound.left + ballRadius * 2 : ballRadius;
+    const rightLimit = railBound
+      ? railBound.right - ballRadius * 2
+      : boardWidth - ballRadius;
+
+    if (position.x < leftLimit) {
+      position.x = leftLimit;
       velocity.x = Math.abs(velocity.x) * wallRestitution;
-    } else if (position.x > boardWidth - ballRadius) {
-      position.x = boardWidth - ballRadius;
+    } else if (position.x > rightLimit) {
+      position.x = rightLimit;
       velocity.x = -Math.abs(velocity.x) * wallRestitution;
     }
 
@@ -612,11 +649,16 @@ function simulateBallMotion({
       );
 
       if (impactPosition) {
+        hasContacted = true;
         impactEvents.push({
           position: impactPosition,
           timeMs: elapsedMs,
         });
       }
+    }
+
+    if (exitX === null && position.y >= lastRowY) {
+      exitX = position.x;
     }
 
     frames.push({
@@ -641,8 +683,19 @@ function simulateBallMotion({
   const isTargetBucketHit =
     yShortfall <= ballRadius * 0.5 &&
     isInsideTargetBucket(lastNaturalPosition, target, ballRadius);
+  const staysInPyramid =
+    maxOutsidePyramidDistance <= ballRadius * 0.5 &&
+    outsidePyramidFrameCount <= 2;
   const impactPenalty = impactEvents.length === 0 ? 400 : 0;
-  const sparseImpactPenalty = impactEvents.length < 3 ? 90 : 0;
+  // A natural ball clatters down through roughly one peg per row. Trajectories
+  // that reach the target with far fewer hits are tunnelling straight through
+  // the field (very visible on 16 rows, where the pegs are small) — penalise
+  // them heavily so the search never prefers a peg-skipping shortcut.
+  const minExpectedImpacts = Math.max(3, Math.round(rows * 0.4));
+  const sparseImpactPenalty =
+    impactEvents.length < minExpectedImpacts
+      ? (minExpectedImpacts - impactEvents.length) * 160
+      : 0;
   const outsideBucketPenalty =
     xDistance > ballRadius * 2
       ? Math.pow(xDistance - ballRadius * 2, 1.12)
@@ -655,12 +708,22 @@ function simulateBallMotion({
       : 0;
   const earlyFinishPenalty =
     yShortfall > ballRadius * 0.5 ? 6000 + yShortfall * 120 : 0;
+  // How far the ball is from the target bucket when it leaves the last peg row.
+  // Penalising this makes the ball commit to the correct gap while still among
+  // the pegs, so the final drop is short and vertical instead of sliding side-
+  // ways over a nearer bucket's divider into a farther one.
+  const exitDrift = Math.abs((exitX ?? lastNaturalPosition.x) - target.x);
+  const exitDriftPenalty = exitDrift * exitDriftWeight;
+  // Prefer the calmest aim that still reaches the target: a smaller initial
+  // horizontal velocity means less sideways inertia released at the first peg.
+  const aimInertiaPenalty = Math.abs(initialVelocityX) * aimInertiaWeight;
   const targetAlignmentScore =
     outsideTargetBucketDistance > 0 ? xDistance : xDistance * 0.12;
 
   return {
     initialVelocityX,
     isTargetBucketHit,
+    staysInPyramid,
     motion: {
       durationMs: lastFrameTime,
       finalPosition: lastNaturalPosition,
@@ -675,7 +738,9 @@ function simulateBallMotion({
       yShortfall * 2 +
       earlyFinishPenalty +
       impactPenalty +
-      sparseImpactPenalty,
+      sparseImpactPenalty +
+      exitDriftPenalty +
+      aimInertiaPenalty,
   };
 }
 

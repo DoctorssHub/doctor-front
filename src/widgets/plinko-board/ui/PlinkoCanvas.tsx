@@ -111,7 +111,12 @@ export function PlinkoCanvas({
         }
 
         if (!startedAtByRoundRef.current.has(round.id)) {
-          startedAtByRoundRef.current.set(round.id, timestamp);
+          // Anchor the clock to *after* the (potentially heavy) motion
+          // computation above, not to this frame's start timestamp. On 16 rows
+          // createBallMotion can block for tens of ms; using the stale frame
+          // timestamp would make the next frame jump ahead by that duration and
+          // teleport the ball several rows down.
+          startedAtByRoundRef.current.set(round.id, performance.now());
         }
 
         const startedAt =
