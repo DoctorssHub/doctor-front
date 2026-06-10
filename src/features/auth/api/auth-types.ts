@@ -28,6 +28,7 @@ export type RegisterResponse = unknown;
 export type VerifyEmailResponse = unknown;
 export type LoginResponse = unknown;
 export type MeResponse = unknown;
+export type RefreshResponse = unknown;
 export type ForgotPasswordResponse = unknown;
 export type ResetPasswordResponse = unknown;
 export type LogoutResponse = unknown;

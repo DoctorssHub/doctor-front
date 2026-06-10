@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 
 const backendApiUrl = process.env.BACKEND_API_URL;
 const AUTH_COOKIE_NAMES = ["access_token", "refresh_token", "socket_token"];
+const BACKEND_REFRESH_COOKIE_PATH = "/auth/refresh";
+const PROXY_REFRESH_COOKIE_PATH = "/api/auth/refresh";
 
 type ProxyContext = {
   params: Promise<{
@@ -137,7 +139,11 @@ function createAuthCookieHeader(request: NextRequest) {
 
 function clearAuthCookies(response: Response, hostname: string) {
   for (const name of AUTH_COOKIE_NAMES) {
-    for (const path of ["/", "/auth/refresh"]) {
+    for (const path of [
+      "/",
+      BACKEND_REFRESH_COOKIE_PATH,
+      PROXY_REFRESH_COOKIE_PATH,
+    ]) {
       response.headers.append(
         "set-cookie",
         createExpiredCookie(name, path, hostname),
@@ -195,7 +201,7 @@ function secureAuthCookieAttributes(attributes: string[], hostname: string) {
       !/^httponly$/i.test(attribute) &&
       !/^samesite=/i.test(attribute) &&
       !/^secure$/i.test(attribute),
-  );
+  ).map(normalizeAuthCookiePathAttribute);
   const sameSite =
     attributes.find((attribute) => /^samesite=/i.test(attribute)) ||
     "SameSite=Lax";
@@ -207,6 +213,18 @@ function secureAuthCookieAttributes(attributes: string[], hostname: string) {
   }
 
   return nextAttributes;
+}
+
+function normalizeAuthCookiePathAttribute(attribute: string) {
+  if (!/^path=/i.test(attribute)) {
+    return attribute;
+  }
+
+  const path = attribute.slice(attribute.indexOf("=") + 1);
+
+  return path === BACKEND_REFRESH_COOKIE_PATH
+    ? `Path=${PROXY_REFRESH_COOKIE_PATH}`
+    : attribute;
 }
 
 function createExpiredCookie(name: string, path: string, hostname: string) {
