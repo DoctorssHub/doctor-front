@@ -38,7 +38,7 @@ function createMockBet({
 export function PlinkoScreen() {
   const [mode, setMode] = useState<GameMode>("Manual");
   const [risk, setRisk] = useState<Risk>("MEDIUM");
-  const [rows, setRows] = useState(14);
+  const [rows, setRows] = useState(8);
   const [betAmount, setBetAmount] = useState("0.00");
   const [activeRounds, setActiveRounds] = useState<ActiveRound[]>([]);
   const [recentMultipliers, setRecentMultipliers] = useState([5.6, 0.5, 1]);
@@ -116,31 +116,6 @@ export function PlinkoScreen() {
           rows={rows}
         />
       </section>
-
-      <div className="mx-auto mt-2 flex max-w-7xl items-center justify-between rounded-lg bg-[#0c111d] px-4 py-3 text-xs">
-        <div className="flex gap-2">
-          <button
-            aria-label="Fullscreen"
-            className="grid h-8 w-8 place-items-center rounded-md border border-[#263244] bg-[#1b2230] text-white/70"
-            type="button"
-          >
-            FS
-          </button>
-          <button
-            aria-label="Settings"
-            className="grid h-8 w-8 place-items-center rounded-md border border-[#263244] bg-[#1b2230] text-white/70"
-            type="button"
-          >
-            Set
-          </button>
-        </div>
-        <div className="flex items-center gap-2 font-medium text-[#d93a43]">
-          <span>Provably Fair</span>
-          <span className="grid h-4 w-4 place-items-center rounded-full bg-[#c82831] text-[10px] text-[#fff7f7]">
-            OK
-          </span>
-        </div>
-      </div>
     </main>
   );
 }
