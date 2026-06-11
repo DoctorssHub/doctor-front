@@ -63,12 +63,14 @@ const verticalDamping = 0.998;
 const impactDurationMs = 170;
 const minCandidateVelocityX = -2200;
 const maxCandidateVelocityX = 2200;
-const candidateVelocityStep = 20;
+const candidateVelocityStep = 40;
+const refinedCandidateVelocityStep = 8;
 const minRowsForTimingScale = 8;
 const maxRowsForTimingScale = 16;
 const maxRowsTimingScale = 1.45;
 const exitDriftWeight = 0.5;
 const aimInertiaWeight = 0.03;
+const motionCache = new Map<string, BallMotion>();
 
 function easeOutCubic(progress: number) {
   return 1 - Math.pow(1 - progress, 3);
@@ -465,6 +467,13 @@ export function createBallMotion({
   rows,
   seed,
 }: BallSimulationParams): BallMotion {
+  const cacheKey = `${layout}:${rows}:${bucketIndex}`;
+  const cachedMotion = motionCache.get(cacheKey);
+
+  if (cachedMotion) {
+    return cachedMotion;
+  }
+
   const initialVelocityX = getSeededInitialVelocityX(bucketIndex, rows);
   const seedValue = getSeedValue(seed ?? `${bucketIndex}:${rows}`);
   const candidates = [];
@@ -501,7 +510,7 @@ export function createBallMotion({
   for (
     let velocityX = bestCandidate.initialVelocityX - candidateVelocityStep;
     velocityX <= bestCandidate.initialVelocityX + candidateVelocityStep;
-    velocityX += 4
+    velocityX += refinedCandidateVelocityStep
   ) {
     refinedCandidates.push(
       simulateBallMotion({
@@ -537,10 +546,14 @@ export function createBallMotion({
           ? getBestCandidate(targetBucketCandidates)
           : bestRefinedCandidate;
 
-  return applyTimingScale(
+  const motion = applyTimingScale(
     selectedCandidate.motion,
     getRowsTimingScale(rows),
   );
+
+  motionCache.set(cacheKey, motion);
+
+  return motion;
 }
 
 function simulateBallMotion({

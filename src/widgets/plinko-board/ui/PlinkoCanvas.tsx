@@ -74,7 +74,26 @@ export function PlinkoCanvas({
         completedRoundIdsRef.current.delete(roundId);
       }
     });
-  }, [activeRounds]);
+
+    activeRounds.forEach((round) => {
+      if (
+        completedRoundIdsRef.current.has(round.id) ||
+        ballMotionByRoundRef.current.has(round.id)
+      ) {
+        return;
+      }
+
+      const ballMotion = createBallMotion({
+        bucketIndex: round.bet.bucketIndex,
+        layout,
+        rows,
+        seed: round.bet.betId,
+      });
+
+      ballMotionByRoundRef.current.set(round.id, ballMotion);
+      startedAtByRoundRef.current.set(round.id, performance.now());
+    });
+  }, [activeRounds, layout, rows]);
 
   const runFrame = useCallback(
     (timestamp: number) => {
@@ -92,31 +111,16 @@ export function PlinkoCanvas({
           return;
         }
 
-        let ballMotion = ballMotionByRoundRef.current.get(round.id);
+        const ballMotion = ballMotionByRoundRef.current.get(round.id);
 
         if (!ballMotion) {
-          ballMotion = createBallMotion({
-            bucketIndex: round.bet.bucketIndex,
-            layout,
-            rows,
-            seed: round.bet.betId,
-          });
-          ballMotionByRoundRef.current.set(round.id, ballMotion);
+          return;
         }
 
         if (ballMotion.frames.length === 0) {
           completedRoundIdsRef.current.add(round.id);
           onAnimationCompleteRef.current(round.id);
           return;
-        }
-
-        if (!startedAtByRoundRef.current.has(round.id)) {
-          // Anchor the clock to *after* the (potentially heavy) motion
-          // computation above, not to this frame's start timestamp. On 16 rows
-          // createBallMotion can block for tens of ms; using the stale frame
-          // timestamp would make the next frame jump ahead by that duration and
-          // teleport the ball several rows down.
-          startedAtByRoundRef.current.set(round.id, performance.now());
         }
 
         const startedAt =
