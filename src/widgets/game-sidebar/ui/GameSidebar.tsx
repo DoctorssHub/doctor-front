@@ -4,9 +4,18 @@ import Image from "next/image";
 import type { GameMode, Risk } from "@/entities/game/model/types";
 
 type GameSidebarProps = {
-  balance: string;
+  autoBetsAmount: string;
   betAmount: string;
+  betButtonLabel?: string;
+  errorMessage?: string;
+  isAutoBetsInfinite: boolean;
+  isBetDisabled?: boolean;
+  isModeChangeDisabled?: boolean;
+  maxBet?: string;
+  minBet?: string;
   mode: GameMode;
+  onAutoBetsAmountChange: (amount: string) => void;
+  onAutoBetsInfinityToggle: () => void;
   onBetAmountChange: (amount: string) => void;
   onBetClick: () => void;
   onModeChange: (mode: GameMode) => void;
@@ -29,9 +38,18 @@ const riskTone: Record<Risk, string> = {
 };
 
 export function GameSidebar({
-  balance,
+  autoBetsAmount,
   betAmount,
+  betButtonLabel = "Bet",
+  errorMessage,
+  isAutoBetsInfinite,
+  isBetDisabled = false,
+  isModeChangeDisabled = false,
+  maxBet,
+  minBet,
   mode,
+  onAutoBetsAmountChange,
+  onAutoBetsInfinityToggle,
   onBetAmountChange,
   onBetClick,
   onModeChange,
@@ -49,7 +67,8 @@ export function GameSidebar({
               mode === nextMode
                 ? "bg-[linear-gradient(180deg,rgb(27_31_38_/_40%)_0%,rgb(43_48_59_/_40%)_100%)] text-white"
                 : "text-white/70 hover:bg-[#171d29]"
-            }`}
+            } disabled:cursor-not-allowed disabled:opacity-50`}
+            disabled={isModeChangeDisabled}
             key={nextMode}
             onClick={() => onModeChange(nextMode)}
             type="button"
@@ -64,16 +83,6 @@ export function GameSidebar({
           <label className="text-sm font-semibold text-white" htmlFor="bet">
             Bet Amount
           </label>
-          <div className="flex items-center gap-2 text-sm text-white/90">
-            <Image
-              src="/red-coin.svg"
-              alt=""
-              width={16}
-              height={16}
-              aria-hidden="true"
-            />
-            <span>{balance}</span>
-          </div>
         </div>
         <div className="flex h-10 items-center rounded-md border border-[#202938] bg-[#0d1320] px-3">
           <Image
@@ -88,7 +97,11 @@ export function GameSidebar({
             className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none"
             id="bet"
             inputMode="decimal"
+            max={maxBet}
+            min={minBet}
             onChange={(event) => onBetAmountChange(event.target.value)}
+            placeholder={minBet ? `Min ${minBet}` : undefined}
+            type="number"
             value={betAmount}
           />
           <div className="ml-2 flex gap-1">
@@ -104,6 +117,14 @@ export function GameSidebar({
           </div>
         </div>
       </div>
+
+      {minBet || maxBet ? (
+        <p className="mt-2 text-xs text-white/45">
+          {minBet ? `Min ${minBet}` : null}
+          {minBet && maxBet ? " / " : null}
+          {maxBet ? `Max ${maxBet}` : null}
+        </p>
+      ) : null}
 
       <fieldset className="mt-6">
         <legend className="mb-3 text-sm font-semibold text-white">Risk</legend>
@@ -144,13 +165,74 @@ export function GameSidebar({
         </div>
       </div>
 
+      {mode === "Auto" ? (
+        <label
+          className="mt-6 block text-sm font-semibold text-white"
+          htmlFor="auto-bets"
+        >
+          Number of Bets
+          <span className="mt-2 flex items-center gap-2">
+            <span className="flex h-10 min-w-0 flex-1 items-center rounded-md border border-[#202938] bg-[#0d1320] px-3">
+              {isAutoBetsInfinite ? (
+                <span className="flex flex-1 justify-center">
+                  <Image
+                    src="/infinity-icon.svg"
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="size-4"
+                    aria-hidden="true"
+                  />
+                </span>
+              ) : (
+                <input
+                  className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none"
+                  id="auto-bets"
+                  inputMode="numeric"
+                  min={1}
+                  max={100}
+                  onChange={(event) =>
+                    onAutoBetsAmountChange(event.target.value)
+                  }
+                  type="number"
+                  value={autoBetsAmount}
+                />
+              )}
+            </span>
+            <button
+              aria-pressed={isAutoBetsInfinite}
+              aria-label="Toggle infinite autobet"
+              className={`flex size-7 shrink-0 items-center justify-center rounded border border-[#3F4A5980] transition hover:bg-[#1b2230] ${
+                isAutoBetsInfinite ? "bg-[#1b2230]" : "bg-transparent"
+              }`}
+              onClick={onAutoBetsInfinityToggle}
+              type="button"
+            >
+              <Image
+                src="/infinity-icon.svg"
+                alt=""
+                width={16}
+                height={16}
+                className="size-4"
+                aria-hidden="true"
+              />
+            </button>
+          </span>
+        </label>
+      ) : null}
+
       <button
-        className="mt-8 h-12 rounded-md bg-[#c82831] text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43]"
+        className="mt-8 h-12 rounded-md bg-[#c82831] text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43] disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={isBetDisabled}
         onClick={onBetClick}
         type="button"
       >
-        Bet
+        {betButtonLabel}
       </button>
+
+      {errorMessage ? (
+        <p className="mt-3 text-sm leading-5 text-[#f87171]">{errorMessage}</p>
+      ) : null}
     </aside>
   );
 }
