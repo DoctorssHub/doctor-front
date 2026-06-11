@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuthSessionStore } from "./auth-session-store";
+import type { UserBalance } from "../lib/read-auth-response";
 import type { AuthFlow } from "../ui/types";
 
 type InitialAuthFlow = Extract<AuthFlow, "login" | "register">;
@@ -31,13 +32,13 @@ export function useAuthModalFlow(
     setFlow("verify-email");
   }
 
-  function handleLoggedIn(username: string) {
-    setSession(username);
+  function handleLoggedIn(username: string, balances?: UserBalance[] | null) {
+    setSession(username, balances);
     onClose();
   }
 
-  function handleVerified(username: string) {
-    setSession(username);
+  function handleVerified(username: string, balances?: UserBalance[] | null) {
+    setSession(username, balances);
     onClose();
   }
 

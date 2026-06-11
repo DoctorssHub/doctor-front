@@ -4,7 +4,10 @@ import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
 import { getCurrentUser, logoutUser } from "@/features/auth/api/auth-api";
-import { readUsername } from "@/features/auth/lib/read-auth-response";
+import {
+  readUserBalances,
+  readUsername,
+} from "@/features/auth/lib/read-auth-response";
 
 export function HomeScreen() {
   const openAuthModal = useAuthModalStore((state) => state.openAuthModal);
@@ -31,9 +34,10 @@ export function HomeScreen() {
     getCurrentUser()
       .then((response) => {
         const nextUsername = readUsername(response.data);
+        const nextBalances = readUserBalances(response.data);
 
         if (isMounted && nextUsername) {
-          setSession(nextUsername);
+          setSession(nextUsername, nextBalances);
         }
       })
       .catch(() => {

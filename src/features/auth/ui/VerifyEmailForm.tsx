@@ -10,7 +10,11 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { getCurrentUser, verifyEmail } from "../api/auth-api";
 import { parseAuthError } from "../lib/parse-auth-error";
-import { readUsername } from "../lib/read-auth-response";
+import {
+  readUserBalances,
+  readUsername,
+  type UserBalance,
+} from "../lib/read-auth-response";
 
 const CODE_LENGTH = 6;
 
@@ -18,7 +22,7 @@ type VerifyEmailFormProps = {
   verificationToken: string;
   email: string;
   fallbackUsername: string;
-  onVerified: (username: string) => void;
+  onVerified: (username: string, balances?: UserBalance[] | null) => void;
   onBack: () => void;
 };
 
@@ -48,7 +52,10 @@ export function VerifyEmailForm({
       return meResponse;
     },
     onSuccess: (meResponse) => {
-      onVerified(readUsername(meResponse.data) || fallbackUsername);
+      onVerified(
+        readUsername(meResponse.data) || fallbackUsername,
+        readUserBalances(meResponse.data),
+      );
     },
     onError: (error) => {
       setErrorMessage(parseAuthError(error));
