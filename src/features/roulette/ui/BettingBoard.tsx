@@ -278,8 +278,8 @@ export function BettingBoard({
   }
 
   return (
-    <div className="w-full overflow-x-auto pb-1">
-      <div className="mx-auto min-w-[631px] max-w-[631px]">
+    <div className="w-full overflow-x-auto ">
+      <div className="mx-auto min-w-[625px] max-w-[625px]">
         <div className="grid w-[625px] grid-cols-[40px_535px_40px] gap-[5px]">
           <button
             className={[
@@ -380,7 +380,7 @@ export function BettingBoard({
           })}
         </div>
 
-        <div className="mt-[5px] grid w-[631px] grid-cols-3 gap-[5px]">
+        <div className="mt-[5px] grid w-[625px] grid-cols-3 gap-[5px]">
           <button
             className={lowerButtonClass(
               "bg-[#0e121c]",
@@ -437,14 +437,14 @@ export function BettingBoard({
           </button>
         </div>
 
-        <div className="mt-[5px] grid w-[631px] grid-cols-6 gap-[5px]">
+        <div className="mt-[5px] grid w-[625px] grid-cols-6 gap-[5px]">
           <button
             className={lowerButtonClass(
               "bg-[#0e121c]",
               hoverArea?.kind === "range" &&
                 hoverArea.min === 1 &&
                 hoverArea.max === 18,
-              "w-[101px]",
+              "w-[100px]",
             )}
             disabled={disabled}
             {...getHoverHandlers({ kind: "range", min: 1, max: 18 })}
@@ -460,7 +460,7 @@ export function BettingBoard({
             className={lowerButtonClass(
               "bg-[#0e121c]",
               hoverArea?.kind === "parity" && hoverArea.parity === "EVEN",
-              "w-[101px]",
+              "w-[100px]",
             )}
             disabled={disabled}
             {...getHoverHandlers({ kind: "parity", parity: "EVEN" })}
@@ -477,7 +477,7 @@ export function BettingBoard({
             className={lowerButtonClass(
               "bg-[#dc2626]",
               hoverArea?.kind === "color" && hoverArea.color === "RED",
-              "w-[101px]",
+              "w-[100px]",
             )}
             disabled={disabled}
             {...getHoverHandlers({ kind: "color", color: "RED" })}
@@ -493,7 +493,7 @@ export function BettingBoard({
             className={lowerButtonClass(
               "bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)]",
               hoverArea?.kind === "color" && hoverArea.color === "BLACK",
-              "w-[101px]",
+              "w-[100px]",
             )}
             disabled={disabled}
             {...getHoverHandlers({ kind: "color", color: "BLACK" })}
@@ -508,7 +508,7 @@ export function BettingBoard({
             className={lowerButtonClass(
               "bg-[#0e121c]",
               hoverArea?.kind === "parity" && hoverArea.parity === "ODD",
-              "w-[101px]",
+              "w-[100px]",
             )}
             disabled={disabled}
             {...getHoverHandlers({ kind: "parity", parity: "ODD" })}
@@ -526,7 +526,7 @@ export function BettingBoard({
               hoverArea?.kind === "range" &&
                 hoverArea.min === 19 &&
                 hoverArea.max === 36,
-              "w-[101px]",
+              "w-[100px]",
             )}
             disabled={disabled}
             {...getHoverHandlers({ kind: "range", min: 19, max: 36 })}

@@ -11,6 +11,7 @@ import {
 import { useRouletteStore } from "@/features/roulette/model/use-roulette-store";
 import { BetControls } from "@/features/roulette/ui/BetControls";
 import { BettingBoard } from "@/features/roulette/ui/BettingBoard";
+import { RouletteHistory } from "@/features/roulette/ui/RouletteHistory";
 import { RouletteResult } from "@/features/roulette/ui/RouletteResult";
 import { RouletteWheel } from "@/features/roulette/ui/RouletteWheel";
 
@@ -36,6 +37,7 @@ export function RouletteScreen() {
   const placedBets = useRouletteStore((state) => state.placedBets);
   const isSpinning = useRouletteStore((state) => state.isSpinning);
   const result = useRouletteStore((state) => state.result);
+  const resultHistory = useRouletteStore((state) => state.resultHistory);
   const selectChip = useRouletteStore((state) => state.selectChip);
   const placeBet = useRouletteStore((state) => state.placeBet);
   const clearBets = useRouletteStore((state) => state.clearBets);
@@ -43,6 +45,9 @@ export function RouletteScreen() {
   const startSpin = useRouletteStore((state) => state.startSpin);
   const finishSpin = useRouletteStore((state) => state.finishSpin);
   const stopSpin = useRouletteStore((state) => state.stopSpin);
+  const settleResultHistory = useRouletteStore(
+    (state) => state.settleResultHistory,
+  );
 
   const configQuery = useQuery({
     queryKey: ["roulette", "config"],
@@ -83,8 +88,8 @@ export function RouletteScreen() {
       : null;
 
   return (
-    <main className="min-h-screen bg-[var(--color-page)] px-3 py-5 text-white md:px-5 md:py-7">
-      <div className="mx-auto grid max-w-[1280px] overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_22px_80px_rgb(0_0_0_/_28%)] lg:grid-cols-[302px_minmax(0,1fr)]">
+    <main className="min-h-screen bg-[var(--color-page)] px-3 py-5 text-white md:px-[10px] md:py-7">
+      <div className="mx-auto grid w-full max-w-[1017px] overflow-hidden shadow-[0_22px_80px_rgb(0_0_0_/_28%)] lg:h-[668px] lg:grid-cols-[352px_665px]">
         <BetControls
           canUndo={placedBets.length > 0}
           errorMessage={errorMessage}
@@ -101,11 +106,18 @@ export function RouletteScreen() {
           totalBetAmount={totalBetAmount}
         />
 
-        <section className="flex min-w-0 flex-col justify-between gap-7 bg-[#07131d] p-4 md:p-6">
-          <RouletteWheel
-            isSpinning={isSpinning || betMutation.isPending}
-            resultNumber={result?.number ?? null}
+        <section className="relative flex min-w-0 flex-col justify-between gap-7 border-b-2 border-r-2 border-[#0e121c] bg-[#07131d] px-[10px] pb-[30px] pt-5 lg:h-[668px] lg:w-[665px] lg:rounded-[0_16px_16px_0]">
+          <RouletteHistory
+            results={resultHistory}
+            onExitComplete={settleResultHistory}
           />
+
+          <div className="relative mx-auto w-full max-w-[560px]">
+            <RouletteWheel
+              isSpinning={isSpinning || betMutation.isPending}
+              resultNumber={result?.number ?? null}
+            />
+          </div>
 
           <div className="space-y-4">
             <BettingBoard

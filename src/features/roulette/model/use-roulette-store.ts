@@ -16,6 +16,7 @@ type RouletteStore = {
   placedBets: PlacedRouletteBet[];
   isSpinning: boolean;
   result: RouletteResult | null;
+  resultHistory: RouletteResult[];
   selectChip: (chip: number) => void;
   placeBet: (bet: NewRouletteBet) => void;
   clearBets: () => void;
@@ -24,6 +25,7 @@ type RouletteStore = {
   finishSpin: (response: RouletteBetResponse) => void;
   stopSpin: () => void;
   resetResult: () => void;
+  settleResultHistory: () => void;
 };
 
 function createBetId() {
@@ -35,6 +37,7 @@ export const useRouletteStore = create<RouletteStore>()((set, get) => ({
   placedBets: [],
   isSpinning: false,
   result: null,
+  resultHistory: [],
   selectChip: (chip) => {
     set({ selectedChip: chip });
   },
@@ -65,23 +68,31 @@ export const useRouletteStore = create<RouletteStore>()((set, get) => ({
     set({ isSpinning: true, result: null });
   },
   finishSpin: (response) => {
-    set({
+    const result = {
+      betId: response.betId,
+      number: response.randomPosition,
+      betSize: response.betSize,
+      payout: response.payout,
+      multiplier: response.multiplier,
+      createdAt: response.createdAt,
+    };
+
+    set((state) => ({
       isSpinning: false,
-      result: {
-        betId: response.betId,
-        number: response.randomPosition,
-        betSize: response.betSize,
-        payout: response.payout,
-        multiplier: response.multiplier,
-        createdAt: response.createdAt,
-      },
+      result,
+      resultHistory: [...state.resultHistory, result].slice(-6),
       placedBets: [],
-    });
+    }));
   },
   stopSpin: () => {
     set({ isSpinning: false });
   },
   resetResult: () => {
     set({ result: null });
+  },
+  settleResultHistory: () => {
+    set((state) => ({
+      resultHistory: state.resultHistory.slice(-5),
+    }));
   },
 }));

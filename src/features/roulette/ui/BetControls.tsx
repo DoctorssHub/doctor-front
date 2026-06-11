@@ -80,7 +80,7 @@ export function BetControls({
           : errorMessage;
 
   return (
-    <aside className="flex flex-col gap-7 bg-[var(--color-surface)] p-5 text-[var(--color-text-primary)] md:p-6">
+    <aside className="flex flex-col gap-7 bg-[#0e121c] p-5 text-[var(--color-text-primary)] md:p-6 lg:h-[668px] lg:w-[352px] lg:rounded-[16px_0_0_16px]">
       <div className="grid grid-cols-2 gap-3 rounded-lg text-sm font-semibold">
         <button
           className="h-10 rounded-lg bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]"
