@@ -1,4 +1,5 @@
 import Image, { type StaticImageData } from "next/image";
+import infinityIcon from "@/assets/games/roulette/Infinity.svg";
 import chip1 from "@/assets/games/roulette/Coint_1.webp";
 import chip5 from "@/assets/games/roulette/Coint_2.webp";
 import chip25 from "@/assets/games/roulette/Coint_3.webp";
@@ -12,19 +13,26 @@ import chip50k from "@/assets/games/roulette/Coint_10.webp";
 import { ROULETTE_CHIP_VALUES } from "../model/roulette-constants";
 
 type BetControlsProps = {
+  mode: "manual" | "auto";
   selectedChip: number;
   totalBetAmount: number;
   gameBalance: number;
   minBet: number;
   maxBet: number;
   isSpinning: boolean;
+  isAutoRunning: boolean;
   canUndo: boolean;
   isSubmitting: boolean;
+  autoBetCount: string;
+  isAutoInfinite: boolean;
   errorMessage: string | null;
+  onModeChange: (mode: "manual" | "auto") => void;
   onSelectChip: (chip: number) => void;
   onClear: () => void;
   onUndo: () => void;
   onSubmit: () => void;
+  onAutoBetCountChange: (value: string) => void;
+  onToggleAutoInfinite: () => void;
 };
 
 const CHIP_IMAGES = new Map<number, StaticImageData>([
@@ -51,25 +59,40 @@ function formatCoinAmount(value: number) {
 }
 
 export function BetControls({
+  mode,
   selectedChip,
   totalBetAmount,
   gameBalance,
   minBet,
   maxBet,
   isSpinning,
+  isAutoRunning,
   canUndo,
   isSubmitting,
+  autoBetCount,
+  isAutoInfinite,
   errorMessage,
+  onModeChange,
   onSelectChip,
   onClear,
   onUndo,
   onSubmit,
+  onAutoBetCountChange,
+  onToggleAutoInfinite,
 }: BetControlsProps) {
+  const selectedChipImage = CHIP_IMAGES.get(selectedChip);
   const isBetInvalid =
     totalBetAmount < minBet ||
     totalBetAmount > maxBet ||
     totalBetAmount > gameBalance;
-  const isBetDisabled = isSpinning || isSubmitting || isBetInvalid;
+  const normalizedAutoBetCount = Number(autoBetCount);
+  const isAutoBetCountInvalid =
+    mode === "auto" &&
+    !isAutoInfinite &&
+    (!Number.isInteger(normalizedAutoBetCount) || normalizedAutoBetCount < 1);
+  const isBetDisabled =
+    !isAutoRunning &&
+    (isSpinning || isSubmitting || isBetInvalid || isAutoBetCountInvalid);
   const helperMessage =
     totalBetAmount > gameBalance
       ? "Not enough coins"
@@ -77,20 +100,40 @@ export function BetControls({
         ? `Minimum bet is ${formatCoinAmount(minBet)}`
         : totalBetAmount > maxBet
           ? `Maximum bet is ${formatCoinAmount(maxBet)}`
-          : errorMessage;
+          : isAutoBetCountInvalid
+            ? "Enter at least 1 bet"
+            : errorMessage;
+  const actionLabel = isAutoRunning
+    ? "Stop Auto"
+    : isSubmitting
+      ? "Betting..."
+      : "Bet";
 
   return (
-    <aside className="flex flex-col gap-7 bg-[#0e121c] p-5 text-[var(--color-text-primary)] md:p-6 lg:h-[668px] lg:w-[352px] lg:rounded-[16px_0_0_16px]">
+    <aside className="flex flex-col gap-6 bg-[#0e121c] p-5 text-[var(--color-text-primary)] md:p-6 lg:h-[668px] lg:w-[352px] lg:rounded-[16px_0_0_16px]">
       <div className="grid grid-cols-2 gap-3 rounded-lg text-sm font-semibold">
         <button
-          className="h-10 rounded-lg bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]"
+          className={[
+            "h-10 rounded-lg transition duration-300",
+            mode === "manual"
+              ? "bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]"
+              : "text-[var(--color-text-muted)] opacity-70 hover:text-white",
+          ].join(" ")}
+          disabled={isAutoRunning || isSpinning || isSubmitting}
+          onClick={() => onModeChange("manual")}
           type="button"
         >
           Manual
         </button>
         <button
-          className="h-10 rounded-lg text-[var(--color-text-muted)] opacity-70"
-          disabled
+          className={[
+            "h-10 rounded-lg transition duration-300",
+            mode === "auto"
+              ? "bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]"
+              : "text-[var(--color-text-muted)] opacity-70 hover:text-white",
+          ].join(" ")}
+          disabled={isAutoRunning || isSpinning || isSubmitting}
+          onClick={() => onModeChange("auto")}
           type="button"
         >
           Auto
@@ -101,8 +144,16 @@ export function BetControls({
         <div className="flex items-center justify-between gap-3 text-sm">
           <span className="font-medium">Chip Value</span>
           <span className="flex items-center gap-2 font-semibold">
-            <span className="h-3.5 w-3.5 rounded-full bg-[var(--color-text-subtle)]" />
-            {formatCoinAmount(gameBalance)} COINS
+            {selectedChipImage ? (
+              <Image
+                alt=""
+                className="h-5 w-5 object-contain"
+                src={selectedChipImage}
+              />
+            ) : (
+              <span className="h-3.5 w-3.5 rounded-full bg-[var(--color-text-subtle)]" />
+            )}
+            {formatCoinAmount(selectedChip)} COINS
           </span>
         </div>
 
@@ -129,7 +180,7 @@ export function BetControls({
                     ? "scale-105 text-white drop-shadow-[0_0_14px_rgb(34_197_94_/_34%)]"
                     : "text-[var(--color-text-muted)] hover:scale-105",
                 ].join(" ")}
-                disabled={isSpinning || isSubmitting}
+                disabled={isAutoRunning || isSpinning || isSubmitting}
                 key={chip}
                 onClick={() => onSelectChip(chip)}
                 type="button"
@@ -152,36 +203,110 @@ export function BetControls({
         </div>
       </div>
 
-      <div className="space-y-3">
-        <p className="text-sm font-medium">Choose action</p>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            className="h-11 rounded-lg bg-[var(--color-surface-hover)] text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-white disabled:opacity-45"
-            disabled={!canUndo || isSpinning || isSubmitting}
-            onClick={onClear}
-            type="button"
+      <div>
+        <div
+          className={[
+            "overflow-hidden transition-[max-height,opacity,transform] duration-300 ease-out",
+            mode === "manual"
+              ? "max-h-[120px] translate-y-0 opacity-100"
+              : "max-h-0 -translate-y-2 opacity-0",
+          ].join(" ")}
+        >
+          <p className="text-sm font-medium">Choose action</p>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <button
+              className="h-11 rounded-lg bg-[var(--color-surface-hover)] text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-white disabled:opacity-45"
+              disabled={
+                !canUndo || isAutoRunning || isSpinning || isSubmitting
+              }
+              onClick={onClear}
+              type="button"
+            >
+              Clear
+            </button>
+            <button
+              className="h-11 rounded-lg bg-[var(--color-surface-hover)] text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-white disabled:opacity-45"
+              disabled={
+                !canUndo || isAutoRunning || isSpinning || isSubmitting
+              }
+              onClick={onUndo}
+              type="button"
+            >
+              Undo
+            </button>
+          </div>
+        </div>
+
+        <div
+          className={[
+            "overflow-hidden transition-[max-height,opacity,transform] duration-300 ease-out",
+            mode === "auto"
+              ? "max-h-[100px] translate-y-0 opacity-100"
+              : "max-h-0 -translate-y-2 opacity-0",
+          ].join(" ")}
+        >
+          <label
+            className="text-sm font-medium"
+            htmlFor="roulette-auto-bet-count"
           >
-            Clear
-          </button>
-          <button
-            className="h-11 rounded-lg bg-[var(--color-surface-hover)] text-sm font-semibold text-[var(--color-text-muted)] transition hover:text-white disabled:opacity-45"
-            disabled={!canUndo || isSpinning || isSubmitting}
-            onClick={onUndo}
-            type="button"
-          >
-            Undo
-          </button>
+            Number of bets
+          </label>
+          <div className="mt-3 flex h-11 items-center gap-2 rounded-lg border border-[#1b1f26] bg-[rgba(27,31,38,0.25)] p-3">
+            <div className="relative min-w-0 flex-1">
+              {isAutoInfinite ? (
+                <Image
+                  alt=""
+                  className="absolute left-0 top-1/2 h-5 w-5 -translate-y-1/2 object-contain"
+                  src={infinityIcon}
+                />
+              ) : null}
+              <input
+                className={[
+                  "w-full min-w-0 bg-transparent text-sm font-medium text-white outline-none placeholder:text-[var(--color-text-muted)] disabled:opacity-55",
+                  isAutoInfinite ? "opacity-0" : "opacity-100",
+                ].join(" ")}
+                disabled={isAutoInfinite || isAutoRunning}
+                id="roulette-auto-bet-count"
+                inputMode="numeric"
+                onChange={(event) => onAutoBetCountChange(event.target.value)}
+                pattern="[0-9]*"
+                type="text"
+                value={isAutoInfinite ? "" : autoBetCount}
+              />
+            </div>
+            <button
+              aria-label="Unlimited auto bets"
+              className={[
+                "grid h-7 w-7 shrink-0 place-items-center rounded-[4px] border border-[#2b303b] transition hover:border-white/50 disabled:opacity-55",
+                isAutoInfinite ? "bg-[#1b1f26]" : "bg-transparent",
+              ].join(" ")}
+              disabled={isAutoRunning}
+              onClick={onToggleAutoInfinite}
+              type="button"
+            >
+              <Image
+                alt=""
+                className="h-4 w-4 object-contain"
+                src={infinityIcon}
+              />
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="space-y-3">
         <button
-          className="h-12 w-full rounded-lg bg-[var(--color-brand)] text-sm font-bold text-[var(--color-brand-contrast)] transition hover:bg-[var(--color-brand-hover)] disabled:bg-[var(--color-surface-hover)] disabled:text-[var(--color-text-disabled)]"
+          className={[
+            "h-12 w-full rounded-lg text-sm font-bold transition disabled:bg-[var(--color-surface-hover)] disabled:text-[var(--color-text-disabled)]",
+            isAutoRunning
+              ? "bg-[#d71920] text-black hover:bg-[#e2272e]"
+              : "bg-[var(--color-brand)] text-[var(--color-brand-contrast)] hover:bg-[var(--color-brand-hover)]",
+          ].join(" ")}
           disabled={isBetDisabled}
           onClick={onSubmit}
           type="button"
         >
-          {isSubmitting ? "Betting..." : "Bet"}
+          {actionLabel}
         </button>
         {helperMessage ? (
           <p className="min-h-5 text-center text-xs font-medium text-[var(--color-text-subtle)]">

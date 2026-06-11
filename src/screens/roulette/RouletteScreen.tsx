@@ -1,9 +1,14 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef, useState } from "react";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import type { MeResponse } from "@/features/auth/api/auth-types";
-import { getRouletteConfig, placeRouletteBet } from "@/features/roulette";
+import {
+  getRouletteConfig,
+  placeRouletteBet,
+  type RouletteBetRequest,
+} from "@/features/roulette";
 import {
   buildRouletteBetPayload,
   getPlacedBetsTotal,
@@ -14,6 +19,13 @@ import { BettingBoard } from "@/features/roulette/ui/BettingBoard";
 import { RouletteHistory } from "@/features/roulette/ui/RouletteHistory";
 import { RouletteResult } from "@/features/roulette/ui/RouletteResult";
 import { RouletteWheel } from "@/features/roulette/ui/RouletteWheel";
+
+const AUTO_NEXT_SPIN_DELAY_MS = 6200;
+
+type RouletteBetMutationVariables = {
+  payload: RouletteBetRequest;
+  clearBetsOnSuccess: boolean;
+};
 
 function getGamePointsBalance(user: MeResponse | undefined) {
   const balance = user?.userBalances.find(
@@ -33,6 +45,14 @@ function getErrorMessage(error: unknown) {
 
 export function RouletteScreen() {
   const queryClient = useQueryClient();
+  const autoPayloadRef = useRef<RouletteBetRequest | null>(null);
+  const autoRemainingRef = useRef(0);
+  const autoTimeoutRef = useRef<number | null>(null);
+  const isAutoRunningRef = useRef(false);
+  const [betMode, setBetMode] = useState<"manual" | "auto">("manual");
+  const [autoBetCount, setAutoBetCount] = useState("10");
+  const [isAutoInfinite, setIsAutoInfinite] = useState(false);
+  const [isAutoRunning, setIsAutoRunning] = useState(false);
   const selectedChip = useRouletteStore((state) => state.selectedChip);
   const placedBets = useRouletteStore((state) => state.placedBets);
   const isSpinning = useRouletteStore((state) => state.isSpinning);
@@ -59,21 +79,60 @@ export function RouletteScreen() {
     queryFn: async () => (await getCurrentUser()).data,
   });
 
-  const betMutation = useMutation({
-    mutationFn: async () => {
-      const payload = buildRouletteBetPayload(placedBets);
+  function clearAutoTimeout() {
+    if (autoTimeoutRef.current !== null) {
+      window.clearTimeout(autoTimeoutRef.current);
+      autoTimeoutRef.current = null;
+    }
+  }
 
+  function stopAutoBetting() {
+    isAutoRunningRef.current = false;
+    autoRemainingRef.current = 0;
+    autoPayloadRef.current = null;
+    clearAutoTimeout();
+    setIsAutoRunning(false);
+  }
+
+  const betMutation = useMutation({
+    mutationFn: async ({ payload }: RouletteBetMutationVariables) => {
       return (await placeRouletteBet(payload)).data;
     },
     onMutate: () => {
       startSpin();
     },
     onError: () => {
+      stopAutoBetting();
       stopSpin();
     },
-    onSuccess: async (response) => {
-      finishSpin(response);
+    onSuccess: async (response, variables) => {
+      finishSpin(response, { clearBets: variables.clearBetsOnSuccess });
       await queryClient.invalidateQueries({ queryKey: ["me"] });
+
+      if (!isAutoRunningRef.current || !autoPayloadRef.current) {
+        return;
+      }
+
+      if (!isAutoInfinite) {
+        autoRemainingRef.current -= 1;
+      }
+
+      if (!isAutoInfinite && autoRemainingRef.current <= 0) {
+        stopAutoBetting();
+
+        return;
+      }
+
+      autoTimeoutRef.current = window.setTimeout(() => {
+        if (!isAutoRunningRef.current || !autoPayloadRef.current) {
+          return;
+        }
+
+        betMutation.mutate({
+          clearBetsOnSuccess: false,
+          payload: autoPayloadRef.current,
+        });
+      }, AUTO_NEXT_SPIN_DELAY_MS);
     },
   });
 
@@ -87,20 +146,64 @@ export function RouletteScreen() {
       ? "Unable to load game data"
       : null;
 
+  function handleAutoBetCountChange(value: string) {
+    setAutoBetCount(value.replace(/[^\d]/g, ""));
+  }
+
+  function handleToggleAutoInfinite() {
+    setIsAutoInfinite((currentValue) => !currentValue);
+  }
+
+  function startAutoBetting() {
+    const payload = buildRouletteBetPayload(placedBets);
+    const normalizedAutoBetCount = Number(autoBetCount);
+
+    autoPayloadRef.current = payload;
+    autoRemainingRef.current = isAutoInfinite ? Infinity : normalizedAutoBetCount;
+    isAutoRunningRef.current = true;
+    setIsAutoRunning(true);
+    betMutation.mutate({ clearBetsOnSuccess: false, payload });
+  }
+
+  function handleBetSubmit() {
+    if (isAutoRunning) {
+      stopAutoBetting();
+
+      return;
+    }
+
+    const payload = buildRouletteBetPayload(placedBets);
+
+    if (betMode === "auto") {
+      startAutoBetting();
+
+      return;
+    }
+
+    betMutation.mutate({ clearBetsOnSuccess: false, payload });
+  }
+
   return (
     <main className="min-h-screen bg-[var(--color-page)] px-3 py-5 text-white md:px-[10px] md:py-7">
       <div className="mx-auto grid w-full max-w-[1017px] overflow-hidden shadow-[0_22px_80px_rgb(0_0_0_/_28%)] lg:h-[668px] lg:grid-cols-[352px_665px]">
         <BetControls
+          autoBetCount={autoBetCount}
           canUndo={placedBets.length > 0}
           errorMessage={errorMessage}
           gameBalance={gameBalance}
+          isAutoInfinite={isAutoInfinite}
+          isAutoRunning={isAutoRunning}
           isSpinning={isSpinning}
           isSubmitting={betMutation.isPending}
           maxBet={maxBet}
           minBet={minBet}
+          mode={betMode}
+          onAutoBetCountChange={handleAutoBetCountChange}
           onClear={clearBets}
+          onModeChange={setBetMode}
           onSelectChip={selectChip}
-          onSubmit={() => betMutation.mutate()}
+          onSubmit={handleBetSubmit}
+          onToggleAutoInfinite={handleToggleAutoInfinite}
           onUndo={undoBet}
           selectedChip={selectedChip}
           totalBetAmount={totalBetAmount}
@@ -121,11 +224,13 @@ export function RouletteScreen() {
 
           <div className="space-y-4">
             <BettingBoard
-              disabled={isSpinning || betMutation.isPending}
+              disabled={isAutoRunning || isSpinning || betMutation.isPending}
               placedBets={placedBets}
               onPlaceBet={placeBet}
             />
-            <RouletteResult result={result} />
+            <div className="min-h-[76px]">
+              <RouletteResult result={result} />
+            </div>
           </div>
         </section>
       </div>

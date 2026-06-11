@@ -22,7 +22,10 @@ type RouletteStore = {
   clearBets: () => void;
   undoBet: () => void;
   startSpin: () => void;
-  finishSpin: (response: RouletteBetResponse) => void;
+  finishSpin: (
+    response: RouletteBetResponse,
+    options?: { clearBets?: boolean },
+  ) => void;
   stopSpin: () => void;
   resetResult: () => void;
   settleResultHistory: () => void;
@@ -67,7 +70,7 @@ export const useRouletteStore = create<RouletteStore>()((set, get) => ({
   startSpin: () => {
     set({ isSpinning: true, result: null });
   },
-  finishSpin: (response) => {
+  finishSpin: (response, options) => {
     const result = {
       betId: response.betId,
       number: response.randomPosition,
@@ -81,7 +84,7 @@ export const useRouletteStore = create<RouletteStore>()((set, get) => ({
       isSpinning: false,
       result,
       resultHistory: [...state.resultHistory, result].slice(-6),
-      placedBets: [],
+      placedBets: options?.clearBets === false ? state.placedBets : [],
     }));
   },
   stopSpin: () => {

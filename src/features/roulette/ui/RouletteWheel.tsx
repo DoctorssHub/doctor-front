@@ -203,6 +203,8 @@ export function RouletteWheel({ isSpinning, resultNumber }: RouletteWheelProps) 
       return;
     }
 
+    const landingResultNumber = resultNumber;
+
     isLandingRef.current = true;
 
     if (landingFrameRef.current !== null) {
@@ -211,7 +213,10 @@ export function RouletteWheel({ isSpinning, resultNumber }: RouletteWheelProps) 
 
     const startAngle = ballAngleRef.current;
     const startTimeRef = { current: null as number | null };
-    const targetAngle = getResultAngle(resultNumber, wheelAngleRef.current);
+    const targetAngle = getResultAngle(
+      landingResultNumber,
+      wheelAngleRef.current,
+    );
     const landingDelta = getLandingDelta(startAngle, targetAngle);
 
     function moveBall(angle: number, radius: number) {
@@ -253,7 +258,7 @@ export function RouletteWheel({ isSpinning, resultNumber }: RouletteWheelProps) 
       moveBall(targetAngle, POCKET_RADIUS);
       ballAngleRef.current = targetAngle;
       ballRadiusRef.current = POCKET_RADIUS;
-      settledCellAngleRef.current = getResultCellAngle(resultNumber);
+      settledCellAngleRef.current = getResultCellAngle(landingResultNumber);
       landingFrameRef.current = null;
       isLandingRef.current = false;
       isSettledRef.current = true;
