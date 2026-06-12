@@ -138,6 +138,33 @@ button:disabled {
   cursor: not-allowed;
 }
 
+@keyframes plinko-bucket-hit {
+  0% {
+    transform: scaleY(1);
+  }
+
+  28% {
+    transform: scaleY(0.68);
+  }
+
+  52% {
+    transform: scaleY(1.08);
+  }
+
+  74% {
+    transform: scaleY(0.94);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.plinko-bucket-hit {
+  animation: plinko-bucket-hit 520ms cubic-bezier(0.2, 0.9, 0.28, 1.1);
+  will-change: transform;
+}
+
 .auth-checkbox {
   width: 16px;
   height: 16px;

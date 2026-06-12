@@ -16,6 +16,11 @@ import { GameSidebar } from "@/widgets/game-sidebar/ui/GameSidebar";
 import { PlinkoBoard } from "@/widgets/plinko-board/ui/PlinkoBoard";
 import type { ActiveRound } from "@/widgets/plinko-board/model/active-round";
 import { mockGameConfig } from "@/widgets/plinko-board/model/mock-config";
+import {
+  type BetAmountControl,
+  formatBetAmountInput,
+  getNextBetAmount,
+} from "@/widgets/game-sidebar/lib/bet-amount-controls";
 
 const MAX_AUTO_BETS = 100;
 const AUTO_BET_DELAY_MS = 500;
@@ -33,7 +38,7 @@ export function PlinkoScreen() {
   const [mode, setMode] = useState<GameMode>("Manual");
   const [risk, setRisk] = useState<Risk>("MEDIUM");
   const [rows, setRows] = useState(8);
-  const [betAmount, setBetAmount] = useState("1");
+  const [betAmount, setBetAmount] = useState("1.00");
   const [autoBetsAmount, setAutoBetsAmount] = useState("2");
   const [isAutoBetsInfinite, setIsAutoBetsInfinite] = useState(false);
   const [isBetting, setIsBetting] = useState(false);
@@ -42,6 +47,8 @@ export function PlinkoScreen() {
   const [activeRounds, setActiveRounds] = useState<ActiveRound[]>([]);
   const [recentMultipliers, setRecentMultipliers] = useState([5.6, 0.5, 1]);
   const [betValidationError, setBetValidationError] = useState("");
+  const roundByIdRef = useRef(new Map<string, ActiveRound>());
+  const historyRoundIdsRef = useRef(new Set<string>());
   const shouldStopAutoBetRef = useRef(false);
   const plinkoConfigQuery = useQuery({
     queryKey: ["plinko", "config"],
@@ -63,17 +70,17 @@ export function PlinkoScreen() {
         rows: number;
       };
     }) => {
-      setActiveRounds((currentRounds) => [
-        ...currentRounds,
-        {
-          bet,
-          id: bet.betId,
-          isResultVisible: false,
-          mode: request.mode,
-          risk: request.risk,
-          rows: request.rows,
-        },
-      ]);
+      const activeRound = {
+        bet,
+        id: bet.betId,
+        isResultVisible: false,
+        mode: request.mode,
+        risk: request.risk,
+        rows: request.rows,
+      };
+
+      roundByIdRef.current.set(activeRound.id, activeRound);
+      setActiveRounds((currentRounds) => [...currentRounds, activeRound]);
     },
     [],
   );
@@ -91,6 +98,23 @@ export function PlinkoScreen() {
     },
     [addRound],
   );
+
+  const handleBetAmountControlClick = useCallback(
+    (control: BetAmountControl) => {
+      setBetAmount((currentAmount) =>
+        getNextBetAmount(currentAmount, control, {
+          availableBalance,
+          maxBet: plinkoConfig.maxBet,
+          minBet: plinkoConfig.minBet,
+        }),
+      );
+      setBetValidationError("");
+    },
+    [availableBalance, plinkoConfig.maxBet, plinkoConfig.minBet],
+  );
+  const handleBetAmountBlur = useCallback(() => {
+    setBetAmount((currentAmount) => formatBetAmountInput(currentAmount));
+  }, []);
 
   const validateBetAmount = useCallback(() => {
     const amount = Number(betAmount);
@@ -223,24 +247,24 @@ export function PlinkoScreen() {
   ]);
 
   const handleRoundAnimationComplete = useCallback((roundId: string) => {
-    setActiveRounds((currentRounds) => {
-      const completedRound = currentRounds.find(
-        (round) => round.id === roundId,
-      );
+    const completedRound = roundByIdRef.current.get(roundId);
 
-      if (completedRound) {
-        setRecentMultipliers((currentMultipliers) => [
-          completedRound.bet.multiplier,
-          ...currentMultipliers,
-        ]);
-      }
+    if (completedRound && !historyRoundIdsRef.current.has(roundId)) {
+      historyRoundIdsRef.current.add(roundId);
+      setRecentMultipliers((currentMultipliers) => [
+        completedRound.bet.multiplier,
+        ...currentMultipliers,
+      ]);
+    }
 
-      return currentRounds.map((round) =>
+    setActiveRounds((currentRounds) =>
+      currentRounds.map((round) =>
         round.id === roundId ? { ...round, isResultVisible: true } : round,
-      );
-    });
+      ),
+    );
 
     window.setTimeout(() => {
+      roundByIdRef.current.delete(roundId);
       setActiveRounds((currentRounds) =>
         currentRounds.filter((round) => round.id !== roundId),
       );
@@ -249,7 +273,7 @@ export function PlinkoScreen() {
 
   return (
     <main className="bg-[#080c17] p-4 text-white md:p-5">
-      <section className="mx-auto flex min-h-[640px] max-w-7xl flex-col overflow-hidden rounded-xl border border-[#111827] bg-[#0c111d] shadow-[0_24px_80px_rgb(0_0_0_/_28%)] md:flex-row">
+      <section className="mx-auto flex min-h-[524px] max-w-[60rem] flex-col overflow-hidden rounded-xl border border-[#111827] bg-[#0c111d] shadow-[0_24px_80px_rgb(0_0_0_/_28%)] md:flex-row">
         <GameSidebar
           autoBetsAmount={autoBetsAmount}
           betAmount={betAmount}
@@ -281,6 +305,8 @@ export function PlinkoScreen() {
             setIsAutoBetsInfinite((current) => !current)
           }
           onBetAmountChange={setBetAmount}
+          onBetAmountBlur={handleBetAmountBlur}
+          onBetAmountControlClick={handleBetAmountControlClick}
           onBetClick={handleBetClick}
           onModeChange={setMode}
           onRiskChange={setRisk}

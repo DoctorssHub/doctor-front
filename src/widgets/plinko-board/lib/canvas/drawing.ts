@@ -48,15 +48,51 @@ function drawPeg(
   context: CanvasRenderingContext2D,
   position: BallPosition,
   radius: number,
+  borderColor = "#46576f",
+  shadowColor = "rgba(104, 125, 153, 0.35)",
+  lineWidth = 2,
 ) {
   context.save();
   context.shadowBlur = 8;
-  context.shadowColor = "rgba(104, 125, 153, 0.35)";
-  context.strokeStyle = "#46576f";
-  context.lineWidth = 2;
+  context.shadowColor = shadowColor;
+  context.strokeStyle = borderColor;
+  context.lineWidth = lineWidth;
   context.beginPath();
   context.arc(position.x, position.y, radius + 1.8, 0, Math.PI * 2);
   context.stroke();
+  context.restore();
+}
+
+export function getPegImpactBorderAlpha(progress: number) {
+  return Math.max(0, Math.min(1, 1 - progress));
+}
+
+export function getPegImpactBorderColor() {
+  return "#facc15";
+}
+
+function drawPegImpactBorder(
+  context: CanvasRenderingContext2D,
+  position: BallPosition,
+  progress: number,
+  pegRadius: number,
+) {
+  const alpha = getPegImpactBorderAlpha(progress);
+
+  if (alpha <= 0) {
+    return;
+  }
+
+  context.save();
+  context.globalAlpha = alpha;
+  drawPeg(
+    context,
+    position,
+    pegRadius,
+    getPegImpactBorderColor(),
+    "rgba(250, 204, 21, 0.72)",
+    2.6,
+  );
   context.restore();
 }
 
@@ -82,13 +118,13 @@ function paintBall(
     radius * 1.12,
   );
 
-  gradient.addColorStop(0, "#FFD0D4");
-  gradient.addColorStop(0.45, "#D93A43");
-  gradient.addColorStop(1, "#8F121D");
+  gradient.addColorStop(0, "#FF8A92");
+  gradient.addColorStop(0.48, "#D93A43");
+  gradient.addColorStop(1, "#580C12");
 
   context.save();
-  context.shadowBlur = radius * 2.25;
-  context.shadowColor = "rgba(200, 40, 49, 0.75)";
+  context.shadowBlur = 20;
+  context.shadowColor = "rgba(200, 40, 49, 0.58)";
   context.fillStyle = gradient;
   context.beginPath();
   context.arc(centerX, centerY, radius, 0, Math.PI * 2);
@@ -158,7 +194,7 @@ function drawImpact(
 
   context.save();
   context.globalAlpha = 1 - progress;
-  context.strokeStyle = "#D93A43";
+  context.strokeStyle = getPegImpactBorderColor();
   context.lineWidth = 1.5;
   context.beginPath();
   context.arc(position.x, position.y, radius, 0, Math.PI * 2);
@@ -192,10 +228,12 @@ export function drawBallLayer(
   context.clearRect(0, 0, width, height);
 
   const ballRadius = getBallRadius(rows, layout);
+  const pegRadius = getPegRadius(rows, layout);
   const pixelRatio = window.devicePixelRatio || 1;
 
   ballFrames.forEach(({ impactPosition, impactProgress = 1 }) => {
     if (impactPosition && impactProgress < 1) {
+      drawPegImpactBorder(context, impactPosition, impactProgress, pegRadius);
       drawImpact(context, impactPosition, impactProgress, ballRadius);
     }
   });

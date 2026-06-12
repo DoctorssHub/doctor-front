@@ -6,8 +6,10 @@ import { useMediaQuery } from "@/shared/lib/useMediaQuery";
 import {
   type BoardLayout,
   getBoardHeight,
+  getBoardWidth,
   getBucketLayout,
 } from "@/widgets/plinko-board/lib/animation";
+import { getVisibleBucketImpactKeys } from "@/widgets/plinko-board/lib/bucket-animation";
 import { getMultiplierTone } from "@/widgets/plinko-board/lib/multiplier";
 import type { ActiveRound } from "@/widgets/plinko-board/model/active-round";
 import { PlinkoCanvas } from "./PlinkoCanvas";
@@ -37,25 +39,22 @@ export function PlinkoBoard({
     : isTabletBoard
       ? "tablet"
       : "regular";
-  const visibleBucketIndexes = useMemo(
-    () =>
-      new Set(
-        activeRounds
-          .filter(
-            (round) =>
-              round.isResultVisible &&
-              round.rows === rows &&
-              round.risk === risk,
-          )
-          .map((round) => round.bet.bucketIndex),
-      ),
+  const visibleBucketImpactKeys = useMemo(
+    () => getVisibleBucketImpactKeys(activeRounds, rows, risk),
     [activeRounds, risk, rows],
   );
-  const { bucketGap, bucketWidth } = getBucketLayout(rows, boardLayout);
+  const {
+    bucketGap,
+    bucketHeight,
+    bucketHorizontalPadding,
+    bucketRadius,
+    bucketWidth,
+  } = getBucketLayout(rows, boardLayout);
   const boardHeight = getBoardHeight(rows, boardLayout);
+  const boardWidth = getBoardWidth(boardLayout);
 
   return (
-    <section className="relative flex min-h-[520px] flex-1 flex-col overflow-hidden bg-[#0f1720] px-4 py-8 md:min-h-[640px] md:px-8">
+    <section className="relative flex min-h-[520px] flex-1 flex-col overflow-hidden bg-[#0f1720] px-4 py-6 md:min-h-[524px] md:px-4">
       <div className="absolute top-6 right-6 hidden flex-col gap-3 md:flex">
         {recentMultipliers.slice(0, 3).map((multiplier, index) => (
           <div
@@ -67,10 +66,10 @@ export function PlinkoBoard({
         ))}
       </div>
 
-      <div className="flex flex-1 items-end justify-center pb-4 pt-14">
+      <div className="flex flex-1 items-end justify-center">
         <div
-          className="relative w-full max-w-160"
-          style={{ height: boardHeight }}
+          className="relative w-full"
+          style={{ height: boardHeight, maxWidth: boardWidth }}
         >
           <PlinkoCanvas
             activeRounds={activeRounds}
@@ -84,13 +83,19 @@ export function PlinkoBoard({
             style={{ gap: bucketGap }}
           >
             {multiplierSlots.map((slot, index) => {
-              const isActive = visibleBucketIndexes.has(index);
+              const impactKey = visibleBucketImpactKeys.get(index);
+              const isActive = impactKey !== undefined;
 
               return (
                 <div
-                  className={`flex h-7 items-center justify-center rounded-md border px-1 text-[9px] font-bold transition-[transform,box-shadow,background-color,border-color,color] duration-200 md:h-8 md:text-[10px] ${getMultiplierTone(slot, isActive)}`}
-                  key={`${slot}-${index}`}
-                  style={{ width: bucketWidth }}
+                  className={`flex origin-bottom items-center justify-center border text-[9px] font-bold transition-[box-shadow,background-color,border-color,color] duration-200 md:text-[10px] ${isActive ? "plinko-bucket-hit" : ""} ${getMultiplierTone(slot, isActive)}`}
+                  key={`${slot}-${index}-${impactKey ?? "idle"}`}
+                  style={{
+                    borderRadius: bucketRadius,
+                    height: bucketHeight,
+                    paddingInline: bucketHorizontalPadding,
+                    width: bucketWidth,
+                  }}
                 >
                   {slot}x
                 </div>

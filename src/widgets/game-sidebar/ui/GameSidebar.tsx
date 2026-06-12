@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { GameMode, Risk } from "@/entities/game/model/types";
+import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
 
 type GameSidebarProps = {
   autoBetsAmount: string;
@@ -17,6 +18,8 @@ type GameSidebarProps = {
   onAutoBetsAmountChange: (amount: string) => void;
   onAutoBetsInfinityToggle: () => void;
   onBetAmountChange: (amount: string) => void;
+  onBetAmountBlur: () => void;
+  onBetAmountControlClick: (control: BetAmountControl) => void;
   onBetClick: () => void;
   onModeChange: (mode: GameMode) => void;
   onRiskChange: (risk: Risk) => void;
@@ -50,7 +53,9 @@ export function GameSidebar({
   mode,
   onAutoBetsAmountChange,
   onAutoBetsInfinityToggle,
+  onBetAmountBlur,
   onBetAmountChange,
+  onBetAmountControlClick,
   onBetClick,
   onModeChange,
   onRiskChange,
@@ -59,7 +64,7 @@ export function GameSidebar({
   rows,
 }: GameSidebarProps) {
   return (
-    <aside className="flex w-full shrink-0 flex-col bg-[#0E121C] px-5 py-6 md:w-75 md:px-7">
+    <aside className="flex w-full shrink-0 flex-col bg-[#0E121C] px-5 py-6 md:w-[330px] md:px-7">
       <div className="grid grid-cols-2 gap-3 rounded-lg">
         {(["Manual", "Auto"] as const).map((nextMode) => (
           <button
@@ -99,19 +104,25 @@ export function GameSidebar({
             inputMode="decimal"
             max={maxBet}
             min={minBet}
+            onBlur={onBetAmountBlur}
             onChange={(event) => onBetAmountChange(event.target.value)}
             placeholder={minBet ? `Min ${minBet}` : undefined}
             type="number"
             value={betAmount}
           />
           <div className="ml-2 flex gap-1">
-            {["1/2", "2x", "MAX"].map((control) => (
+            {([
+              ["half", "1/2"],
+              ["double", "2x"],
+              ["max", "MAX"],
+            ] as const).map(([control, label]) => (
               <button
                 className="h-6 rounded bg-[#1b2230] px-2 text-[10px] font-semibold text-white/45 transition hover:text-white"
                 key={control}
+                onClick={() => onBetAmountControlClick(control)}
                 type="button"
               >
-                {control}
+                {label}
               </button>
             ))}
           </div>
