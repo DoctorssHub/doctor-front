@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ROULETTE_CHIP_VALUES } from "../../model/roulette-constants";
 import { formatCoinAmount } from "../../lib/roulette-formatters";
 import { CHIP_IMAGES, formatChipLabel } from "./chip-assets";
+import BetCointIcon from "@/assets/BetCointIcon.svg";
 
 type ChipPickerProps = {
   disabled: boolean;
@@ -39,9 +40,7 @@ export function ChipPicker({
       <div className="flex items-center justify-between gap-3 text-sm">
         <span className="font-medium">Bet Amount</span>
         <span className="flex items-center gap-2 font-semibold">
-          <span className="grid h-4 w-4 place-items-center rounded-full bg-[var(--color-brand)] text-[10px] text-[var(--color-brand-contrast)]">
-            $
-          </span>
+          <Image alt="" className="h-4 w-4 object-contain" src={BetCointIcon} />
           {formatCoinAmount(totalBetAmount)} COINS
         </span>
       </div>

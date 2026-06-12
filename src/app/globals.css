@@ -42,6 +42,9 @@
   --color-roulette-soft-border: rgb(63 74 89 / 50%);
   --color-roulette-wheel-border: rgb(55 65 85 / 45%);
   --color-roulette-auto-field: rgb(27 31 38 / 25%);
+  --color-roulette-win-backdrop: rgb(14 18 28 / 80%);
+  --color-roulette-win-border: rgb(63 74 89 / 50%);
+  --color-roulette-win-number-dark: #2b303b;
   --color-claim-panel: #09110e;
   --color-header-surface: #0e121c;
 
@@ -163,6 +166,16 @@
     #f0f0f0 18%,
     #c8c8c8 48%,
     #787878 100%
+  );
+  --gradient-roulette-win-header: linear-gradient(
+    180deg,
+    #0a271a 0%,
+    #39b17d 100%
+  );
+  --gradient-roulette-win-body: linear-gradient(
+    180deg,
+    var(--color-surface-icon) 0%,
+    var(--color-roulette-win-number-dark) 100%
   );
   --gradient-auth-visual: linear-gradient(
     0deg,
