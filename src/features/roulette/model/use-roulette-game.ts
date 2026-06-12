@@ -169,6 +169,7 @@ export function useRouletteGame() {
       totalBetAmount,
     },
     gamePanelProps: {
+      canUndo: placedBets.length > 0,
       disabled:
         autoBetting.isAutoRunning ||
         isSpinning ||
@@ -181,8 +182,10 @@ export function useRouletteGame() {
       result,
       resultHistory,
       onLandingComplete: handleLandingComplete,
+      onClear: clearBets,
       onPlaceBet: placeBet,
       onSettleResultHistory: settleResultHistory,
+      onUndo: undoBet,
     },
   };
 }

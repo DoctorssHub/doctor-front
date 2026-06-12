@@ -31,7 +31,7 @@ export function BettingNumberGrid({
   onPlaceBet,
 }: BettingNumberGridProps) {
   return (
-    <div className="grid w-[625px] grid-cols-[40px_535px_40px] gap-[5px]">
+    <div className="grid w-[625px] grid-cols-[40px_535px_40px] gap-[5px] tablet:max-laptop:w-[709px] tablet:max-laptop:grid-cols-[46px_607px_46px]">
       <button
         className={[
           numberButtonClass(
@@ -39,7 +39,7 @@ export function BettingNumberGrid({
             isZeroHighlighted,
             hasActiveHover && !isZeroHighlighted,
           ),
-          "row-span-3 !h-[130px]",
+          "row-span-3 !h-[130px] tablet:max-laptop:!h-[148px]",
         ].join(" ")}
         disabled={disabled}
         {...onGetHoverHandlers({ kind: "numbers", numbers: [0] })}

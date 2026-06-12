@@ -177,6 +177,11 @@
     var(--color-surface-icon) 0%,
     var(--color-roulette-win-number-dark) 100%
   );
+  --gradient-roulette-action-button: linear-gradient(
+    180deg,
+    var(--color-surface-icon) 0%,
+    var(--color-roulette-win-number-dark) 100%
+  );
   --gradient-auth-visual: linear-gradient(
     0deg,
     rgb(88 12 18 / 74%) 0%,

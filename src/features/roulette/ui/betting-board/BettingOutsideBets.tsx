@@ -1,3 +1,6 @@
+import Image from "next/image";
+import clearIcon from "@/assets/games/roulette/clearIcon.svg";
+import undoIcon from "@/assets/games/roulette/undoIcon.svg";
 import type { NewRouletteBet } from "../../model/roulette-bets";
 import type { HoverArea, HoverHandlers } from "./betting-board-types";
 import { lowerButtonClass } from "./betting-board-utils";
@@ -5,22 +8,28 @@ import { PlacedChip } from "./PlacedChip";
 
 type BettingOutsideBetsProps = {
   betAmounts: Map<string, number>;
+  canUndo: boolean;
   disabled: boolean;
   hoverArea: HoverArea | null;
+  onClear: () => void;
   onGetHoverHandlers: (area: HoverArea) => HoverHandlers;
   onPlaceBet: (bet: NewRouletteBet) => void;
+  onUndo: () => void;
 };
 
 export function BettingOutsideBets({
   betAmounts,
+  canUndo,
   disabled,
   hoverArea,
+  onClear,
   onGetHoverHandlers,
   onPlaceBet,
+  onUndo,
 }: BettingOutsideBetsProps) {
   return (
-    <>
-      <div className="mt-[5px] grid w-[625px] grid-cols-3 gap-[5px]">
+    <div>
+      <div className="mt-[5px] grid w-[625px] grid-cols-3 gap-[5px] tablet:max-laptop:w-[709px]">
         <button
           className={lowerButtonClass(
             "bg-[var(--color-surface)]",
@@ -77,14 +86,14 @@ export function BettingOutsideBets({
         </button>
       </div>
 
-      <div className="mt-[5px] grid w-[625px] grid-cols-6 gap-[5px]">
+      <div className="mt-[5px] grid w-[625px] grid-cols-6 gap-[5px] tablet:max-laptop:w-[709px] tablet:max-laptop:grid-cols-[1fr_1fr_1fr_1fr_50px_73px_48px_48px]">
         <button
           className={lowerButtonClass(
             "bg-[var(--color-surface)]",
             hoverArea?.kind === "range" &&
               hoverArea.min === 1 &&
               hoverArea.max === 18,
-            "w-[100px]",
+            "w-[100px] tablet:max-laptop:w-full",
           )}
           disabled={disabled}
           {...onGetHoverHandlers({ kind: "range", min: 1, max: 18 })}
@@ -100,7 +109,7 @@ export function BettingOutsideBets({
           className={lowerButtonClass(
             "bg-[var(--color-surface)]",
             hoverArea?.kind === "parity" && hoverArea.parity === "EVEN",
-            "w-[100px]",
+            "w-[100px] tablet:max-laptop:w-full",
           )}
           disabled={disabled}
           {...onGetHoverHandlers({ kind: "parity", parity: "EVEN" })}
@@ -117,7 +126,7 @@ export function BettingOutsideBets({
           className={lowerButtonClass(
             "bg-[var(--color-roulette-red)]",
             hoverArea?.kind === "color" && hoverArea.color === "RED",
-            "w-[100px]",
+            "w-[100px] tablet:max-laptop:w-full",
           )}
           disabled={disabled}
           {...onGetHoverHandlers({ kind: "color", color: "RED" })}
@@ -133,7 +142,7 @@ export function BettingOutsideBets({
           className={lowerButtonClass(
             "bg-[image:var(--gradient-roulette-dark-cell)]",
             hoverArea?.kind === "color" && hoverArea.color === "BLACK",
-            "w-[100px]",
+            "w-[100px] tablet:max-laptop:w-full",
           )}
           disabled={disabled}
           {...onGetHoverHandlers({ kind: "color", color: "BLACK" })}
@@ -148,7 +157,7 @@ export function BettingOutsideBets({
           className={lowerButtonClass(
             "bg-[var(--color-surface)]",
             hoverArea?.kind === "parity" && hoverArea.parity === "ODD",
-            "w-[100px]",
+            "w-[100px] tablet:max-laptop:w-[50px]",
           )}
           disabled={disabled}
           {...onGetHoverHandlers({ kind: "parity", parity: "ODD" })}
@@ -166,7 +175,7 @@ export function BettingOutsideBets({
             hoverArea?.kind === "range" &&
               hoverArea.min === 19 &&
               hoverArea.max === 36,
-            "w-[100px]",
+            "w-[100px] tablet:max-laptop:w-[73px]",
           )}
           disabled={disabled}
           {...onGetHoverHandlers({ kind: "range", min: 19, max: 36 })}
@@ -178,7 +187,25 @@ export function BettingOutsideBets({
             <PlacedChip amount={betAmounts.get("half:HIGH") ?? 0} />
           ) : null}
         </button>
+        <button
+          aria-label="Clear"
+          className="hidden h-12 w-12 place-items-center rounded-[4px] border border-[var(--color-surface-icon)] bg-[image:var(--gradient-roulette-action-button)] p-3 transition hover:brightness-110 disabled:opacity-45 tablet:max-laptop:grid"
+          disabled={!canUndo || disabled}
+          onClick={onClear}
+          type="button"
+        >
+          <Image alt="" className="h-5 w-5" src={clearIcon} />
+        </button>
+        <button
+          aria-label="Undo"
+          className="hidden h-12 w-12 place-items-center rounded-[4px] border border-[var(--color-surface-icon)] bg-[image:var(--gradient-roulette-action-button)] p-3 transition hover:brightness-110 disabled:opacity-45 tablet:max-laptop:grid"
+          disabled={!canUndo || disabled}
+          onClick={onUndo}
+          type="button"
+        >
+          <Image alt="" className="h-5 w-5" src={undoIcon} />
+        </button>
       </div>
-    </>
+    </div>
   );
 }

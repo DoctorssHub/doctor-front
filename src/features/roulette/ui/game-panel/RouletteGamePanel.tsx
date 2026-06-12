@@ -9,6 +9,7 @@ import { RouletteWheel } from "../roulette-wheel";
 import { RouletteWinModal } from "../win-modal";
 
 type RouletteGamePanelProps = {
+  canUndo: boolean;
   disabled: boolean;
   isResultAnimating: boolean;
   isWinModalVisible: boolean;
@@ -17,11 +18,14 @@ type RouletteGamePanelProps = {
   result: RouletteResultValue | null;
   resultHistory: RouletteResultValue[];
   onLandingComplete: () => void;
+  onClear: () => void;
   onPlaceBet: (bet: NewRouletteBet) => void;
   onSettleResultHistory: () => void;
+  onUndo: () => void;
 };
 
 export function RouletteGamePanel({
+  canUndo,
   disabled,
   isResultAnimating,
   isWinModalVisible,
@@ -30,8 +34,10 @@ export function RouletteGamePanel({
   result,
   resultHistory,
   onLandingComplete,
+  onClear,
   onPlaceBet,
   onSettleResultHistory,
+  onUndo,
 }: RouletteGamePanelProps) {
   const winResult =
     result && isWinModalVisible && !isResultAnimating && Number(result.payout) > 0
@@ -39,7 +45,7 @@ export function RouletteGamePanel({
       : null;
 
   return (
-    <section className="relative flex min-w-0 flex-col justify-between gap-7 border-b-2 border-r-2 border-[var(--color-surface)] bg-[var(--color-roulette-panel)] px-[10px] pb-[30px] pt-5 lg:h-[668px] lg:w-[665px] lg:rounded-[0_16px_16px_0]">
+    <section className="relative flex min-w-0 flex-col justify-between gap-7 border-b-2 border-r-2 border-[var(--color-surface)] bg-[var(--color-roulette-panel)] px-[10px] pb-[30px] pt-5 max-laptop:order-1 max-laptop:border-0 max-laptop:bg-transparent max-laptop:pb-0 tablet:max-laptop:px-0 laptop:h-[668px] laptop:w-[665px] laptop:rounded-[0_16px_16px_0]">
       <RouletteHistory
         results={resultHistory}
         onExitComplete={onSettleResultHistory}
@@ -55,9 +61,12 @@ export function RouletteGamePanel({
 
       <div className="space-y-4">
         <BettingBoard
+          canUndo={canUndo}
           disabled={disabled}
           placedBets={placedBets}
+          onClear={onClear}
           onPlaceBet={onPlaceBet}
+          onUndo={onUndo}
         />
       </div>
 

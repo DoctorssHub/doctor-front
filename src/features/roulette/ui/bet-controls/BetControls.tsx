@@ -83,20 +83,24 @@ export function BetControls({
       : "Bet";
 
   return (
-    <aside className="flex flex-col gap-6 bg-[var(--color-surface)] p-5 text-[var(--color-text-primary)] md:p-6 lg:h-[668px] lg:w-[352px] lg:rounded-[16px_0_0_16px]">
-      <BetModeSwitch
-        disabled={controlsDisabled}
-        mode={mode}
-        onModeChange={onModeChange}
-      />
-      <ChipPicker
-        disabled={controlsDisabled}
-        selectedChip={selectedChip}
-        totalBetAmount={totalBetAmount}
-        onSelectChip={onSelectChip}
-      />
+    <aside className="flex flex-col gap-6 bg-[var(--color-surface)] p-5 text-[var(--color-text-primary)] max-laptop:order-2 max-laptop:bg-transparent max-laptop:px-5 max-laptop:pb-0 max-laptop:pt-6 md:p-6 laptop:h-[668px] laptop:w-[352px] laptop:rounded-[16px_0_0_16px]">
+      <div className="max-laptop:order-4 laptop:order-1">
+        <BetModeSwitch
+          disabled={controlsDisabled}
+          mode={mode}
+          onModeChange={onModeChange}
+        />
+      </div>
+      <div className="max-laptop:order-2 laptop:order-2">
+        <ChipPicker
+          disabled={controlsDisabled}
+          selectedChip={selectedChip}
+          totalBetAmount={totalBetAmount}
+          onSelectChip={onSelectChip}
+        />
+      </div>
 
-      <div>
+      <div className="max-laptop:order-3 laptop:order-3">
         <ManualBetActions
           canUndo={canUndo}
           disabled={controlsDisabled}
@@ -115,14 +119,16 @@ export function BetControls({
         />
       </div>
 
-      <BetSubmitPanel
-        actionLabel={actionLabel}
-        helperMessage={helperMessage}
-        isAutoRunning={isAutoRunning}
-        isBetDisabled={isBetDisabled}
-        isLoading={isLoading}
-        onSubmit={onSubmit}
-      />
+      <div className="max-laptop:order-1 laptop:order-4">
+        <BetSubmitPanel
+          actionLabel={actionLabel}
+          helperMessage={helperMessage}
+          isAutoRunning={isAutoRunning}
+          isBetDisabled={isBetDisabled}
+          isLoading={isLoading}
+          onSubmit={onSubmit}
+        />
+      </div>
     </aside>
   );
 }

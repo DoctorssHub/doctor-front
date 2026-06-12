@@ -35,7 +35,7 @@ export function numberButtonClass(
   isDimmed: boolean,
 ) {
   return [
-    "relative flex h-[40px] w-[40px] items-center justify-center rounded-[4px] border border-transparent text-center text-[14px] font-semibold leading-[129%] text-[var(--color-text-primary)] transition duration-150 disabled:opacity-60",
+    "relative flex h-[40px] w-[40px] items-center justify-center rounded-[4px] border border-transparent text-center text-[14px] font-semibold leading-[129%] text-[var(--color-text-primary)] transition duration-150 disabled:opacity-60 tablet:max-laptop:h-[46px] tablet:max-laptop:w-[46px]",
     getNumberBackgroundClass(number),
     getStateClass(isHighlighted, isDimmed),
   ].join(" ");
@@ -46,7 +46,7 @@ export function controlButtonClass(
   isDimmed: boolean,
 ) {
   return [
-    "relative flex h-[40px] w-[40px] items-center justify-center rounded-[4px] border text-center text-[14px] font-semibold leading-[129%] text-[var(--color-text-primary)] transition duration-150 disabled:opacity-60",
+    "relative flex h-[40px] w-[40px] items-center justify-center rounded-[4px] border text-center text-[14px] font-semibold leading-[129%] text-[var(--color-text-primary)] transition duration-150 disabled:opacity-60 tablet:max-laptop:h-[46px] tablet:max-laptop:w-[46px]",
     "bg-[var(--color-surface)]",
     isHighlighted || isDimmed
       ? getStateClass(isHighlighted, isDimmed)
