@@ -1,10 +1,7 @@
 import {
-  type BallPosition,
   type BoardLayout,
   getBallRadius,
-  getBoardHeight,
   getBoardWidth,
-  getBucketLayout,
   getPegPosition,
   getPegRadius,
 } from "@/widgets/plinko-board/lib/animation";
@@ -16,16 +13,43 @@ import {
   setCachedBallMotion,
   setCachedInitialVelocity,
 } from "./physics-cache";
+import {
+  baseGravity,
+  candidateVelocityStep,
+  fixedStepMs,
+  horizontalDamping,
+  maxCandidateVelocityX,
+  maxDurationMs,
+  minCandidateVelocityX,
+  refinedCandidateVelocityStep,
+  verticalDamping,
+  wallRestitution,
+} from "./physics-constants";
+import {
+  getNearestCollidingPeg,
+  resolvePegCollision,
+} from "./physics-collision";
+import {
+  getInterpolatedPyramidBound,
+  getOutsidePyramidDistance,
+  getPegs,
+  getPyramidBounds,
+  getTargetBucketGeometry,
+} from "./physics-geometry";
+import { clamp, getSeedValue } from "./physics-math";
+import { calculateSimulationScore } from "./physics-scoring";
+import { settleMotionInTargetBucket } from "./physics-settle";
+import {
+  applyTimingScale,
+  getRowsTimingScale,
+} from "./physics-timing";
 import type {
   BallMotion,
   BallSimulationParams,
-  BucketGeometry,
   ImpactEvent,
-  Peg,
-  PyramidBound,
   SimulationFrame,
-  Velocity,
 } from "./physics-types";
+import { getSeededInitialVelocityX } from "./physics-velocity";
 
 export type { BallMotion } from "./physics-types";
 export { getBallFrame } from "./physics-frame";
@@ -33,354 +57,6 @@ export {
   getBallMotionCacheKey,
   getInitialVelocityCacheKey,
 } from "./physics-cache";
-
-const fixedStepMs = 1000 / 120;
-const maxDurationMs = 5200;
-const baseGravity = 1850;
-const restitution = 0.58;
-const wallRestitution = 0.46;
-const horizontalDamping = 0.992;
-const verticalDamping = 0.998;
-const minCandidateVelocityX = -2200;
-const maxCandidateVelocityX = 2200;
-const candidateVelocityStep = 40;
-const refinedCandidateVelocityStep = 8;
-const minRowsForTimingScale = 8;
-const maxRowsForTimingScale = 16;
-const maxRowsTimingScale = 1.45;
-const exitDriftWeight = 0.5;
-const aimInertiaWeight = 0.03;
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-function getSeedValue(seed: string) {
-  let hash = 0;
-
-  for (let index = 0; index < seed.length; index += 1) {
-    hash = (hash * 31 + seed.charCodeAt(index)) >>> 0;
-  }
-
-  return hash / 0xffffffff;
-}
-
-function getRowsTimingScale(rows: number) {
-  const progress = clamp(
-    (rows - minRowsForTimingScale) /
-      (maxRowsForTimingScale - minRowsForTimingScale),
-    0,
-    1,
-  );
-
-  return 1 + progress * (maxRowsTimingScale - 1);
-}
-
-function applyTimingScale(motion: BallMotion, scale: number): BallMotion {
-  if (scale === 1) {
-    return motion;
-  }
-
-  return {
-    ...motion,
-    durationMs: motion.durationMs * scale,
-    frames: motion.frames.map((frame) => ({
-      ...frame,
-      timeMs: frame.timeMs * scale,
-    })),
-    impactEvents: motion.impactEvents.map((impact) => ({
-      ...impact,
-      timeMs: impact.timeMs * scale,
-    })),
-  };
-}
-
-function getTargetBucketGeometry(
-  bucketIndex: number,
-  rows: number,
-  layout: BoardLayout,
-): BucketGeometry {
-  const { bucketGap, bucketWidth, totalWidth } = getBucketLayout(rows, layout);
-  const clampedBucketIndex = Math.min(rows, Math.max(0, bucketIndex));
-  const firstBucketCenter =
-    getBoardWidth(layout) / 2 - totalWidth / 2 + bucketWidth / 2;
-  const x = firstBucketCenter + clampedBucketIndex * (bucketWidth + bucketGap);
-
-  return {
-    left: x - bucketWidth / 2,
-    right: x + bucketWidth / 2,
-    x,
-    y: getBoardHeight(rows, layout) - 18,
-  };
-}
-
-function getOutsideBucketDistance(x: number, bucket: BucketGeometry) {
-  if (x < bucket.left) {
-    return bucket.left - x;
-  }
-
-  if (x > bucket.right) {
-    return x - bucket.right;
-  }
-
-  return 0;
-}
-
-function getSafeBucketBounds(bucket: BucketGeometry, ballRadius: number) {
-  const padding = ballRadius * 0.35;
-
-  return {
-    left: bucket.left + padding,
-    right: bucket.right - padding,
-  };
-}
-
-function isInsideTargetBucket(
-  position: BallPosition,
-  bucket: BucketGeometry,
-  ballRadius: number,
-) {
-  const safeBucket = getSafeBucketBounds(bucket, ballRadius);
-
-  return position.x >= safeBucket.left && position.x <= safeBucket.right;
-}
-
-function getPegs(rows: number, layout: BoardLayout): Peg[] {
-  const radius = getPegRadius(rows, layout);
-  const pegs: Peg[] = [];
-
-  for (let rowIndex = 0; rowIndex < rows; rowIndex += 1) {
-    for (let pegIndex = 0; pegIndex < rowIndex + 3; pegIndex += 1) {
-      pegs.push({
-        ...getPegPosition(rowIndex, pegIndex, rows, layout),
-        radius,
-      });
-    }
-  }
-
-  return pegs;
-}
-
-function getSeededInitialVelocityX(bucketIndex: number, rows: number) {
-  const normalizedTarget = bucketIndex / Math.max(1, rows) - 0.5;
-  const targetBias =
-    Math.sign(normalizedTarget) *
-    Math.pow(Math.abs(normalizedTarget), 0.72) *
-    430;
-  const deterministicJitter = ((bucketIndex * 37 + rows * 17) % 41) - 20;
-
-  return targetBias + deterministicJitter;
-}
-
-function getPyramidBounds(
-  rows: number,
-  layout: BoardLayout,
-  ballRadius: number,
-) {
-  const bounds: PyramidBound[] = [];
-  const sidePadding = ballRadius * 3;
-
-  for (let rowIndex = 0; rowIndex < rows; rowIndex += 1) {
-    const firstPeg = getPegPosition(rowIndex, 0, rows, layout);
-    const lastPeg = getPegPosition(rowIndex, rowIndex + 2, rows, layout);
-
-    bounds.push({
-      left: firstPeg.x - sidePadding,
-      right: lastPeg.x + sidePadding,
-      y: firstPeg.y,
-    });
-  }
-
-  return bounds;
-}
-
-function getInterpolatedPyramidBound(bounds: PyramidBound[], y: number) {
-  if (bounds.length === 0) {
-    return null;
-  }
-
-  const firstBound = bounds[0];
-  const lastBound = bounds[bounds.length - 1];
-
-  if (y < firstBound.y) {
-    return firstBound;
-  }
-
-  if (y > lastBound.y) {
-    return null;
-  }
-
-  const nextBoundIndex = bounds.findIndex((bound) => bound.y >= y);
-
-  if (nextBoundIndex <= 0) {
-    return firstBound;
-  }
-
-  const previousBound = bounds[nextBoundIndex - 1];
-  const nextBound = bounds[nextBoundIndex];
-  const progress = clamp(
-    (y - previousBound.y) / (nextBound.y - previousBound.y),
-    0,
-    1,
-  );
-
-  return {
-    left: previousBound.left + (nextBound.left - previousBound.left) * progress,
-    right:
-      previousBound.right + (nextBound.right - previousBound.right) * progress,
-    y,
-  };
-}
-
-function getOutsidePyramidDistance(
-  position: BallPosition,
-  bounds: PyramidBound[],
-  ballRadius: number,
-) {
-  const bound = getInterpolatedPyramidBound(bounds, position.y);
-
-  if (!bound) {
-    return 0;
-  }
-
-  const left = bound.left + ballRadius;
-  const right = bound.right - ballRadius;
-
-  if (position.x < left) {
-    return left - position.x;
-  }
-
-  if (position.x > right) {
-    return position.x - right;
-  }
-
-  return 0;
-}
-
-function resolvePegCollision(
-  position: BallPosition,
-  velocity: Velocity,
-  peg: Peg,
-  ballRadius: number,
-  collisionPosition = position,
-) {
-  const dx = collisionPosition.x - peg.x;
-  const dy = collisionPosition.y - peg.y;
-  const distance = Math.hypot(dx, dy);
-  const minDistance = ballRadius + peg.radius;
-
-  if (distance >= minDistance) {
-    return null;
-  }
-
-  const fallbackDistance = Math.hypot(velocity.x, velocity.y) || 1;
-  const normalX = distance > 0 ? dx / distance : -velocity.x / fallbackDistance;
-  const normalY = distance > 0 ? dy / distance : -velocity.y / fallbackDistance;
-  const velocityAlongNormal = velocity.x * normalX + velocity.y * normalY;
-
-  position.x = peg.x + normalX * minDistance;
-  position.y = peg.y + normalY * minDistance;
-
-  if (velocityAlongNormal < 0) {
-    velocity.x -= (1 + restitution) * velocityAlongNormal * normalX;
-    velocity.y -= (1 + restitution) * velocityAlongNormal * normalY;
-  }
-
-  velocity.x += normalX * 18;
-  velocity.y += normalY * 18;
-
-  return {
-    x: peg.x,
-    y: peg.y,
-  };
-}
-
-function getClosestPointOnSegment(
-  point: BallPosition,
-  segmentStart: BallPosition,
-  segmentEnd: BallPosition,
-) {
-  const segmentX = segmentEnd.x - segmentStart.x;
-  const segmentY = segmentEnd.y - segmentStart.y;
-  const lengthSquared = segmentX * segmentX + segmentY * segmentY;
-
-  if (lengthSquared === 0) {
-    return {
-      point: segmentStart,
-      progress: 0,
-    };
-  }
-
-  const progress = clamp(
-    ((point.x - segmentStart.x) * segmentX +
-      (point.y - segmentStart.y) * segmentY) /
-      lengthSquared,
-    0,
-    1,
-  );
-
-  return {
-    point: {
-      x: segmentStart.x + segmentX * progress,
-      y: segmentStart.y + segmentY * progress,
-    },
-    progress,
-  };
-}
-
-function getNearestCollidingPeg(
-  previousPosition: BallPosition,
-  position: BallPosition,
-  velocity: Velocity,
-  pegs: Peg[],
-  ballRadius: number,
-) {
-  let nearestPeg: Peg | null = null;
-  let nearestCollisionPosition: BallPosition | null = null;
-  let nearestProgress = Number.POSITIVE_INFINITY;
-  let nearestDistance = Number.POSITIVE_INFINITY;
-
-  pegs.forEach((peg) => {
-    const closest = getClosestPointOnSegment(peg, previousPosition, position);
-    const dx = closest.point.x - peg.x;
-    const dy = closest.point.y - peg.y;
-    const distance = Math.hypot(dx, dy);
-    const minDistance = ballRadius + peg.radius;
-
-    if (distance >= minDistance) {
-      return;
-    }
-
-    const fallbackDistance = Math.hypot(velocity.x, velocity.y) || 1;
-    const normalX =
-      distance > 0 ? dx / distance : -velocity.x / fallbackDistance;
-    const normalY =
-      distance > 0 ? dy / distance : -velocity.y / fallbackDistance;
-    const velocityAlongNormal = velocity.x * normalX + velocity.y * normalY;
-
-    if (
-      velocityAlongNormal >= 0 ||
-      closest.progress > nearestProgress ||
-      (closest.progress === nearestProgress && distance >= nearestDistance)
-    ) {
-      return;
-    }
-
-    nearestPeg = peg;
-    nearestCollisionPosition = closest.point;
-    nearestProgress = closest.progress;
-    nearestDistance = distance;
-  });
-
-  if (!nearestPeg || !nearestCollisionPosition) {
-    return null;
-  }
-
-  return {
-    peg: nearestPeg,
-    position: nearestCollisionPosition,
-  };
-}
 
 function getBestCandidate<T extends { score: number }>(candidates: T[]) {
   return candidates.reduce((best, candidate) =>
@@ -708,54 +384,31 @@ function simulateBallMotion({
     }
   }
 
-  const lastFrameTime = frames[frames.length - 1]?.timeMs ?? 0;
   const lastNaturalPosition =
     frames[frames.length - 1]?.ballPosition ?? position;
-  const xDistance = Math.abs(lastNaturalPosition.x - target.x);
-  const yShortfall = Math.max(0, target.y - lastNaturalPosition.y);
-  const outsideTargetBucketDistance = getOutsideBucketDistance(
-    lastNaturalPosition.x,
+  const {
+    isTargetBucketHit,
+    score,
+    staysInPyramid,
+  } = calculateSimulationScore({
+    ballRadius,
+    exitX,
+    impactEvents,
+    initialVelocityX,
+    lastNaturalPosition,
+    maxOutsidePyramidDistance,
+    outsidePyramidFrameCount,
+    rows,
     target,
-  );
-  const isTargetBucketHit =
-    yShortfall <= ballRadius * 0.5 &&
-    isInsideTargetBucket(lastNaturalPosition, target, ballRadius);
-  const staysInPyramid =
-    maxOutsidePyramidDistance <= ballRadius * 0.5 &&
-    outsidePyramidFrameCount <= 2;
-  const impactPenalty = impactEvents.length === 0 ? 400 : 0;
+  });
   // A natural ball clatters down through roughly one peg per row. Trajectories
   // that reach the target with far fewer hits are tunnelling straight through
   // the field (very visible on 16 rows, where the pegs are small) — penalise
   // them heavily so the search never prefers a peg-skipping shortcut.
-  const minExpectedImpacts = Math.max(3, Math.round(rows * 0.4));
-  const sparseImpactPenalty =
-    impactEvents.length < minExpectedImpacts
-      ? (minExpectedImpacts - impactEvents.length) * 240
-      : 0;
-  const outsideBucketPenalty =
-    xDistance > ballRadius * 2
-      ? Math.pow(xDistance - ballRadius * 2, 1.12)
-      : 0;
-  const outsidePyramidPenalty =
-    maxOutsidePyramidDistance * 140 + outsidePyramidFrameCount * 10;
-  const wrongBucketPenalty =
-    !isTargetBucketHit
-      ? 50000 + outsideTargetBucketDistance * 1200 + xDistance * 120
-      : 0;
-  const earlyFinishPenalty =
-    yShortfall > ballRadius * 0.5 ? 6000 + yShortfall * 120 : 0;
-  // How far the ball is from the target bucket when it leaves the last peg row.
-  // Penalising this makes the ball commit to the correct gap while still among
-  // the pegs, so the final drop is short and vertical instead of sliding side-
-  // ways over a nearer bucket's divider into a farther one.
-  const exitDrift = Math.abs((exitX ?? lastNaturalPosition.x) - target.x);
-  const exitDriftPenalty = exitDrift * exitDriftWeight;
-  // Prefer the calmest aim that still reaches the target: a smaller initial
-  // horizontal velocity means less sideways inertia released at the first peg.
-  const aimInertiaPenalty = Math.abs(initialVelocityX) * aimInertiaWeight;
-  const targetAlignmentScore =
-    outsideTargetBucketDistance > 0 ? xDistance : xDistance * 0.12;
+  settleMotionInTargetBucket(frames, target, ballRadius);
+
+  const lastFrameTime = frames[frames.length - 1]?.timeMs ?? 0;
+  const finalPosition = frames[frames.length - 1]?.ballPosition ?? position;
 
   return {
     initialVelocityX,
@@ -764,20 +417,10 @@ function simulateBallMotion({
     touchedRail,
     motion: {
       durationMs: lastFrameTime,
-      finalPosition: lastNaturalPosition,
+      finalPosition,
       frames,
       impactEvents,
     },
-    score:
-      targetAlignmentScore +
-      outsideBucketPenalty +
-      wrongBucketPenalty +
-      outsidePyramidPenalty +
-      yShortfall * 2 +
-      earlyFinishPenalty +
-      impactPenalty +
-      sparseImpactPenalty +
-      exitDriftPenalty +
-      aimInertiaPenalty,
+    score,
   };
 }
