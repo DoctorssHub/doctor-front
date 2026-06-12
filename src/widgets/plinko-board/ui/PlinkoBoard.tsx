@@ -32,12 +32,18 @@ export function PlinkoBoard({
   rows,
 }: PlinkoBoardProps) {
   const multiplierSlots = config.payoutTables[risk][rows] ?? [];
+  const isNarrowPhoneBoard = useMediaQuery("(max-width: 340px)");
   const isPhoneBoard = useMediaQuery("(max-width: 767px)");
-  const isTabletBoard = useMediaQuery("(max-width: 1023px)");
-  const boardLayout: BoardLayout = isPhoneBoard
-    ? "compact"
-    : isTabletBoard
-      ? "tablet"
+  const isStackedTabletBoard = useMediaQuery("(max-width: 1023px)");
+  const isLaptopBoard = useMediaQuery("(max-width: 1279px)");
+  const boardLayout: BoardLayout = isNarrowPhoneBoard
+    ? "narrow"
+    : isPhoneBoard
+      ? "compact"
+      : isStackedTabletBoard
+        ? "tablet"
+      : isLaptopBoard
+        ? "laptop"
       : "regular";
   const visibleBucketImpactKeys = useMemo(
     () => getVisibleBucketImpactKeys(activeRounds, rows, risk),
@@ -54,7 +60,7 @@ export function PlinkoBoard({
   const boardWidth = getBoardWidth(boardLayout);
 
   return (
-    <section className="relative flex min-h-[520px] flex-1 flex-col overflow-hidden bg-[#0f1720] px-4 py-6 md:min-h-[524px] md:px-4">
+    <section className="relative flex min-h-[520px] flex-1 flex-col overflow-hidden bg-[#0f1720] px-4 py-6 min-[1024px]:min-h-[524px] max-[1023px]:order-1 max-[1023px]:min-h-[330px] max-[767px]:min-h-[290px] max-[767px]:px-2 max-[767px]:py-5 max-[340px]:min-h-[260px]">
       <div className="absolute top-6 right-6 hidden flex-col gap-3 md:flex">
         {recentMultipliers.slice(0, 3).map((multiplier, index) => (
           <div
@@ -66,7 +72,7 @@ export function PlinkoBoard({
         ))}
       </div>
 
-      <div className="flex flex-1 items-end justify-center">
+      <div className="flex flex-1 items-end justify-center max-[1023px]:items-center">
         <div
           className="relative w-full"
           style={{ height: boardHeight, maxWidth: boardWidth }}
@@ -88,7 +94,7 @@ export function PlinkoBoard({
 
               return (
                 <div
-                  className={`flex origin-bottom items-center justify-center border text-[9px] font-bold transition-[box-shadow,background-color,border-color,color] duration-200 md:text-[10px] ${isActive ? "plinko-bucket-hit" : ""} ${getMultiplierTone(slot, isActive)}`}
+                  className={`flex origin-bottom items-center justify-center border text-[9px] font-bold transition-[box-shadow,background-color,border-color,color] duration-200 max-[340px]:text-[8px] md:text-[10px] ${isActive ? "plinko-bucket-hit" : ""} ${getMultiplierTone(slot, isActive)}`}
                   key={`${slot}-${index}-${impactKey ?? "idle"}`}
                   style={{
                     borderRadius: bucketRadius,

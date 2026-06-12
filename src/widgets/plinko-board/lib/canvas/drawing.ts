@@ -123,7 +123,7 @@ function paintBall(
   gradient.addColorStop(1, "#580C12");
 
   context.save();
-  context.shadowBlur = 20;
+  context.shadowBlur = radius * 1.6;
   context.shadowColor = "rgba(200, 40, 49, 0.58)";
   context.fillStyle = gradient;
   context.beginPath();

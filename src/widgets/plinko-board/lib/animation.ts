@@ -3,50 +3,73 @@ export type BallPosition = {
   y: number;
 };
 
-export type BoardLayout = "regular" | "tablet" | "compact";
+export type BoardLayout =
+  | "regular"
+  | "laptop"
+  | "tablet"
+  | "compact"
+  | "narrow";
 
 const boardWidthByLayout: Record<BoardLayout, number> = {
-  compact: 360,
+  compact: 340,
+  laptop: 590,
+  narrow: 286,
   regular: 625,
   tablet: 460,
 };
 const rowStartYByLayout: Record<BoardLayout, number> = {
   compact: 20,
+  laptop: 30,
+  narrow: 18,
   regular: 30,
   tablet: 22,
 };
 const pyramidHeightByLayout: Record<BoardLayout, number> = {
   compact: 190,
+  laptop: 388,
+  narrow: 172,
   regular: 420,
   tablet: 260,
 };
 const pyramidWidthByLayout: Record<BoardLayout, number> = {
-  compact: 340,
+  compact: 320,
+  laptop: 520,
+  narrow: 270,
   regular: 558,
   tablet: 430,
 };
 const boardBottomPaddingByLayout: Record<BoardLayout, number> = {
   compact: 46,
+  laptop: 68,
+  narrow: 44,
   regular: 74,
   tablet: 48,
 };
 const bucketGapByLayout: Record<BoardLayout, number> = {
   compact: 2,
+  laptop: 5,
+  narrow: 2,
   regular: 6,
   tablet: 4,
 };
 const bucketHeightByLayout: Record<BoardLayout, number> = {
   compact: 24,
+  laptop: 30,
+  narrow: 23,
   regular: 30,
   tablet: 28,
 };
 const bucketRadiusByLayout: Record<BoardLayout, number> = {
   compact: 6,
+  laptop: 8,
+  narrow: 6,
   regular: 8,
   tablet: 7,
 };
 const bucketHorizontalPaddingByLayout: Record<BoardLayout, number> = {
   compact: 6,
+  laptop: 9,
+  narrow: 4,
   regular: 10,
   tablet: 8,
 };
@@ -60,6 +83,14 @@ const pegRadiusByLayout: Record<
     maxRowsRadius: 2.6,
     minRowsRadius: 4,
   },
+  laptop: {
+    maxRowsRadius: 3.8,
+    minRowsRadius: 6,
+  },
+  narrow: {
+    maxRowsRadius: 2.1,
+    minRowsRadius: 3.3,
+  },
   regular: {
     maxRowsRadius: 4.2,
     minRowsRadius: 6.5,
@@ -70,7 +101,9 @@ const pegRadiusByLayout: Record<
   },
 };
 const ballRadiusByLayout: Record<BoardLayout, number> = {
-  compact: 10,
+  compact: 7.2,
+  laptop: 12,
+  narrow: 5.2,
   regular: 12.5,
   tablet: 11,
 };

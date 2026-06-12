@@ -314,10 +314,11 @@ export function PlinkoScreen() {
   }, []);
 
   return (
-    <main className="bg-[#080c17] p-4 text-white md:p-5">
-      <section className="mx-auto flex min-h-[524px] max-w-[60rem] flex-col overflow-hidden rounded-xl border border-[#111827] bg-[#0c111d] shadow-[0_24px_80px_rgb(0_0_0_/_28%)] md:flex-row">
+    <main className="bg-[#080c17] p-4 text-white max-[767px]:p-2 md:p-5">
+      <section className="mx-auto flex min-h-[524px] max-w-[60rem] flex-col overflow-hidden rounded-xl border border-[#111827] bg-[#0c111d] shadow-[0_24px_80px_rgb(0_0_0_/_28%)] min-[1024px]:flex-row max-[1023px]:min-h-0">
         <GameSidebar
           autoBetsAmount={autoBetsAmount}
+          balanceLabel={gamePointsBalance?.value}
           betAmount={betAmount}
           betButtonLabel={getBetButtonLabel({
             hasConfigError: hasGameConfigError,
