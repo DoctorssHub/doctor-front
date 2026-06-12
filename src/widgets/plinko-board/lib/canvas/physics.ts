@@ -72,6 +72,15 @@ const exitDriftWeight = 0.5;
 const aimInertiaWeight = 0.03;
 const motionCache = new Map<string, BallMotion>();
 
+export function getBallMotionCacheKey(
+  layout: BoardLayout,
+  rows: number,
+  bucketIndex: number,
+  seed: string,
+) {
+  return `${layout}:${rows}:${bucketIndex}:${seed}`;
+}
+
 function easeOutCubic(progress: number) {
   return 1 - Math.pow(1 - progress, 3);
 }
@@ -467,7 +476,8 @@ export function createBallMotion({
   rows,
   seed,
 }: BallSimulationParams): BallMotion {
-  const cacheKey = `${layout}:${rows}:${bucketIndex}`;
+  const motionSeed = seed ?? `${bucketIndex}:${rows}`;
+  const cacheKey = getBallMotionCacheKey(layout, rows, bucketIndex, motionSeed);
   const cachedMotion = motionCache.get(cacheKey);
 
   if (cachedMotion) {
@@ -475,7 +485,7 @@ export function createBallMotion({
   }
 
   const initialVelocityX = getSeededInitialVelocityX(bucketIndex, rows);
-  const seedValue = getSeedValue(seed ?? `${bucketIndex}:${rows}`);
+  const seedValue = getSeedValue(motionSeed);
   const candidates = [];
 
   for (

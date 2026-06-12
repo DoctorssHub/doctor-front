@@ -32,8 +32,18 @@ export function formatBetAmountInput(amount: string) {
   return parsedAmount === null ? amount : formatBetAmount(parsedAmount);
 }
 
+export function readBetAmount(amount: string) {
+  const parsedAmount = readAmount(amount);
+
+  return parsedAmount !== null && parsedAmount > 0 ? parsedAmount : null;
+}
+
 function readAmount(value: number | string | null | undefined) {
-  if (value === null || value === undefined || value === "") {
+  if (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "")
+  ) {
     return null;
   }
 

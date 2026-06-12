@@ -12,6 +12,8 @@ type GameSidebarProps = {
   isAutoBetsInfinite: boolean;
   isBetDisabled?: boolean;
   isModeChangeDisabled?: boolean;
+  isRiskChangeDisabled?: boolean;
+  isRowsChangeDisabled?: boolean;
   maxBet?: string;
   minBet?: string;
   mode: GameMode;
@@ -48,6 +50,8 @@ export function GameSidebar({
   isAutoBetsInfinite,
   isBetDisabled = false,
   isModeChangeDisabled = false,
+  isRiskChangeDisabled = false,
+  isRowsChangeDisabled = false,
   maxBet,
   minBet,
   mode,
@@ -144,7 +148,8 @@ export function GameSidebar({
             <button
               className={`h-10 rounded-md text-sm font-semibold transition ${
                 risk === nextRisk ? "bg-[#1b2230]" : "hover:bg-[#171d29]"
-              } ${riskTone[nextRisk]}`}
+              } ${riskTone[nextRisk]} disabled:cursor-not-allowed disabled:opacity-50`}
+              disabled={isRiskChangeDisabled}
               key={nextRisk}
               onClick={() => onRiskChange(nextRisk)}
               type="button"
@@ -165,7 +170,8 @@ export function GameSidebar({
         <div className="flex items-center gap-3">
           <span className="w-4 text-sm font-semibold text-white">{rows}</span>
           <input
-            className="h-1 flex-1 accent-[#c82831]"
+            className="h-1 flex-1 accent-[#c82831] disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isRowsChangeDisabled}
             id="rows"
             max={16}
             min={8}

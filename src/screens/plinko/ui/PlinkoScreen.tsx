@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Bet } from "@/entities/bet/model/types";
 import type { GameMode, Risk } from "@/entities/game/model/types";
-import { useAuthSessionStore } from "@/features/auth";
+import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
 import type { UserBalance } from "@/features/auth/lib/read-auth-response";
 import {
   getPlinkoConfig,
@@ -20,7 +20,12 @@ import {
   type BetAmountControl,
   formatBetAmountInput,
   getNextBetAmount,
+  readBetAmount,
 } from "@/widgets/game-sidebar/lib/bet-amount-controls";
+import {
+  getBetButtonLabel,
+  validateFiniteAutoBetBudget,
+} from "../lib/plinko-controls";
 
 const MAX_AUTO_BETS = 100;
 const AUTO_BET_DELAY_MS = 500;
@@ -30,6 +35,7 @@ export function PlinkoScreen() {
   const isAuthenticated = useAuthSessionStore(
     (state) => state.isAuthenticated,
   );
+  const openAuthModal = useAuthModalStore((state) => state.openAuthModal);
   const balances = useAuthSessionStore((state) => state.balances);
   const gamePointsBalance = findGamePointsBalance(balances);
   const gamePointsBalanceType =
@@ -58,6 +64,11 @@ export function PlinkoScreen() {
     plinkoConfigQuery.data,
     mockGameConfig,
   );
+  const isGameConfigReady = plinkoConfigQuery.isSuccess;
+  const isGameConfigLoading = plinkoConfigQuery.isPending;
+  const hasGameConfigError = plinkoConfigQuery.isError;
+  const isRoundInFlight = activeRounds.length > 0;
+  const isGameControlDisabled = isAutoBetting || isRoundInFlight;
   const addRound = useCallback(
     ({
       bet,
@@ -117,11 +128,11 @@ export function PlinkoScreen() {
   }, []);
 
   const validateBetAmount = useCallback(() => {
-    const amount = Number(betAmount);
+    const amount = readBetAmount(betAmount);
     const minBet = Number(plinkoConfig.minBet);
     const maxBet = Number(plinkoConfig.maxBet);
 
-    if (!Number.isFinite(amount)) {
+    if (amount === null) {
       return "Enter a valid bet amount.";
     }
 
@@ -147,16 +158,29 @@ export function PlinkoScreen() {
       return;
     }
 
-    const amountError = validateBetAmount();
-
     setBetValidationError("");
 
     if (!isAuthenticated) {
+      openAuthModal("login");
       return;
     }
 
+    if (!isGameConfigReady) {
+      setBetValidationError("Game settings are not loaded yet.");
+      return;
+    }
+
+    const amountError = validateBetAmount();
+
     if (amountError) {
       setBetValidationError(amountError);
+      return;
+    }
+
+    const amount = readBetAmount(betAmount);
+
+    if (amount === null) {
+      setBetValidationError("Enter a valid bet amount.");
       return;
     }
 
@@ -195,6 +219,19 @@ export function PlinkoScreen() {
       return;
     }
 
+    if (!isAutoBetsInfinite) {
+      const budgetError = validateFiniteAutoBetBudget({
+        amount,
+        autoBetsCount,
+        availableBalance,
+      });
+
+      if (budgetError) {
+        setBetValidationError(budgetError);
+        return;
+      }
+    }
+
     shouldStopAutoBetRef.current = false;
     setIsAutoBetting(true);
     setIsAutoBetStopRequested(false);
@@ -226,7 +263,9 @@ export function PlinkoScreen() {
         }
       }
     } catch {
-      setBetValidationError("Autobet stopped because a bet failed.");
+      setBetValidationError(
+        "Autobet stopped. Balance may be too low or the bet was rejected.",
+      );
     } finally {
       shouldStopAutoBetRef.current = false;
       setIsAutoBetting(false);
@@ -234,12 +273,15 @@ export function PlinkoScreen() {
     }
   }, [
     autoBetsAmount,
+    availableBalance,
     betAmount,
     gamePointsBalanceType,
     isAutoBetsInfinite,
     isAutoBetting,
+    isGameConfigReady,
     isAuthenticated,
     mode,
+    openAuthModal,
     risk,
     rows,
     runPlinkoBet,
@@ -277,26 +319,29 @@ export function PlinkoScreen() {
         <GameSidebar
           autoBetsAmount={autoBetsAmount}
           betAmount={betAmount}
-          betButtonLabel={
-            isAutoBetting
-              ? isAutoBetStopRequested
-                ? "Stopping..."
-                : "Stop Autobet"
-              : mode === "Auto"
-                ? "Start Autobet"
-                : isBetting
-                  ? "Betting..."
-                  : "Bet"
-          }
+          betButtonLabel={getBetButtonLabel({
+            hasConfigError: hasGameConfigError,
+            isAuthenticated,
+            isAutoBetStopRequested,
+            isAutoBetting,
+            isBetting,
+            isConfigLoading: isGameConfigLoading,
+            mode,
+          })}
           errorMessage={
             betValidationError ||
             (plinkoConfigQuery.error instanceof Error
               ? "Unable to load game settings. Please try again."
               : undefined)
           }
-          isBetDisabled={isBetting || !isAuthenticated}
+          isBetDisabled={
+            isBetting ||
+            (isAuthenticated && (isGameConfigLoading || hasGameConfigError))
+          }
           isAutoBetsInfinite={isAutoBetsInfinite}
-          isModeChangeDisabled={isAutoBetting}
+          isModeChangeDisabled={isGameControlDisabled}
+          isRiskChangeDisabled={isGameControlDisabled}
+          isRowsChangeDisabled={isGameControlDisabled}
           maxBet={plinkoConfig.maxBet}
           minBet={plinkoConfig.minBet}
           mode={mode}
