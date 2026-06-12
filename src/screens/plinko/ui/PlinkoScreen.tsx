@@ -30,7 +30,7 @@ export function PlinkoScreen() {
     isReady: isGameConfigReady,
   } = usePlinkoConfig();
   const [mode, setMode] = useState<GameMode>("Manual");
-  const [risk, setRisk] = useState<Risk>("MEDIUM");
+  const [risk, setRisk] = useState<Risk>("LOW");
   const [rows, setRows] = useState(8);
   const [isAutoBetsInfinite, setIsAutoBetsInfinite] = useState(false);
   const {
