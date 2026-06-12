@@ -8,50 +8,31 @@ import {
   getPegPosition,
   getPegRadius,
 } from "@/widgets/plinko-board/lib/animation";
+import {
+  getBallMotionCacheKey,
+  getCachedBallMotion,
+  getCachedInitialVelocity,
+  getInitialVelocityCacheKey,
+  setCachedBallMotion,
+  setCachedInitialVelocity,
+} from "./physics-cache";
+import type {
+  BallMotion,
+  BallSimulationParams,
+  BucketGeometry,
+  ImpactEvent,
+  Peg,
+  PyramidBound,
+  SimulationFrame,
+  Velocity,
+} from "./physics-types";
 
-type Velocity = {
-  x: number;
-  y: number;
-};
-
-type Peg = BallPosition & {
-  radius: number;
-};
-
-type PyramidBound = {
-  left: number;
-  right: number;
-  y: number;
-};
-
-type BucketGeometry = BallPosition & {
-  left: number;
-  right: number;
-};
-
-type SimulationFrame = {
-  ballPosition: BallPosition;
-  timeMs: number;
-};
-
-type ImpactEvent = {
-  position: BallPosition;
-  timeMs: number;
-};
-
-export type BallMotion = {
-  durationMs: number;
-  finalPosition: BallPosition;
-  frames: SimulationFrame[];
-  impactEvents: ImpactEvent[];
-};
-
-type BallSimulationParams = {
-  bucketIndex: number;
-  layout?: BoardLayout;
-  rows: number;
-  seed?: string;
-};
+export type { BallMotion } from "./physics-types";
+export { getBallFrame } from "./physics-frame";
+export {
+  getBallMotionCacheKey,
+  getInitialVelocityCacheKey,
+} from "./physics-cache";
 
 const fixedStepMs = 1000 / 120;
 const maxDurationMs = 5200;
@@ -60,7 +41,6 @@ const restitution = 0.58;
 const wallRestitution = 0.46;
 const horizontalDamping = 0.992;
 const verticalDamping = 0.998;
-const impactDurationMs = 170;
 const minCandidateVelocityX = -2200;
 const maxCandidateVelocityX = 2200;
 const candidateVelocityStep = 40;
@@ -70,20 +50,6 @@ const maxRowsForTimingScale = 16;
 const maxRowsTimingScale = 1.45;
 const exitDriftWeight = 0.5;
 const aimInertiaWeight = 0.03;
-const motionCache = new Map<string, BallMotion>();
-
-export function getBallMotionCacheKey(
-  layout: BoardLayout,
-  rows: number,
-  bucketIndex: number,
-  seed: string,
-) {
-  return `${layout}:${rows}:${bucketIndex}:${seed}`;
-}
-
-function easeOutCubic(progress: number) {
-  return 1 - Math.pow(1 - progress, 3);
-}
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -416,58 +382,68 @@ function getNearestCollidingPeg(
   };
 }
 
-function interpolateFrame(
-  previous: SimulationFrame,
-  next: SimulationFrame,
-  elapsedMs: number,
-) {
-  const progress = clamp(
-    (elapsedMs - previous.timeMs) / (next.timeMs - previous.timeMs),
-    0,
-    1,
-  );
-
-  return {
-    x: previous.ballPosition.x +
-      (next.ballPosition.x - previous.ballPosition.x) * progress,
-    y: previous.ballPosition.y +
-      (next.ballPosition.y - previous.ballPosition.y) * progress,
-  };
-}
-
-function findFrameIndex(frames: SimulationFrame[], elapsedMs: number) {
-  let low = 0;
-  let high = frames.length - 1;
-
-  while (low < high) {
-    const middle = Math.floor((low + high) / 2);
-
-    if (frames[middle].timeMs < elapsedMs) {
-      low = middle + 1;
-    } else {
-      high = middle;
-    }
-  }
-
-  return low;
-}
-
-function getLatestImpact(impactEvents: ImpactEvent[], elapsedMs: number) {
-  for (let index = impactEvents.length - 1; index >= 0; index -= 1) {
-    const impact = impactEvents[index];
-
-    if (impact.timeMs <= elapsedMs) {
-      return impact;
-    }
-  }
-
-  return null;
-}
-
 function getBestCandidate<T extends { score: number }>(candidates: T[]) {
   return candidates.reduce((best, candidate) =>
     candidate.score < best.score ? candidate : best,
   );
+}
+
+function getCandidateWindow(
+  bucketIndex: number,
+  layout: BoardLayout,
+  rows: number,
+  seedValue: number,
+  centerVelocityX: number,
+  radius: number,
+  step: number,
+) {
+  const candidates = [];
+
+  for (
+    let velocityX = centerVelocityX - radius;
+    velocityX <= centerVelocityX + radius;
+    velocityX += step
+  ) {
+    candidates.push(
+      simulateBallMotion({
+        bucketIndex,
+        initialVelocityX: velocityX,
+        layout,
+        rows,
+        seedValue,
+      }),
+    );
+  }
+
+  return candidates;
+}
+
+function getSelectedCandidate<T extends {
+  isTargetBucketHit: boolean;
+  score: number;
+  staysInPyramid: boolean;
+  touchedRail: boolean;
+}>(candidates: T[], fallbackCandidate: T) {
+  // Best of all worlds: the ball reaches the target while only ever bouncing
+  // off pegs (never the containment rail). Fall back progressively if no such
+  // trajectory exists for this bucket.
+  const railFreeCandidates = candidates.filter(
+    (candidate) => candidate.isTargetBucketHit && !candidate.touchedRail,
+  );
+  const strictValidCandidates = candidates.filter(
+    (candidate) => candidate.isTargetBucketHit && candidate.staysInPyramid,
+  );
+  const targetBucketCandidates = candidates.filter(
+    (candidate) => candidate.isTargetBucketHit,
+  );
+
+  return railFreeCandidates.length > 0
+    ? getBestCandidate(railFreeCandidates)
+    : strictValidCandidates.length > 0
+      ? getBestCandidate(strictValidCandidates)
+      : targetBucketCandidates.length > 0
+        ? getBestCandidate(targetBucketCandidates)
+        : fallbackCandidate;
 }
 
 export function createBallMotion({
@@ -478,7 +454,7 @@ export function createBallMotion({
 }: BallSimulationParams): BallMotion {
   const motionSeed = seed ?? `${bucketIndex}:${rows}`;
   const cacheKey = getBallMotionCacheKey(layout, rows, bucketIndex, motionSeed);
-  const cachedMotion = motionCache.get(cacheKey);
+  const cachedMotion = getCachedBallMotion(cacheKey);
 
   if (cachedMotion) {
     return cachedMotion;
@@ -486,6 +462,44 @@ export function createBallMotion({
 
   const initialVelocityX = getSeededInitialVelocityX(bucketIndex, rows);
   const seedValue = getSeedValue(motionSeed);
+  const velocityCacheKey = getInitialVelocityCacheKey(layout, rows, bucketIndex);
+  const cachedInitialVelocityX = getCachedInitialVelocity(velocityCacheKey);
+
+  if (cachedInitialVelocityX !== undefined) {
+    const candidates = [
+      ...getCandidateWindow(
+        bucketIndex,
+        layout,
+        rows,
+        seedValue,
+        cachedInitialVelocityX,
+        candidateVelocityStep,
+        refinedCandidateVelocityStep,
+      ),
+      simulateBallMotion({
+        bucketIndex,
+        initialVelocityX,
+        layout,
+        rows,
+        seedValue,
+      }),
+    ];
+    const bestCandidate = getBestCandidate(candidates);
+    const selectedCandidate = getSelectedCandidate(candidates, bestCandidate);
+    const motion = applyTimingScale(
+      selectedCandidate.motion,
+      getRowsTimingScale(rows),
+    );
+
+    setCachedInitialVelocity(
+      velocityCacheKey,
+      selectedCandidate.initialVelocityX,
+    );
+    setCachedBallMotion(cacheKey, motion);
+
+    return motion;
+  }
+
   const candidates = [];
 
   for (
@@ -515,53 +529,30 @@ export function createBallMotion({
   );
 
   const bestCandidate = getBestCandidate(candidates);
-  const refinedCandidates = [];
-
-  for (
-    let velocityX = bestCandidate.initialVelocityX - candidateVelocityStep;
-    velocityX <= bestCandidate.initialVelocityX + candidateVelocityStep;
-    velocityX += refinedCandidateVelocityStep
-  ) {
-    refinedCandidates.push(
-      simulateBallMotion({
-        bucketIndex,
-        initialVelocityX: velocityX,
-        layout,
-        rows,
-        seedValue,
-      }),
-    );
-  }
+  const refinedCandidates = getCandidateWindow(
+    bucketIndex,
+    layout,
+    rows,
+    seedValue,
+    bestCandidate.initialVelocityX,
+    candidateVelocityStep,
+    refinedCandidateVelocityStep,
+  );
 
   const bestRefinedCandidate = getBestCandidate(refinedCandidates);
   const allCandidates = [...candidates, ...refinedCandidates];
-  // Best of all worlds: the ball reaches the target while only ever bouncing
-  // off pegs (never the containment rail). Fall back progressively if no such
-  // trajectory exists for this bucket.
-  const railFreeCandidates = allCandidates.filter(
-    (candidate) => candidate.isTargetBucketHit && !candidate.touchedRail,
+  const selectedCandidate = getSelectedCandidate(
+    allCandidates,
+    bestRefinedCandidate,
   );
-  const strictValidCandidates = allCandidates.filter(
-    (candidate) => candidate.isTargetBucketHit && candidate.staysInPyramid,
-  );
-  const targetBucketCandidates = allCandidates.filter(
-    (candidate) => candidate.isTargetBucketHit,
-  );
-  const selectedCandidate =
-    railFreeCandidates.length > 0
-      ? getBestCandidate(railFreeCandidates)
-      : strictValidCandidates.length > 0
-        ? getBestCandidate(strictValidCandidates)
-        : targetBucketCandidates.length > 0
-          ? getBestCandidate(targetBucketCandidates)
-          : bestRefinedCandidate;
 
   const motion = applyTimingScale(
     selectedCandidate.motion,
     getRowsTimingScale(rows),
   );
 
-  motionCache.set(cacheKey, motion);
+  setCachedInitialVelocity(velocityCacheKey, selectedCandidate.initialVelocityX);
+  setCachedBallMotion(cacheKey, motion);
 
   return motion;
 }
@@ -788,42 +779,5 @@ function simulateBallMotion({
       sparseImpactPenalty +
       exitDriftPenalty +
       aimInertiaPenalty,
-  };
-}
-
-export function getBallFrame(motion: BallMotion, elapsedMs: number) {
-  if (motion.frames.length === 0) {
-    return {
-      impactProgress: 1,
-      isComplete: true,
-    };
-  }
-
-  if (elapsedMs >= motion.durationMs) {
-    return {
-      ballPosition: motion.finalPosition,
-      impactProgress: 1,
-      isComplete: true,
-    };
-  }
-
-  const nextFrameIndex = findFrameIndex(motion.frames, elapsedMs);
-  const nextFrame = motion.frames[nextFrameIndex] ?? motion.frames[0];
-  const previousFrame = motion.frames[Math.max(0, nextFrameIndex - 1)];
-  const impact = getLatestImpact(motion.impactEvents, elapsedMs);
-  const impactElapsedMs = impact ? elapsedMs - impact.timeMs : impactDurationMs;
-  const impactProgress =
-    impact && impactElapsedMs < impactDurationMs
-      ? easeOutCubic(impactElapsedMs / impactDurationMs)
-      : 1;
-
-  return {
-    ballPosition:
-      previousFrame === nextFrame
-        ? nextFrame.ballPosition
-        : interpolateFrame(previousFrame, nextFrame, elapsedMs),
-    impactPosition: impactProgress < 1 ? impact?.position : undefined,
-    impactProgress,
-    isComplete: false,
   };
 }

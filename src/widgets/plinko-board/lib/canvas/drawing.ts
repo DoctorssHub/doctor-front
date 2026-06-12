@@ -8,6 +8,7 @@ import {
 
 type CanvasSize = {
   height: number;
+  pixelRatio?: number;
   width: number;
 };
 
@@ -24,6 +25,7 @@ type SceneParams = CanvasSize & {
 
 type BallLayerParams = SceneParams & {
   ballFrames?: BallFrame[];
+  pixelRatio?: number;
 };
 
 export function configureCanvas(canvas: HTMLCanvasElement, size: CanvasSize) {
@@ -33,7 +35,7 @@ export function configureCanvas(canvas: HTMLCanvasElement, size: CanvasSize) {
     return null;
   }
 
-  const pixelRatio = window.devicePixelRatio || 1;
+  const pixelRatio = size.pixelRatio ?? window.devicePixelRatio ?? 1;
 
   canvas.width = size.width * pixelRatio;
   canvas.height = size.height * pixelRatio;
@@ -223,13 +225,19 @@ export function drawPegLayer(
 
 export function drawBallLayer(
   context: CanvasRenderingContext2D,
-  { ballFrames = [], height, layout = "regular", rows, width }: BallLayerParams,
+  {
+    ballFrames = [],
+    height,
+    layout = "regular",
+    pixelRatio = window.devicePixelRatio || 1,
+    rows,
+    width,
+  }: BallLayerParams,
 ) {
   context.clearRect(0, 0, width, height);
 
   const ballRadius = getBallRadius(rows, layout);
   const pegRadius = getPegRadius(rows, layout);
-  const pixelRatio = window.devicePixelRatio || 1;
 
   ballFrames.forEach(({ impactPosition, impactProgress = 1 }) => {
     if (impactPosition && impactProgress < 1) {

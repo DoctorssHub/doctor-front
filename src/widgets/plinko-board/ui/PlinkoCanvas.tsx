@@ -1,23 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
+import { useDevicePixelRatio } from "@/shared/lib/useDevicePixelRatio";
 import type { ActiveRound } from "@/widgets/plinko-board/model/active-round";
 import {
   type BoardLayout,
   getBoardHeight,
   getBoardWidth,
 } from "@/widgets/plinko-board/lib/animation";
+import { collectBallFrames } from "@/widgets/plinko-board/lib/canvas/ball-frames";
 import {
-  configureCanvas,
-  type BallFrame,
   drawBallLayer,
   drawPegLayer,
 } from "@/widgets/plinko-board/lib/canvas/drawing";
-import {
-  createBallMotion,
-  getBallFrame,
-  type BallMotion,
-} from "@/widgets/plinko-board/lib/canvas/physics";
+import { useConfiguredCanvas } from "@/widgets/plinko-board/lib/canvas/useConfiguredCanvas";
+import { useAnimationFrameLoop } from "@/widgets/plinko-board/model/useAnimationFrameLoop";
+import { usePlinkoRoundMotions } from "@/widgets/plinko-board/model/usePlinkoRoundMotions";
 
 type PlinkoCanvasProps = {
   activeRounds: ActiveRound[];
@@ -35,204 +33,112 @@ export function PlinkoCanvas({
   const staticCanvasRef = useRef<HTMLCanvasElement>(null);
   const ballCanvasRef = useRef<HTMLCanvasElement>(null);
   const ballContextRef = useRef<CanvasRenderingContext2D | null>(null);
-  const activeRoundsRef = useRef(activeRounds);
-  const startedAtByRoundRef = useRef(new Map<string, number>());
-  const ballMotionByRoundRef = useRef(new Map<string, BallMotion>());
-  const completedRoundIdsRef = useRef(new Set<string>());
-  const onAnimationCompleteRef = useRef(onAnimationComplete);
-  const animationFrameRef = useRef(0);
-  const isLoopRunningRef = useRef(false);
-  const runFrameRef = useRef<(timestamp: number) => void>(() => {});
   const boardHeight = getBoardHeight(rows, layout);
   const boardWidth = getBoardWidth(layout);
+  const pixelRatio = useDevicePixelRatio();
+  const {
+    activeRoundsRef,
+    getRoundMotion,
+    getRoundStartedAt,
+    hasPendingRound,
+    isRoundCompleted,
+    markRoundCompleted,
+  } = usePlinkoRoundMotions({
+    activeRounds,
+    layout,
+    rows,
+  });
 
-  useEffect(() => {
-    onAnimationCompleteRef.current = onAnimationComplete;
-  }, [onAnimationComplete]);
-
-  useEffect(() => {
-    activeRoundsRef.current = activeRounds;
-  }, [activeRounds]);
-
-  useEffect(() => {
-    const activeRoundIds = new Set(activeRounds.map((round) => round.id));
-
-    startedAtByRoundRef.current.forEach((_, roundId) => {
-      if (!activeRoundIds.has(roundId)) {
-        startedAtByRoundRef.current.delete(roundId);
-      }
-    });
-
-    ballMotionByRoundRef.current.forEach((_, roundId) => {
-      if (!activeRoundIds.has(roundId)) {
-        ballMotionByRoundRef.current.delete(roundId);
-      }
-    });
-
-    completedRoundIdsRef.current.forEach((roundId) => {
-      if (!activeRoundIds.has(roundId)) {
-        completedRoundIdsRef.current.delete(roundId);
-      }
-    });
-
-    activeRounds.forEach((round) => {
-      if (
-        completedRoundIdsRef.current.has(round.id) ||
-        ballMotionByRoundRef.current.has(round.id)
-      ) {
-        return;
-      }
-
-      const ballMotion = createBallMotion({
-        bucketIndex: round.bet.bucketIndex,
-        layout,
-        rows,
-        seed: round.bet.betId,
-      });
-
-      ballMotionByRoundRef.current.set(round.id, ballMotion);
-      startedAtByRoundRef.current.set(round.id, performance.now());
-    });
-  }, [activeRounds, layout, rows]);
-
-  const runFrame = useCallback(
+  const drawFrame = useCallback(
     (timestamp: number) => {
       const ballContext = ballContextRef.current;
 
       if (!ballContext) {
-        isLoopRunningRef.current = false;
-        return;
+        return "stop";
       }
 
-      const ballFrames: BallFrame[] = [];
-
-      activeRoundsRef.current.forEach((round) => {
-        if (completedRoundIdsRef.current.has(round.id)) {
-          return;
-        }
-
-        const ballMotion = ballMotionByRoundRef.current.get(round.id);
-
-        if (!ballMotion) {
-          return;
-        }
-
-        if (ballMotion.frames.length === 0) {
-          completedRoundIdsRef.current.add(round.id);
-          onAnimationCompleteRef.current(round.id);
-          return;
-        }
-
-        const startedAt =
-          startedAtByRoundRef.current.get(round.id) ?? timestamp;
-        const elapsedMs = timestamp - startedAt;
-        const frame = getBallFrame(ballMotion, elapsedMs);
-
-        ballFrames.push(frame);
-
-        if (frame.isComplete) {
-          completedRoundIdsRef.current.add(round.id);
-          onAnimationCompleteRef.current(round.id);
-        }
+      const { ballFrames, shouldContinue } = collectBallFrames({
+        activeRounds: activeRoundsRef.current,
+        getRoundMotion,
+        getRoundStartedAt,
+        isRoundCompleted,
+        markRoundCompleted,
+        onRoundComplete: onAnimationComplete,
+        timestamp,
       });
 
       drawBallLayer(ballContext, {
         ballFrames,
         height: boardHeight,
         layout,
+        pixelRatio,
         rows,
         width: boardWidth,
       });
 
-      if (ballFrames.length === 0) {
-        isLoopRunningRef.current = false;
-        return;
-      }
+      return shouldContinue ? "continue" : "stop";
+    },
+    [
+      activeRoundsRef,
+      boardHeight,
+      boardWidth,
+      getRoundMotion,
+      getRoundStartedAt,
+      isRoundCompleted,
+      layout,
+      markRoundCompleted,
+      onAnimationComplete,
+      pixelRatio,
+      rows,
+    ],
+  );
+  const { startLoopIfNeeded, stopLoop } = useAnimationFrameLoop({
+    hasPendingFrame: hasPendingRound,
+    onFrame: drawFrame,
+    startSignal: activeRounds,
+  });
 
-      animationFrameRef.current = window.requestAnimationFrame(
-        runFrameRef.current,
-      );
+  const handleStaticCanvasConfigured = useCallback(
+    (context: CanvasRenderingContext2D) => {
+      drawPegLayer(context, {
+        height: boardHeight,
+        layout,
+        rows,
+        width: boardWidth,
+      });
     },
     [boardHeight, boardWidth, layout, rows],
   );
 
-  useEffect(() => {
-    runFrameRef.current = runFrame;
-  }, [runFrame]);
+  const handleBallCanvasConfigured = useCallback(
+    (context: CanvasRenderingContext2D) => {
+      ballContextRef.current = context;
+      startLoopIfNeeded();
+    },
+    [startLoopIfNeeded],
+  );
 
-  const startLoopIfNeeded = useCallback(() => {
-    if (isLoopRunningRef.current) {
-      return;
-    }
+  const handleBallCanvasCleanup = useCallback(() => {
+    ballContextRef.current = null;
+    stopLoop();
+  }, [stopLoop]);
 
-    const hasPendingRound = activeRoundsRef.current.some(
-      (round) => !completedRoundIdsRef.current.has(round.id),
-    );
+  useConfiguredCanvas({
+    height: boardHeight,
+    onConfigured: handleStaticCanvasConfigured,
+    pixelRatio,
+    ref: staticCanvasRef,
+    width: boardWidth,
+  });
 
-    if (!hasPendingRound) {
-      return;
-    }
-
-    isLoopRunningRef.current = true;
-    animationFrameRef.current = window.requestAnimationFrame(
-      runFrameRef.current,
-    );
-  }, []);
-
-  useEffect(() => {
-    const canvas = staticCanvasRef.current;
-
-    if (!canvas) {
-      return;
-    }
-
-    const context = configureCanvas(canvas, {
-      height: boardHeight,
-      width: boardWidth,
-    });
-
-    if (!context) {
-      return;
-    }
-
-    ballMotionByRoundRef.current.clear();
-
-    drawPegLayer(context, {
-      height: boardHeight,
-      layout,
-      rows,
-      width: boardWidth,
-    });
-  }, [boardHeight, boardWidth, layout, rows]);
-
-  useEffect(() => {
-    const canvas = ballCanvasRef.current;
-
-    if (!canvas) {
-      return;
-    }
-
-    const context = configureCanvas(canvas, {
-      height: boardHeight,
-      width: boardWidth,
-    });
-
-    if (!context) {
-      return;
-    }
-
-    ballContextRef.current = context;
-    startLoopIfNeeded();
-
-    return () => {
-      window.cancelAnimationFrame(animationFrameRef.current);
-      isLoopRunningRef.current = false;
-    };
-  }, [boardHeight, boardWidth, layout, rows, startLoopIfNeeded]);
-
-  useEffect(() => {
-    startLoopIfNeeded();
-  }, [activeRounds, startLoopIfNeeded]);
+  useConfiguredCanvas({
+    height: boardHeight,
+    onCleanup: handleBallCanvasCleanup,
+    onConfigured: handleBallCanvasConfigured,
+    pixelRatio,
+    ref: ballCanvasRef,
+    width: boardWidth,
+  });
 
   return (
     <>
