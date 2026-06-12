@@ -30,6 +30,18 @@
   --color-surface-counter: #090d17;
   --color-surface-prize: #070b13;
   --color-surface-claim: #0d2619;
+  --color-roulette-panel: #07131d;
+  --color-roulette-green: #16a34a;
+  --color-roulette-history-green: #20c765;
+  --color-roulette-red: #dc2626;
+  --color-roulette-history-red: #ff3b3f;
+  --color-roulette-stop: #d71920;
+  --color-roulette-stop-hover: #e2272e;
+  --color-roulette-history-dark: #252b36;
+  --color-roulette-highlight-border: rgb(255 255 255 / 80%);
+  --color-roulette-soft-border: rgb(63 74 89 / 50%);
+  --color-roulette-wheel-border: rgb(55 65 85 / 45%);
+  --color-roulette-auto-field: rgb(27 31 38 / 25%);
   --color-claim-panel: #09110e;
   --color-header-surface: #0e121c;
 
@@ -54,6 +66,7 @@
   --color-text-disabled: #566374;
 
   --color-accent-purple: #8b5cf6;
+  --color-accent-purple-soft: #a78bfa;
   --color-accent-red: #ef4444;
   --color-accent-yellow: #facc15;
   --color-accent-blue: #2538ff;
@@ -84,6 +97,17 @@
   --shadow-auth-accent: 0 0 20px rgb(196 32 38 / 14%);
   --shadow-claim-panel: 0 1px 0 #08923a, inset 0 1px 0 rgb(195 255 239 / 10%);
   --shadow-nav-active: 0 1px 0 #08923a, inset 0 1px 0 rgb(255 255 255 / 4%);
+  --shadow-roulette-shell: 0 22px 80px rgb(0 0 0 / 28%);
+  --shadow-roulette-highlight: inset 0 0 0 999px rgb(255 255 255 / 16%),
+    inset 0 0 0 1px rgb(255 255 255 / 34%);
+  --shadow-roulette-chip: 0 2px 1px rgb(0 0 0 / 45%);
+  --shadow-roulette-chip-glow: 0 0 14px rgb(34 197 94 / 34%);
+  --shadow-roulette-history-green: 0 8px 18px rgb(32 199 101 / 18%);
+  --shadow-roulette-history-red: 0 8px 18px rgb(255 59 63 / 18%);
+  --shadow-roulette-history-dark: 0 8px 18px rgb(0 0 0 / 18%);
+  --shadow-roulette-ball: 1px 3px 7px rgb(0 0 0 / 90%),
+    0 0 10px 2px rgb(255 255 255 / 25%),
+    inset -1px -2px 3px rgb(0 0 0 / 30%);
   --gradient-hero-overlay: linear-gradient(
     90deg,
     var(--color-page) 0%,
@@ -105,6 +129,40 @@
     180deg,
     rgb(27 31 38 / 40%) 0%,
     rgb(43 48 59 / 40%) 100%
+  );
+  --gradient-roulette-dark-cell: linear-gradient(
+    180deg,
+    var(--color-surface-icon) 0%,
+    var(--color-border-button) 100%
+  );
+  --gradient-roulette-wheel-ring: linear-gradient(
+    90deg,
+    var(--color-border-button) 0%,
+    #4ade80 54.81%,
+    var(--color-border-button) 100%
+  );
+  --gradient-roulette-wheel-surface: radial-gradient(
+    ellipse at 48% 35%,
+    #1c2535 0%,
+    var(--color-page-raised) 65%
+  );
+  --gradient-roulette-wheel-shine: radial-gradient(
+    ellipse at 32% 22%,
+    rgb(255 255 255 / 13%) 0%,
+    rgb(255 255 255 / 4%) 40%,
+    transparent 68%
+  );
+  --gradient-roulette-wheel-vignette: radial-gradient(
+    circle at center,
+    transparent 42%,
+    rgb(0 0 0 / 45%) 100%
+  );
+  --gradient-roulette-ball: radial-gradient(
+    circle at 35% 28%,
+    #ffffff 0%,
+    #f0f0f0 18%,
+    #c8c8c8 48%,
+    #787878 100%
   );
   --gradient-auth-visual: linear-gradient(
     0deg,

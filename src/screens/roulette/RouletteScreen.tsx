@@ -15,10 +15,7 @@ import {
 } from "@/features/roulette/model/roulette-bets";
 import { useRouletteStore } from "@/features/roulette/model/use-roulette-store";
 import { BetControls } from "@/features/roulette/ui/BetControls";
-import { BettingBoard } from "@/features/roulette/ui/BettingBoard";
-import { RouletteHistory } from "@/features/roulette/ui/RouletteHistory";
-import { RouletteResult } from "@/features/roulette/ui/RouletteResult";
-import { RouletteWheel } from "@/features/roulette/ui/RouletteWheel";
+import { RouletteGamePanel } from "@/features/roulette/ui/RouletteGamePanel";
 
 const AUTO_NEXT_SPIN_DELAY_MS = 6200;
 
@@ -185,7 +182,7 @@ export function RouletteScreen() {
 
   return (
     <main className="min-h-screen bg-[var(--color-page)] px-3 py-5 text-white md:px-[10px] md:py-7">
-      <div className="mx-auto grid w-full max-w-[1017px] overflow-hidden shadow-[0_22px_80px_rgb(0_0_0_/_28%)] lg:h-[668px] lg:grid-cols-[352px_665px]">
+      <div className="mx-auto grid w-full max-w-[1017px] overflow-hidden shadow-[var(--shadow-roulette-shell)] lg:h-[668px] lg:grid-cols-[352px_665px]">
         <BetControls
           autoBetCount={autoBetCount}
           canUndo={placedBets.length > 0}
@@ -209,30 +206,15 @@ export function RouletteScreen() {
           totalBetAmount={totalBetAmount}
         />
 
-        <section className="relative flex min-w-0 flex-col justify-between gap-7 border-b-2 border-r-2 border-[#0e121c] bg-[#07131d] px-[10px] pb-[30px] pt-5 lg:h-[668px] lg:w-[665px] lg:rounded-[0_16px_16px_0]">
-          <RouletteHistory
-            results={resultHistory}
-            onExitComplete={settleResultHistory}
-          />
-
-          <div className="relative mx-auto w-full max-w-[560px]">
-            <RouletteWheel
-              isSpinning={isSpinning || betMutation.isPending}
-              resultNumber={result?.number ?? null}
-            />
-          </div>
-
-          <div className="space-y-4">
-            <BettingBoard
-              disabled={isAutoRunning || isSpinning || betMutation.isPending}
-              placedBets={placedBets}
-              onPlaceBet={placeBet}
-            />
-            <div className="min-h-[76px]">
-              <RouletteResult result={result} />
-            </div>
-          </div>
-        </section>
+        <RouletteGamePanel
+          disabled={isAutoRunning || isSpinning || betMutation.isPending}
+          isWheelSpinning={isSpinning || betMutation.isPending}
+          placedBets={placedBets}
+          result={result}
+          resultHistory={resultHistory}
+          onPlaceBet={placeBet}
+          onSettleResultHistory={settleResultHistory}
+        />
       </div>
     </main>
   );

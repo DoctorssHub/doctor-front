@@ -12,7 +12,7 @@ type RouletteWheelProps = {
 };
 
 const ANGLE_PER_CELL = 360 / ROULETTE_WHEEL_ORDER.length;
-const LANDING_DURATION_MS = 4600;
+const LANDING_DURATION_MS = 3800;
 const WHEEL_SPEED = 28;
 const BALL_FAST_SPEED = 540;
 const BALL_IDLE_SPEED = 72;
@@ -270,21 +270,20 @@ export function RouletteWheel({ isSpinning, resultNumber }: RouletteWheelProps) 
   }, [isSpinning, resultNumber]);
 
   return (
-    <div className="flex min-h-[304px] items-center justify-center">
+    <div className="flex min-h-[328px] items-center justify-center">
       <div
         className="relative select-none"
         style={{
-          height: 300,
-          transform: "perspective(680px) rotateX(-15deg)",
+          height: 324,
           transformStyle: "preserve-3d",
-          width: 300,
+          width: 324,
         }}
       >
-        <div className="pointer-events-none absolute inset-0 rounded-full bg-[linear-gradient(90deg,#2b303b_0%,#4ade80_54.81%,#2b303b_100%)]" />
-        <div className="absolute left-1/2 top-1/2 h-[289px] w-[289px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(55,65,85,0.45)] bg-[radial-gradient(ellipse_at_48%_35%,#1c2535_0%,#0a0d19_65%)]" />
+        <div className="pointer-events-none absolute inset-0 rounded-full bg-[image:var(--gradient-roulette-wheel-ring)]" />
+        <div className="absolute left-1/2 top-1/2 h-[322px] w-[322px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[var(--color-roulette-wheel-border)] bg-[image:var(--gradient-roulette-wheel-surface)]" />
 
         <div
-          className="absolute left-1/2 top-1/2 h-[283px] w-[283px] will-change-transform"
+          className="absolute left-1/2 top-1/2 h-[300px] w-[300px] will-change-transform"
           ref={wheelRef}
           style={{ transform: "translate(-50%, -50%) rotate(0deg)" }}
         >
@@ -295,8 +294,8 @@ export function RouletteWheel({ isSpinning, resultNumber }: RouletteWheelProps) 
             priority
             src={rouletteImage}
           />
-          <div className="pointer-events-none absolute inset-0 z-[4] rounded-full bg-[radial-gradient(ellipse_at_32%_22%,rgba(255,255,255,0.13)_0%,rgba(255,255,255,0.04)_40%,transparent_68%)]" />
-          <div className="pointer-events-none absolute inset-0 z-[4] rounded-full bg-[radial-gradient(circle_at_center,transparent_42%,rgba(0,0,0,0.45)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 z-[4] rounded-full bg-[image:var(--gradient-roulette-wheel-shine)]" />
+          <div className="pointer-events-none absolute inset-0 z-[4] rounded-full bg-[image:var(--gradient-roulette-wheel-vignette)]" />
         </div>
 
         <div
@@ -314,7 +313,7 @@ export function RouletteWheel({ isSpinning, resultNumber }: RouletteWheelProps) 
         </div>
 
         <div
-          className="pointer-events-none absolute left-1/2 top-1/2 z-[6] h-[10px] w-[10px] rounded-full bg-[radial-gradient(circle_at_35%_28%,#ffffff_0%,#f0f0f0_18%,#c8c8c8_48%,#787878_100%)] shadow-[1px_3px_7px_rgb(0_0_0_/_90%),0_0_10px_2px_rgb(255_255_255_/_25%),inset_-1px_-2px_3px_rgb(0_0_0_/_30%)] will-change-transform"
+          className="pointer-events-none absolute left-1/2 top-1/2 z-[6] h-[10px] w-[10px] rounded-full bg-[image:var(--gradient-roulette-ball)] shadow-[var(--shadow-roulette-ball)] will-change-transform"
           ref={ballRef}
           style={{ transform: `translate(0px, -${OUTER_RADIUS}px)` }}
         />

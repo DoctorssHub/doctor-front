@@ -11,14 +11,14 @@ type RouletteHistoryProps = {
 
 function getResultColorClass(number: number) {
   if (number === 0) {
-    return "bg-[#20c765] shadow-[0_8px_18px_rgb(32_199_101_/_18%)]";
+    return "bg-[var(--color-roulette-history-green)] shadow-[var(--shadow-roulette-history-green)]";
   }
 
   if (ROULETTE_RED_NUMBERS.has(number)) {
-    return "bg-[#ff3b3f] shadow-[0_8px_18px_rgb(255_59_63_/_18%)]";
+    return "bg-[var(--color-roulette-history-red)] shadow-[var(--shadow-roulette-history-red)]";
   }
 
-  return "bg-[#252b36] shadow-[0_8px_18px_rgb(0_0_0_/_18%)]";
+  return "bg-[var(--color-roulette-history-dark)] shadow-[var(--shadow-roulette-history-dark)]";
 }
 
 export function RouletteHistory({
@@ -52,7 +52,7 @@ export function RouletteHistory({
         return (
           <div
             className={[
-              "grid h-10 w-10 place-items-center overflow-hidden rounded-[4px] text-center text-sm font-semibold leading-[129%] text-[#fdfdfd] transition-[max-height,opacity,transform,margin] duration-300 ease-out",
+              "grid h-10 w-10 place-items-center overflow-hidden rounded-[4px] text-center text-sm font-semibold leading-[129%] text-[var(--color-text-primary)] transition-[max-height,opacity,transform,margin] duration-300 ease-out",
               getResultColorClass(result.number),
               isExiting
                 ? "max-h-0 -translate-x-3 opacity-0"
