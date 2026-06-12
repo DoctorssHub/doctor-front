@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import type { RouletteResult } from "../model/use-roulette-store";
-import { ROULETTE_RED_NUMBERS } from "../model/roulette-constants";
+import { ROULETTE_RED_NUMBERS } from "../../model/roulette-constants";
+import type { RouletteResult } from "../../model/use-roulette-store";
 
 type RouletteHistoryProps = {
   results: RouletteResult[];

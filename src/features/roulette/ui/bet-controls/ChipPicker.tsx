@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { ROULETTE_CHIP_VALUES } from "../model/roulette-constants";
+import { ROULETTE_CHIP_VALUES } from "../../model/roulette-constants";
+import { formatCoinAmount } from "../../lib/roulette-formatters";
 import { CHIP_IMAGES, formatChipLabel } from "./chip-assets";
-import { formatCoinAmount } from "./roulette-formatters";
 
 type ChipPickerProps = {
   disabled: boolean;

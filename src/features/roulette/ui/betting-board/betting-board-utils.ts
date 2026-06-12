@@ -1,5 +1,8 @@
-import type { NewRouletteBet, PlacedRouletteBet } from "../model/roulette-bets";
-import { ROULETTE_RED_NUMBERS } from "../model/roulette-constants";
+import type {
+  NewRouletteBet,
+  PlacedRouletteBet,
+} from "../../model/roulette-bets";
+import { ROULETTE_RED_NUMBERS } from "../../model/roulette-constants";
 import type { HoverArea } from "./betting-board-types";
 
 export function getNumberBackgroundClass(number: number) {

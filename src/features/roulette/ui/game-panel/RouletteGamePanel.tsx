@@ -1,9 +1,12 @@
-import type { NewRouletteBet, PlacedRouletteBet } from "../model/roulette-bets";
-import type { RouletteResult as RouletteResultValue } from "../model/use-roulette-store";
-import { BettingBoard } from "./BettingBoard";
-import { RouletteHistory } from "./RouletteHistory";
-import { RouletteResult } from "./RouletteResult";
-import { RouletteWheel } from "./RouletteWheel";
+import type {
+  NewRouletteBet,
+  PlacedRouletteBet,
+} from "../../model/roulette-bets";
+import type { RouletteResult as RouletteResultValue } from "../../model/use-roulette-store";
+import { BettingBoard } from "../betting-board";
+import { RouletteHistory } from "../history";
+import { RouletteResult } from "../result";
+import { RouletteWheel } from "../roulette-wheel";
 
 type RouletteGamePanelProps = {
   disabled: boolean;
@@ -11,6 +14,7 @@ type RouletteGamePanelProps = {
   placedBets: PlacedRouletteBet[];
   result: RouletteResultValue | null;
   resultHistory: RouletteResultValue[];
+  onLandingComplete: () => void;
   onPlaceBet: (bet: NewRouletteBet) => void;
   onSettleResultHistory: () => void;
 };
@@ -21,6 +25,7 @@ export function RouletteGamePanel({
   placedBets,
   result,
   resultHistory,
+  onLandingComplete,
   onPlaceBet,
   onSettleResultHistory,
 }: RouletteGamePanelProps) {
@@ -34,6 +39,7 @@ export function RouletteGamePanel({
       <div className="relative mx-auto w-full max-w-[560px]">
         <RouletteWheel
           isSpinning={isWheelSpinning}
+          onLandingComplete={onLandingComplete}
           resultNumber={result?.number ?? null}
         />
       </div>

@@ -4,7 +4,7 @@ import {
   CHIP_IMAGES,
   DEFAULT_CHIP_IMAGE,
   formatChipLabel,
-} from "./chip-assets";
+} from "../bet-controls/chip-assets";
 
 type PlacedChipProps = {
   amount: number;

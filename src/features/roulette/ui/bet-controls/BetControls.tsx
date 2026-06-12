@@ -3,7 +3,7 @@ import { BetModeSwitch } from "./BetModeSwitch";
 import { BetSubmitPanel } from "./BetSubmitPanel";
 import { ChipPicker } from "./ChipPicker";
 import { ManualBetActions } from "./ManualBetActions";
-import { formatCoinAmount } from "./roulette-formatters";
+import { formatCoinAmount } from "../../lib/roulette-formatters";
 
 type BetControlsProps = {
   mode: "manual" | "auto";
@@ -16,6 +16,7 @@ type BetControlsProps = {
   isAutoRunning: boolean;
   canUndo: boolean;
   isSubmitting: boolean;
+  isAnimating: boolean;
   autoBetCount: string;
   isAutoInfinite: boolean;
   errorMessage: string | null;
@@ -39,6 +40,7 @@ export function BetControls({
   isAutoRunning,
   canUndo,
   isSubmitting,
+  isAnimating,
   autoBetCount,
   isAutoInfinite,
   errorMessage,
@@ -50,7 +52,8 @@ export function BetControls({
   onAutoBetCountChange,
   onToggleAutoInfinite,
 }: BetControlsProps) {
-  const controlsDisabled = isAutoRunning || isSpinning || isSubmitting;
+  const isLoading = isSpinning || isSubmitting || isAnimating;
+  const controlsDisabled = isAutoRunning || isLoading;
   const isBetInvalid =
     totalBetAmount < minBet ||
     totalBetAmount > maxBet ||
@@ -61,8 +64,8 @@ export function BetControls({
     !isAutoInfinite &&
     (!Number.isInteger(normalizedAutoBetCount) || normalizedAutoBetCount < 1);
   const isBetDisabled =
-    !isAutoRunning &&
-    (isSpinning || isSubmitting || isBetInvalid || isAutoBetCountInvalid);
+    isLoading ||
+    (!isAutoRunning && (isBetInvalid || isAutoBetCountInvalid));
   const helperMessage =
     totalBetAmount > gameBalance
       ? "Not enough coins"
@@ -73,10 +76,10 @@ export function BetControls({
           : isAutoBetCountInvalid
             ? "Enter at least 1 bet"
             : errorMessage;
-  const actionLabel = isAutoRunning
-    ? "Stop Auto"
-    : isSubmitting
-      ? "Betting..."
+  const actionLabel = isLoading
+    ? "Betting..."
+    : isAutoRunning
+      ? "Stop Auto"
       : "Bet";
 
   return (
@@ -117,6 +120,7 @@ export function BetControls({
         helperMessage={helperMessage}
         isAutoRunning={isAutoRunning}
         isBetDisabled={isBetDisabled}
+        isLoading={isLoading}
         onSubmit={onSubmit}
       />
     </aside>

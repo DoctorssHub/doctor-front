@@ -1,4 +1,4 @@
-import type { RouletteResult as RouletteResultValue } from "../model/use-roulette-store";
+import type { RouletteResult as RouletteResultValue } from "../../model/use-roulette-store";
 
 type RouletteResultProps = {
   result: RouletteResultValue | null;

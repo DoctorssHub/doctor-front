@@ -1,6 +1,6 @@
-import type { RouletteColumn } from "../api/roulette-types";
-import type { NewRouletteBet } from "../model/roulette-bets";
-import { ROULETTE_BOARD_ROWS } from "../model/roulette-constants";
+import type { RouletteColumn } from "../../api/roulette-types";
+import type { NewRouletteBet } from "../../model/roulette-bets";
+import { ROULETTE_BOARD_ROWS } from "../../model/roulette-constants";
 import type { HoverArea, HoverHandlers } from "./betting-board-types";
 import {
   controlButtonClass,

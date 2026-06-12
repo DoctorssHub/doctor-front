@@ -3,6 +3,7 @@ type BetSubmitPanelProps = {
   helperMessage: string | null;
   isAutoRunning: boolean;
   isBetDisabled: boolean;
+  isLoading: boolean;
   onSubmit: () => void;
 };
 
@@ -11,6 +12,7 @@ export function BetSubmitPanel({
   helperMessage,
   isAutoRunning,
   isBetDisabled,
+  isLoading,
   onSubmit,
 }: BetSubmitPanelProps) {
   return (
@@ -26,7 +28,15 @@ export function BetSubmitPanel({
         onClick={onSubmit}
         type="button"
       >
-        {actionLabel}
+        <span className="flex items-center justify-center gap-2">
+          {isLoading ? (
+            <span
+              aria-hidden="true"
+              className="h-4 w-4 rounded-full border-2 border-current border-t-transparent animate-spin"
+            />
+          ) : null}
+          {actionLabel}
+        </span>
       </button>
       {helperMessage ? (
         <p className="min-h-5 text-center text-xs font-medium text-[var(--color-text-subtle)]">

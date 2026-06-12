@@ -1,4 +1,4 @@
-import type { NewRouletteBet } from "../model/roulette-bets";
+import type { NewRouletteBet } from "../../model/roulette-bets";
 import type { HoverArea, HoverHandlers } from "./betting-board-types";
 import { lowerButtonClass } from "./betting-board-utils";
 import { PlacedChip } from "./PlacedChip";

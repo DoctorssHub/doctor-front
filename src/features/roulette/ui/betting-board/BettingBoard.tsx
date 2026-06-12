@@ -1,7 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { NewRouletteBet, PlacedRouletteBet } from "../model/roulette-bets";
+import type {
+  NewRouletteBet,
+  PlacedRouletteBet,
+} from "../../model/roulette-bets";
 import { BettingNumberGrid } from "./BettingNumberGrid";
 import { BettingOutsideBets } from "./BettingOutsideBets";
 import type { HoverArea } from "./betting-board-types";
