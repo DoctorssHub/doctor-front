@@ -43,15 +43,23 @@ export function RouletteGamePanel({
     result && isWinModalVisible && !isResultAnimating && Number(result.payout) > 0
       ? result
       : null;
+  const isMobileWheelOverlayVisible = isWheelSpinning || isResultAnimating;
 
   return (
-    <section className="relative flex min-w-0 flex-col justify-between gap-7 border-b-2 border-r-2 border-[var(--color-surface)] bg-[var(--color-roulette-panel)] px-[10px] pb-[30px] pt-5 max-laptop:order-1 max-laptop:border-0 max-laptop:bg-transparent max-laptop:pb-0 tablet:max-laptop:px-0 laptop:h-[668px] laptop:w-[665px] laptop:rounded-[0_16px_16px_0]">
+    <section className="relative flex min-w-0 flex-col justify-between gap-7 border-b-2 border-r-2 border-[var(--color-surface)] bg-[var(--color-roulette-panel)] px-[10px] pb-[30px] pt-5 max-laptop:order-1 max-laptop:border-0 max-laptop:bg-transparent max-laptop:pb-0 tablet:max-laptop:px-0 max-tablet:gap-5 max-tablet:px-0 max-tablet:pt-0 laptop:h-[668px] laptop:w-[665px] laptop:rounded-[0_16px_16px_0]">
       <RouletteHistory
         results={resultHistory}
         onExitComplete={onSettleResultHistory}
       />
 
-      <div className="relative mx-auto w-full max-w-[560px]">
+      <div
+        className={[
+          "relative mx-auto w-full max-w-[560px]",
+          isMobileWheelOverlayVisible
+            ? "max-tablet:fixed max-tablet:inset-0 max-tablet:z-30 max-tablet:flex max-tablet:max-w-none max-tablet:items-center max-tablet:justify-center max-tablet:bg-[var(--color-roulette-win-backdrop)] max-tablet:backdrop-blur-[2px]"
+            : "max-tablet:hidden",
+        ].join(" ")}
+      >
         <RouletteWheel
           isSpinning={isWheelSpinning}
           onLandingComplete={onLandingComplete}

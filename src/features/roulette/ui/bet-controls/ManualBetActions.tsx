@@ -31,7 +31,7 @@ export function ManualBetActions({
       </p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <button
-          className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--color-surface-hover)] text-[18px] font-medium leading-[133%] text-[var(--color-text-primary)] transition hover:brightness-110 disabled:opacity-45"
+          className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[image:var(--gradient-roulette-action-button)] text-[18px] font-medium leading-[133%] text-[var(--color-text-primary)] transition hover:brightness-110 disabled:opacity-45"
           disabled={!canUndo || disabled}
           onClick={onClear}
           type="button"
@@ -40,7 +40,7 @@ export function ManualBetActions({
           Clear
         </button>
         <button
-          className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--color-surface-hover)] text-[18px] font-medium leading-[133%] text-[var(--color-text-primary)] transition hover:brightness-110 disabled:opacity-45"
+          className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[image:var(--gradient-roulette-action-button)] text-[18px] font-medium leading-[133%] text-[var(--color-text-primary)] transition hover:brightness-110 disabled:opacity-45"
           disabled={!canUndo || disabled}
           onClick={onUndo}
           type="button"

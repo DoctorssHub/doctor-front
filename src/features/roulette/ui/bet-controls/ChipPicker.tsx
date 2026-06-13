@@ -45,7 +45,7 @@ export function ChipPicker({
         </span>
       </div>
 
-      <div className="grid grid-cols-5 gap-3 pt-2 max-laptop:flex max-laptop:overflow-x-auto tablet:max-laptop:justify-between tablet:max-laptop:overflow-visible">
+      <div className="grid grid-cols-5 gap-3 pt-2 max-laptop:flex max-laptop:overflow-x-auto tablet:max-laptop:justify-between tablet:max-laptop:overflow-visible max-tablet:grid max-tablet:overflow-visible max-tablet:gap-x-2 max-tablet:gap-y-4">
         {ROULETTE_CHIP_VALUES.map((chip) => {
           const isSelected = chip === selectedChip;
           const chipImage = CHIP_IMAGES.get(chip);
@@ -53,9 +53,9 @@ export function ChipPicker({
           return (
             <button
               className={[
-                "relative grid aspect-square min-h-10 place-items-center rounded-full text-xs font-bold transition max-laptop:h-10 max-laptop:w-10 max-laptop:shrink-0 tablet:max-laptop:h-[58px] tablet:max-laptop:w-[58px]",
+                "relative grid aspect-square min-h-10 place-items-center rounded-full border-2 border-transparent text-xs font-bold transition max-laptop:h-10 max-laptop:w-10 max-laptop:shrink-0 tablet:max-laptop:h-[58px] tablet:max-laptop:w-[58px] max-tablet:h-[66px] max-tablet:w-[66px]",
                 isSelected
-                  ? "scale-105 text-[var(--color-text-primary)] drop-shadow-[var(--shadow-roulette-chip-glow)]"
+                  ? "scale-105 border-[var(--color-roulette-chip-selected)] text-[var(--color-text-primary)] drop-shadow-[var(--shadow-roulette-chip-glow)]"
                   : "text-[var(--color-text-muted)] hover:scale-105",
               ].join(" ")}
               disabled={disabled}

@@ -44,7 +44,7 @@ export function RouletteHistory({
   return (
     <div
       aria-label="Recent roulette results"
-      className="pointer-events-none absolute left-0 top-0 z-10 flex flex-col justify-start gap-2"
+      className="pointer-events-none absolute left-0 top-0 z-10 flex flex-col justify-start gap-2 max-tablet:top-1/2 max-tablet:left-4 max-tablet:-translate-y-1/2"
     >
       {results.map((result, index) => {
         const isExiting = hasOverflowResult && index === 0;

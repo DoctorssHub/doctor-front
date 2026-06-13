@@ -1,6 +1,6 @@
-import type { RouletteColumn } from "../../api/roulette-types";
 import type { NewRouletteBet } from "../../model/roulette-bets";
 import { ROULETTE_BOARD_ROWS } from "../../model/roulette-constants";
+import { COLUMN_BETS } from "./betting-board-constants";
 import type { HoverArea, HoverHandlers } from "./betting-board-types";
 import {
   controlButtonClass,
@@ -18,8 +18,6 @@ type BettingNumberGridProps = {
   onGetHoverHandlers: (area: HoverArea) => HoverHandlers;
   onPlaceBet: (bet: NewRouletteBet) => void;
 };
-
-const COLUMN_BETS: readonly RouletteColumn[] = ["TOP", "MIDDLE", "BOTTOM"];
 
 export function BettingNumberGrid({
   betAmounts,

@@ -93,6 +93,13 @@ export function getBetKey(bet: NewRouletteBet) {
   return `column:${bet.column}`;
 }
 
+export function getStraightBetAmount(
+  betAmounts: Map<string, number>,
+  number: number,
+) {
+  return betAmounts.get(`straight:${number}`);
+}
+
 export function buildBetAmountMap(bets: PlacedRouletteBet[]) {
   return bets.reduce((amounts, bet) => {
     const key = getBetKey(bet);
