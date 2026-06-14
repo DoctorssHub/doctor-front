@@ -29,18 +29,6 @@ export function getTargetBucketGeometry(
   };
 }
 
-export function getOutsideBucketDistance(x: number, bucket: BucketGeometry) {
-  if (x < bucket.left) {
-    return bucket.left - x;
-  }
-
-  if (x > bucket.right) {
-    return x - bucket.right;
-  }
-
-  return 0;
-}
-
 export function getSafeBucketBounds(
   bucket: BucketGeometry,
   ballRadius: number,
@@ -153,29 +141,4 @@ export function getInterpolatedPyramidBound(
       previousBound.right + (nextBound.right - previousBound.right) * progress,
     y,
   };
-}
-
-export function getOutsidePyramidDistance(
-  position: BallPosition,
-  bounds: PyramidBound[],
-  ballRadius: number,
-) {
-  const bound = getInterpolatedPyramidBound(bounds, position.y);
-
-  if (!bound) {
-    return 0;
-  }
-
-  const left = bound.left + ballRadius;
-  const right = bound.right - ballRadius;
-
-  if (position.x < left) {
-    return left - position.x;
-  }
-
-  if (position.x > right) {
-    return position.x - right;
-  }
-
-  return 0;
 }

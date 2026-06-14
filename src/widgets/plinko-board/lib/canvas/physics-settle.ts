@@ -9,6 +9,11 @@ import {
 import { easeOutCubic } from "./physics-math";
 import type { BucketGeometry, SimulationFrame } from "./physics-types";
 
+// Safety guard ONLY. The landing table is built so the ball lands in the target
+// bucket on its own, so this never runs in normal operation. It exists so that a
+// stale or incomplete table can never show a bucket that differs from the
+// backend payout: if the natural landing missed, ease the ball into the target
+// bucket rather than leaving it in the wrong one.
 export function settleMotionInTargetBucket(
   frames: SimulationFrame[],
   target: BucketGeometry,

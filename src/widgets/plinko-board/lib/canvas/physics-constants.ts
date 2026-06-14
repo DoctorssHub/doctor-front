@@ -5,14 +5,9 @@ export const restitution = 0.58;
 export const wallRestitution = 0.46;
 export const horizontalDamping = 0.992;
 export const verticalDamping = 0.998;
-export const minCandidateVelocityX = -2200;
-export const maxCandidateVelocityX = 2200;
-export const candidateVelocityStep = 40;
-export const refinedCandidateVelocityStep = 8;
 export const minRowsForTimingScale = 8;
 export const maxRowsForTimingScale = 16;
 export const maxRowsTimingScale = 1.45;
-export const exitDriftWeight = 0.5;
-export const aimInertiaWeight = 0.03;
+// Used only by the stale-table safety guard in physics-simulate.ts.
 export const targetSettleDurationMs = 180;
 export const targetSettleFrameCount = 6;
