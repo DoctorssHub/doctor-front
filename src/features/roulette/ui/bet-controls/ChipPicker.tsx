@@ -53,10 +53,10 @@ export function ChipPicker({
           return (
             <button
               className={[
-                "relative grid aspect-square min-h-10 place-items-center rounded-full border-2 border-transparent text-xs font-bold transition max-laptop:h-10 max-laptop:w-10 max-laptop:shrink-0 tablet:max-laptop:h-[58px] tablet:max-laptop:w-[58px] max-tablet:h-[66px] max-tablet:w-[66px]",
+                "relative grid aspect-square min-h-10 place-items-center rounded-full border-2 p-[5px] text-xs font-bold transition max-laptop:h-10 max-laptop:w-10 max-laptop:shrink-0 tablet:max-laptop:h-[58px] tablet:max-laptop:w-[58px] max-tablet:h-[66px] max-tablet:w-[66px]",
                 isSelected
-                  ? "scale-105 border-[var(--color-roulette-chip-selected)] text-[var(--color-text-primary)] drop-shadow-[var(--shadow-roulette-chip-glow)]"
-                  : "text-[var(--color-text-muted)] hover:scale-105",
+                  ? "scale-105 border-[var(--color-brand)] text-[var(--color-text-primary)]"
+                  : "border-transparent text-[var(--color-text-muted)] hover:scale-105",
               ].join(" ")}
               disabled={disabled}
               key={chip}
