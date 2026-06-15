@@ -165,14 +165,14 @@ button:disabled {
   will-change: transform;
 }
 
-.plinko-rows-range {
-  --plinko-rows-progress: 0%;
+.game-sidebar-range {
+  --game-sidebar-range-progress: 0%;
   appearance: none;
   background: linear-gradient(
     to right,
     #c82831 0%,
-    #c82831 var(--plinko-rows-progress),
-    #334155 var(--plinko-rows-progress),
+    #c82831 var(--game-sidebar-range-progress),
+    #334155 var(--game-sidebar-range-progress),
     #334155 100%
   );
   border-radius: 999px;
@@ -180,7 +180,7 @@ button:disabled {
   outline: none;
 }
 
-.plinko-rows-range::-webkit-slider-thumb {
+.game-sidebar-range::-webkit-slider-thumb {
   appearance: none;
   width: 6px;
   height: 14px;
@@ -190,19 +190,19 @@ button:disabled {
   box-shadow: 0 0 0 1px rgb(255 255 255 / 16%);
 }
 
-.plinko-rows-range::-moz-range-track {
+.game-sidebar-range::-moz-range-track {
   background: transparent;
   border: 0;
   height: 4px;
 }
 
-.plinko-rows-range::-moz-range-progress {
+.game-sidebar-range::-moz-range-progress {
   background: #c82831;
   border-radius: 999px;
   height: 4px;
 }
 
-.plinko-rows-range::-moz-range-thumb {
+.game-sidebar-range::-moz-range-thumb {
   width: 6px;
   height: 14px;
   background: #ffffff;

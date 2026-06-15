@@ -4,6 +4,8 @@ import { useCallback, useState } from "react";
 import type { GameMode, Risk } from "@/entities/game/model/types";
 import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
 import { GameSidebar } from "@/widgets/game-sidebar/ui/GameSidebar";
+import { RiskSelector } from "@/widgets/game-sidebar/ui/RiskSelector";
+import { RowsSlider } from "@/widgets/game-sidebar/ui/RowsSlider";
 import { PlinkoBoard } from "@/widgets/plinko-board/ui/PlinkoBoard";
 import { getBetButtonLabel } from "../lib/plinko-controls";
 import { usePlinkoBalance } from "../model/usePlinkoBalance";
@@ -115,8 +117,6 @@ export function PlinkoScreen() {
           }
           isAutoBetsInfinite={isAutoBetsInfinite}
           isModeChangeDisabled={isGameControlDisabled}
-          isRiskChangeDisabled={isGameControlDisabled}
-          isRowsChangeDisabled={isGameControlDisabled}
           maxBet={plinkoConfig.maxBet}
           minBet={plinkoConfig.minBet}
           mode={mode}
@@ -129,11 +129,18 @@ export function PlinkoScreen() {
           onBetAmountControlClick={handleBetAmountControlClickWithErrorClear}
           onBetClick={() => handleBetClick(betAmount)}
           onModeChange={setMode}
-          onRiskChange={setRisk}
-          onRowsChange={setRows}
-          risk={risk}
-          rows={rows}
-        />
+        >
+          <RiskSelector
+            isDisabled={isGameControlDisabled}
+            onRiskChange={setRisk}
+            risk={risk}
+          />
+          <RowsSlider
+            isDisabled={isGameControlDisabled}
+            onChange={setRows}
+            value={rows}
+          />
+        </GameSidebar>
         <PlinkoBoard
           activeRounds={activeRounds}
           config={plinkoConfig}
