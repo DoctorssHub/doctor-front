@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Image from "next/image";
 
 type AutoBetControlsProps = {
@@ -8,7 +9,7 @@ type AutoBetControlsProps = {
   onAutoBetsInfinityToggle: () => void;
 };
 
-export function AutoBetControls({
+export const AutoBetControls = memo(function AutoBetControls({
   autoBetsAmount,
   isAutoBetsInfinite,
   isDisabled = false,
@@ -69,4 +70,4 @@ export function AutoBetControls({
       </span>
     </label>
   );
-}
+});

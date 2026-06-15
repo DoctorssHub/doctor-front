@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   getPlinkoConfig,
@@ -12,9 +13,13 @@ export function usePlinkoConfig() {
     queryKey: ["plinko", "config"],
     queryFn: getPlinkoConfig,
   });
+  const config = useMemo(
+    () => readPlinkoConfig(query.data, mockGameConfig),
+    [query.data],
+  );
 
   return {
-    config: readPlinkoConfig(query.data, mockGameConfig),
+    config,
     errorMessage:
       query.error instanceof Error
         ? "Unable to load game settings. Please try again."

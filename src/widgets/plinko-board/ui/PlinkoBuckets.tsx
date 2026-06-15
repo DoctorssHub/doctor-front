@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { memo } from "react";
 import type { getBucketLayout } from "@/widgets/plinko-board/lib/animation";
 import { getMultiplierTone } from "@/widgets/plinko-board/lib/multiplier";
 
@@ -10,7 +11,7 @@ type PlinkoBucketsProps = {
   multiplierSlots: number[];
 };
 
-export function PlinkoBuckets({
+export const PlinkoBuckets = memo(function PlinkoBuckets({
   impactKeys,
   layout,
   multiplierSlots,
@@ -43,4 +44,4 @@ export function PlinkoBuckets({
       })}
     </div>
   );
-}
+});

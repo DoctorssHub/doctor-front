@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
+import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
 import {
   type BetAmountControl,
   formatBetAmountInput,
@@ -15,13 +16,18 @@ type UsePlinkoBetAmountParams = {
   minBet: string;
 };
 
+type ValidatePlinkoBetAmountParams = UsePlinkoBetAmountParams & {
+  betAmount: string;
+};
+
 export function usePlinkoBetAmount({
   availableBalance,
   isAuthenticated,
   maxBet,
   minBet,
 }: UsePlinkoBetAmountParams) {
-  const [betAmount, setBetAmount] = useState("1.00");
+  const betAmount = usePlinkoControlsStore((state) => state.betAmount);
+  const setBetAmount = usePlinkoControlsStore((state) => state.setBetAmount);
 
   const handleBetAmountControlClick = useCallback(
     (control: BetAmountControl) => {
@@ -33,47 +39,58 @@ export function usePlinkoBetAmount({
         }),
       );
     },
-    [availableBalance, maxBet, minBet],
+    [availableBalance, maxBet, minBet, setBetAmount],
   );
 
   const handleBetAmountBlur = useCallback(() => {
     setBetAmount((currentAmount) => formatBetAmountInput(currentAmount));
-  }, []);
-
-  const readCurrentBetAmount = useCallback(() => {
-    return readBetAmount(betAmount);
-  }, [betAmount]);
+  }, [setBetAmount]);
 
   const validateBetAmount = useCallback(() => {
-    const amount = readBetAmount(betAmount);
-    const minBetValue = Number(minBet);
-    const maxBetValue = Number(maxBet);
-
-    if (amount === null) {
-      return "Enter a valid bet amount.";
-    }
-
-    if (Number.isFinite(minBetValue) && amount < minBetValue) {
-      return `Minimum bet is ${minBet}.`;
-    }
-
-    if (Number.isFinite(maxBetValue) && amount > maxBetValue) {
-      return `Maximum bet is ${maxBet}.`;
-    }
-
-    if (isAuthenticated && availableBalance !== null && amount > availableBalance) {
-      return "Not enough balance.";
-    }
-
-    return "";
+    return validatePlinkoBetAmount({
+      availableBalance,
+      betAmount,
+      isAuthenticated,
+      maxBet,
+      minBet,
+    });
   }, [availableBalance, betAmount, isAuthenticated, maxBet, minBet]);
 
   return {
     betAmount,
     handleBetAmountBlur,
     handleBetAmountControlClick,
-    readCurrentBetAmount,
     setBetAmount,
     validateBetAmount,
   };
+}
+
+export function validatePlinkoBetAmount({
+  availableBalance,
+  betAmount,
+  isAuthenticated,
+  maxBet,
+  minBet,
+}: ValidatePlinkoBetAmountParams) {
+  const amount = readBetAmount(betAmount);
+  const minBetValue = Number(minBet);
+  const maxBetValue = Number(maxBet);
+
+  if (amount === null) {
+    return "Enter a valid bet amount.";
+  }
+
+  if (Number.isFinite(minBetValue) && amount < minBetValue) {
+    return `Minimum bet is ${minBet}.`;
+  }
+
+  if (Number.isFinite(maxBetValue) && amount > maxBetValue) {
+    return `Maximum bet is ${maxBet}.`;
+  }
+
+  if (isAuthenticated && availableBalance !== null && amount > availableBalance) {
+    return "Not enough balance.";
+  }
+
+  return "";
 }

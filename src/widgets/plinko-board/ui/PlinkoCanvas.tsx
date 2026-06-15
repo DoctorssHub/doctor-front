@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 import { useDevicePixelRatio } from "@/shared/lib/useDevicePixelRatio";
 import type { ActiveRound } from "@/widgets/plinko-board/model/active-round";
 import {
@@ -24,7 +24,7 @@ type PlinkoCanvasProps = {
   rows: number;
 };
 
-export function PlinkoCanvas({
+export const PlinkoCanvas = memo(function PlinkoCanvas({
   activeRounds,
   layout = "regular",
   onAnimationComplete,
@@ -158,4 +158,4 @@ export function PlinkoCanvas({
       />
     </>
   );
-}
+});

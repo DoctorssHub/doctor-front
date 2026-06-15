@@ -1,10 +1,13 @@
+import { memo } from "react";
 import { getMultiplierTone } from "@/widgets/plinko-board/lib/multiplier";
 
 type RecentMultipliersProps = {
   multipliers: number[];
 };
 
-export function RecentMultipliers({ multipliers }: RecentMultipliersProps) {
+export const RecentMultipliers = memo(function RecentMultipliers({
+  multipliers,
+}: RecentMultipliersProps) {
   return (
     <div className="absolute top-4 right-3 flex flex-col gap-1.5 md:top-6 md:right-6 md:gap-3">
       {multipliers.slice(0, 3).map((multiplier, index) => (
@@ -17,4 +20,4 @@ export function RecentMultipliers({ multipliers }: RecentMultipliersProps) {
       ))}
     </div>
   );
-}
+});

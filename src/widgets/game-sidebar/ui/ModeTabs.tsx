@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { GameMode } from "@/entities/game/model/types";
 
 type ModeTabsProps = {
@@ -6,7 +7,7 @@ type ModeTabsProps = {
   onModeChange: (mode: GameMode) => void;
 };
 
-export function ModeTabs({
+export const ModeTabs = memo(function ModeTabs({
   isDisabled = false,
   mode,
   onModeChange,
@@ -30,4 +31,4 @@ export function ModeTabs({
       ))}
     </div>
   );
-}
+});

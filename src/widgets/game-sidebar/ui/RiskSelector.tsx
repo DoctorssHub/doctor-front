@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { Risk } from "@/entities/game/model/types";
 
 type RiskOption<TValue extends string> = {
@@ -20,7 +21,7 @@ const defaultRiskOptions: Array<RiskOption<Risk>> = [
   { label: "High", toneClassName: "text-[#ef4444]", value: "HIGH" },
 ];
 
-export function RiskSelector<TValue extends string = Risk>({
+function RiskSelectorComponent<TValue extends string = Risk>({
   isDisabled = false,
   label = "Risk",
   onRiskChange,
@@ -53,3 +54,7 @@ export function RiskSelector<TValue extends string = Risk>({
     </fieldset>
   );
 }
+
+export const RiskSelector = memo(
+  RiskSelectorComponent,
+) as typeof RiskSelectorComponent;

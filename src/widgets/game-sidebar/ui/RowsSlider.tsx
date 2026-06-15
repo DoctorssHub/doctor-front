@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { memo, type CSSProperties } from "react";
 
 type RowsSliderProps = {
   id?: string;
@@ -10,7 +10,7 @@ type RowsSliderProps = {
   value: number;
 };
 
-export function RowsSlider({
+export const RowsSlider = memo(function RowsSlider({
   id = "rows",
   isDisabled = false,
   label = "Rows",
@@ -50,4 +50,4 @@ export function RowsSlider({
       </div>
     </div>
   );
-}
+});

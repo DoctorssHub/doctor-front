@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Image from "next/image";
 import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
 
@@ -18,7 +19,7 @@ const amountControls: Array<[BetAmountControl, string]> = [
   ["max", "MAX"],
 ];
 
-export function BetAmountField({
+export const BetAmountField = memo(function BetAmountField({
   balanceLabel,
   betAmount,
   isDisabled = false,
@@ -86,4 +87,4 @@ export function BetAmountField({
       </div>
     </div>
   );
-}
+});
