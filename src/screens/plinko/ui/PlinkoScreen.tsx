@@ -30,7 +30,7 @@ export function PlinkoScreen() {
 
   return (
     <main className="bg-[#080c17] p-4 text-white max-[767px]:p-2 md:p-5">
-      <section className="mx-auto flex min-h-[524px] max-w-[60rem] flex-col overflow-hidden rounded-xl border border-[#111827] bg-[#0c111d] shadow-[0_24px_80px_rgb(0_0_0_/_28%)] min-[1024px]:flex-row max-[1023px]:min-h-0">
+      <section className="mx-auto flex min-h-131 max-w-240 flex-col overflow-hidden rounded-xl border border-[#111827] bg-[#0c111d] shadow-[0_24px_80px_rgb(0_0_0/28%)] min-[1024px]:flex-row max-[1023px]:min-h-0">
         <PlinkoSidebar
           configErrorMessage={configErrorMessage}
           hasGameConfigError={hasGameConfigError}

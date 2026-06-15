@@ -23,7 +23,11 @@ export const AutoBetControls = memo(function AutoBetControls({
     >
       Number of Bets
       <span className="mt-2 flex items-center gap-2">
-        <span className="flex h-7 min-w-0 flex-1 items-center rounded-md border border-[#202938] bg-[#1B1F2640] px-3 transition has-[:disabled]:opacity-60">
+        <span
+          className={`flex h-7 min-w-0 flex-1 items-center rounded-md border border-[#202938] bg-[#1B1F2640] px-3 transition ${
+            isDisabled ? "opacity-60" : ""
+          }`}
+        >
           {isAutoBetsInfinite ? (
             <span className="flex flex-1 items-center justify-start">
               <Image

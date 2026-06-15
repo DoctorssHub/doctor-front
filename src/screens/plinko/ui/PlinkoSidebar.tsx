@@ -76,7 +76,7 @@ function PlinkoBetAmountControl({ maxBet, minBet }: BetBoundsProps) {
   const isAuthenticated = useAuthSessionStore(
     (state) => state.isAuthenticated,
   );
-  const { availableBalance, balanceLabel } = usePlinkoBalance();
+  const { availableBalance } = usePlinkoBalance();
   const clearBetValidationError = usePlinkoBettingStore(
     (state) => state.clearBetValidationError,
   );
@@ -102,7 +102,6 @@ function PlinkoBetAmountControl({ maxBet, minBet }: BetBoundsProps) {
 
   return (
     <BetAmountField
-      balanceLabel={balanceLabel}
       betAmount={betAmount}
       isDisabled={isDisabled}
       maxBet={maxBet}

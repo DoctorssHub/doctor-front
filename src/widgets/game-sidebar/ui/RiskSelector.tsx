@@ -39,7 +39,7 @@ function RiskSelectorComponent<TValue extends string = Risk>({
           <button
             className={`h-10 rounded-md text-sm font-semibold transition ${
               risk === option.value
-                ? "bg-[linear-gradient(180deg,rgb(27_31_38_/_40%)_0%,rgb(43_48_59_/_40%)_100%)]"
+                ? "bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)]"
                 : "hover:bg-[#171d29]"
             } ${option.toneClassName ?? "text-white"} disabled:cursor-not-allowed disabled:opacity-50`}
             disabled={isDisabled}

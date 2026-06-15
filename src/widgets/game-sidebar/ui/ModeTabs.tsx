@@ -18,7 +18,7 @@ export const ModeTabs = memo(function ModeTabs({
         <button
           className={`flex h-11 items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium transition ${
             mode === nextMode
-              ? "bg-[linear-gradient(180deg,rgb(27_31_38_/_40%)_0%,rgb(43_48_59_/_40%)_100%)] text-white"
+              ? "bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] text-white"
               : "text-white/70 hover:bg-[#171d29]"
           } disabled:cursor-not-allowed disabled:opacity-50`}
           disabled={isDisabled}

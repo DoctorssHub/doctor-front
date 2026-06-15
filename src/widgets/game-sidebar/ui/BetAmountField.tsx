@@ -3,7 +3,6 @@ import Image from "next/image";
 import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
 
 type BetAmountFieldProps = {
-  balanceLabel?: string;
   betAmount: string;
   isDisabled?: boolean;
   maxBet?: string;
@@ -20,7 +19,6 @@ const amountControls: Array<[BetAmountControl, string]> = [
 ];
 
 export const BetAmountField = memo(function BetAmountField({
-  balanceLabel,
   betAmount,
   isDisabled = false,
   maxBet,
@@ -35,21 +33,12 @@ export const BetAmountField = memo(function BetAmountField({
         <label className="text-sm font-semibold text-white" htmlFor="bet">
           Bet Amount
         </label>
-        {balanceLabel ? (
-          <span className="hidden items-center gap-1 text-xs font-semibold text-white/75 max-[1023px]:flex">
-            <Image
-              src="/red-coin.svg"
-              alt=""
-              width={14}
-              height={14}
-              className="size-3.5"
-              aria-hidden="true"
-            />
-            {balanceLabel}
-          </span>
-        ) : null}
       </div>
-      <div className="flex h-10 items-center rounded-md border border-[#1B1F26] bg-[#1B1F2640] px-3 transition has-[:disabled]:opacity-60">
+      <div
+        className={`flex h-10 items-center rounded-md border border-[#1B1F26] bg-[#1B1F2640] px-3 transition ${
+          isDisabled ? "opacity-60" : ""
+        }`}
+      >
         <Image
           src="/red-coin.svg"
           alt=""
