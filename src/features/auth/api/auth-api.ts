@@ -16,6 +16,7 @@ import type {
   RegisterResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  SessionResponse,
   VerifyEmailRequest,
   VerifyEmailResponse,
 } from "./auth-types";
@@ -117,6 +118,10 @@ export async function getCurrentUser() {
   }
 }
 
+export function getCurrentSession() {
+  return authClient.get<SessionResponse>("/auth/refresh/session");
+}
+
 export function refreshSession() {
   refreshRequest ??= requestRefreshSession().finally(() => {
     refreshRequest = null;
@@ -150,26 +155,11 @@ export function logoutUser() {
 }
 
 async function requestRefreshSession() {
-  try {
-    return await authClient.post<RefreshResponse>("/auth/refresh");
-  } catch (error) {
-    if (!isMethodUnsupportedAxiosError(error)) {
-      throw error;
-    }
-
-    return authClient.get<RefreshResponse>("/auth/refresh");
-  }
+  return authClient.get<RefreshResponse>("/auth/refresh");
 }
 
 function isUnauthorizedAxiosError(error: unknown) {
   return axios.isAxiosError(error) && error.response?.status === 401;
-}
-
-function isMethodUnsupportedAxiosError(error: unknown) {
-  return (
-    axios.isAxiosError(error) &&
-    (error.response?.status === 404 || error.response?.status === 405)
-  );
 }
 
 function nextAuthRequestId() {

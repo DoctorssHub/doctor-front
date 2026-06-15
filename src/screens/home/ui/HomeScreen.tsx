@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
-import { getCurrentUser, logoutUser } from "@/features/auth/api/auth-api";
+import { getCurrentSession, logoutUser } from "@/features/auth/api/auth-api";
 import {
   readUserBalances,
   readUsername,
@@ -31,13 +31,18 @@ export function HomeScreen() {
   useEffect(() => {
     let isMounted = true;
 
-    getCurrentUser()
+    getCurrentSession()
       .then((response) => {
-        const nextUsername = readUsername(response.data);
-        const nextBalances = readUserBalances(response.data);
+        const nextUsername = readUsername(response.data.user);
+        const nextBalances = readUserBalances(response.data.user);
 
-        if (isMounted && nextUsername) {
+        if (isMounted && response.data.authenticated && nextUsername) {
           setSession(nextUsername, nextBalances);
+          return;
+        }
+
+        if (isMounted) {
+          clearSession();
         }
       })
       .catch(() => {
