@@ -14,7 +14,9 @@ type GameSidebarProps = {
   betAmount: string;
   betButtonLabel?: string;
   errorMessage?: string;
+  isAutoBetChangeDisabled?: boolean;
   isAutoBetsInfinite: boolean;
+  isBetAmountChangeDisabled?: boolean;
   isBetDisabled?: boolean;
   isModeChangeDisabled?: boolean;
   isRiskChangeDisabled?: boolean;
@@ -41,7 +43,9 @@ export function GameSidebar({
   betAmount,
   betButtonLabel = "Bet",
   errorMessage,
+  isAutoBetChangeDisabled = false,
   isAutoBetsInfinite,
+  isBetAmountChangeDisabled = false,
   isBetDisabled = false,
   isModeChangeDisabled = false,
   isRiskChangeDisabled = false,
@@ -72,6 +76,7 @@ export function GameSidebar({
       <BetAmountField
         balanceLabel={balanceLabel}
         betAmount={betAmount}
+        isDisabled={isBetAmountChangeDisabled}
         maxBet={maxBet}
         minBet={minBet}
         onBetAmountBlur={onBetAmountBlur}
@@ -95,6 +100,7 @@ export function GameSidebar({
         <AutoBetControls
           autoBetsAmount={autoBetsAmount}
           isAutoBetsInfinite={isAutoBetsInfinite}
+          isDisabled={isAutoBetChangeDisabled}
           onAutoBetsAmountChange={onAutoBetsAmountChange}
           onAutoBetsInfinityToggle={onAutoBetsInfinityToggle}
         />

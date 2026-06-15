@@ -77,6 +77,11 @@ export function PlinkoScreen() {
     validateBetAmount,
   });
   const isGameControlDisabled = isAutoBetting || isRoundInFlight;
+  // Lock the stake inputs while a bet/round is in flight: a running autobet loop
+  // uses the amount and count captured when it started, so editing them mid-run
+  // would only mislead the player.
+  const isStakeChangeDisabled =
+    isAutoBetting || isBetting || isRoundInFlight;
   const handleBetAmountControlClickWithErrorClear = useCallback(
     (...args: Parameters<typeof handleBetAmountControlClick>) => {
       handleBetAmountControlClick(...args);
@@ -102,6 +107,8 @@ export function PlinkoScreen() {
             mode,
           })}
           errorMessage={betValidationError || configErrorMessage}
+          isAutoBetChangeDisabled={isStakeChangeDisabled}
+          isBetAmountChangeDisabled={isStakeChangeDisabled}
           isBetDisabled={
             isBetting ||
             (isAuthenticated && (isGameConfigLoading || hasGameConfigError))
