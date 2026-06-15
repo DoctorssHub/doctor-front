@@ -27,7 +27,7 @@ export const PlinkoBuckets = memo(function PlinkoBuckets({
 
         return (
           <div
-            className={`flex origin-bottom items-center justify-center border text-[9px] font-bold transition-[box-shadow,background-color,border-color,color] duration-200 max-[340px]:text-[8px] md:text-[10px] ${isActive ? "plinko-bucket-hit" : ""} ${getMultiplierTone(slot, isActive)}`}
+            className={`flex origin-bottom items-center justify-center border text-[9px] font-bold transition-[box-shadow,background-color,border-color,color] duration-200 max-[340px]:text-[8px] tablet:text-[10px] ${isActive ? "plinko-bucket-hit" : ""} ${getMultiplierTone(slot, isActive)}`}
             key={`${slot}-${index}-${impactKey ?? "idle"}`}
             style={
               {

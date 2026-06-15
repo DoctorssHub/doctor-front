@@ -43,10 +43,10 @@ export const PlinkoBoard = memo(function PlinkoBoard({
   );
 
   return (
-    <section className="relative flex min-h-130 flex-1 flex-col overflow-hidden bg-[#0f1720] px-4 py-6 min-[1024px]:min-h-131 max-[1023px]:order-1 max-[1023px]:min-h-82.5 max-[767px]:min-h-72.5 max-[767px]:px-2 max-[767px]:py-5 max-[340px]:min-h-65">
+    <section className="relative flex min-h-130 flex-1 flex-col overflow-hidden bg-[#0f1720] px-4 py-6 laptop:min-h-131 max-laptop:order-1 max-laptop:min-h-82.5 max-tablet:min-h-72.5 max-tablet:px-2 max-tablet:py-5 max-[340px]:min-h-65">
       <RecentMultipliers multipliers={recentMultipliers} />
 
-      <div className="flex flex-1 items-end justify-center max-[1023px]:items-center">
+      <div className="flex flex-1 items-end justify-center max-laptop:items-center">
         <div
           className="relative w-full"
           style={{ height: boardHeight, maxWidth: boardWidth }}

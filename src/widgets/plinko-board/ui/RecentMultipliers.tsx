@@ -9,10 +9,10 @@ export const RecentMultipliers = memo(function RecentMultipliers({
   multipliers,
 }: RecentMultipliersProps) {
   return (
-    <div className="absolute top-4 right-3 flex flex-col gap-1.5 md:top-6 md:right-6 md:gap-3">
+    <div className="absolute top-4 right-3 flex flex-col gap-1.5 tablet:top-6 tablet:right-6 tablet:gap-3">
       {multipliers.slice(0, 3).map((multiplier, index) => (
         <div
-          className={`flex h-5 min-w-8 items-center justify-center rounded px-1.5 text-[10px] font-bold md:h-6 md:min-w-10 md:rounded-md md:px-2 md:text-[11px] ${getMultiplierTone(multiplier, false)}`}
+          className={`flex h-5 min-w-8 items-center justify-center rounded px-1.5 text-[10px] font-bold tablet:h-6 tablet:min-w-10 tablet:rounded-md tablet:px-2 tablet:text-[11px] ${getMultiplierTone(multiplier, false)}`}
           key={`${multiplier}-${index}`}
         >
           {multiplier}x
