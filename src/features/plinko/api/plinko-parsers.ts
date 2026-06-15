@@ -23,12 +23,37 @@ export function readPlinkoConfig(
     risks: readRiskArray(config.risks) || fallbackConfig.risks,
     minBet: readString(config.minBet) || fallbackConfig.minBet,
     maxBet: readString(config.maxBet) || fallbackConfig.maxBet,
-    payoutTables:
-      readPayoutTables(config.payoutTables) || fallbackConfig.payoutTables,
+    payoutTables: mergePayoutTables(
+      readPayoutTables(config.payoutTables),
+      fallbackConfig.payoutTables,
+    ),
   };
 }
 
-export function readPlinkoBet(data: unknown, request: PlinkoBetRequest): Bet {
+// Backend may send a partial payout table (only some risks, or some rows). The
+// UI reads payoutTables[risk][rows] directly, so any gap would crash the board.
+// Fill every gap from the fallback config; backend values still take precedence.
+function mergePayoutTables(
+  parsed: GameConfig["payoutTables"] | null,
+  fallback: GameConfig["payoutTables"],
+): GameConfig["payoutTables"] {
+  if (!parsed) {
+    return fallback;
+  }
+
+  const merged = {} as GameConfig["payoutTables"];
+
+  for (const risk of ["LOW", "MEDIUM", "HIGH"] as const) {
+    merged[risk] = { ...fallback[risk], ...parsed[risk] };
+  }
+
+  return merged;
+}
+
+export function readPlinkoBet(
+  data: unknown,
+  request: PlinkoBetRequest,
+): Bet {
   const record = findRecordWithAnyKey(data, [
     "bucketIndex",
     "bucket_index",
@@ -43,15 +68,19 @@ export function readPlinkoBet(data: unknown, request: PlinkoBetRequest): Bet {
     );
   }
 
+  // The bucket is the sum of the 0|1 path the backend returns, which is always a
+  // valid integer in 0..rows. Fall back to an explicit (and validated) bucket
+  // field only if the path is absent. The multiplier/payout are taken from the
+  // backend as-is — the backend is the source of truth for the payout.
   const bucketIndex =
-    readNumberField(record, ["bucketIndex", "bucket_index", "bucket", "slot"]) ??
-    readBucketIndexFromResults(record.results);
+    readBucketIndexFromResults(record.results, request.rows) ??
+    readBucketIndexField(record, request.rows);
   const multiplier = readNumberField(record, ["multiplier", "coefficient"]);
   const payout = readStringOrNumberField(record, ["payout", "win", "winAmount"]);
 
   if (bucketIndex === null || multiplier === null || payout === null) {
     throw new Error(
-      "Plinko bet response is missing bucketIndex, multiplier, or payout. Check [plinko-api] console logs.",
+      "Plinko bet response is missing a valid bucketIndex/path, multiplier, or payout. Check [plinko-api] console logs.",
     );
   }
 
@@ -192,33 +221,41 @@ function readNumberField(record: Record<string, unknown>, keys: string[]) {
   return null;
 }
 
-function readBucketIndexFromResults(value: unknown) {
-  if (!Array.isArray(value)) {
+// A Plinko result is a binary path: `rows` steps of 0 (left) or 1 (right). The
+// bucket is the number of right steps. Anything that is not exactly that shape
+// is not a valid Plinko path, so we reject it (null) rather than guess a bucket.
+function readBucketIndexFromResults(value: unknown, rows: number) {
+  if (!Array.isArray(value) || value.length !== rows) {
     return null;
   }
 
-  const resultValues = value.map((item) => {
-    if (typeof item === "number" && Number.isFinite(item)) {
-      return item;
+  let bucketIndex = 0;
+
+  for (const step of value) {
+    if (step !== 0 && step !== 1) {
+      return null;
     }
 
-    if (typeof item === "string" && item.trim()) {
-      const parsedValue = Number(item);
+    bucketIndex += step;
+  }
 
-      return Number.isFinite(parsedValue) ? parsedValue : null;
-    }
+  return bucketIndex;
+}
 
-    return null;
-  });
+// Explicit bucket field fallback, only accepted as an integer within 0..rows.
+function readBucketIndexField(record: Record<string, unknown>, rows: number) {
+  const value = readNumberField(record, [
+    "bucketIndex",
+    "bucket_index",
+    "bucket",
+    "slot",
+  ]);
 
-  if (resultValues.some((item) => item === null)) {
+  if (value === null || !Number.isInteger(value) || value < 0 || value > rows) {
     return null;
   }
 
-  return resultValues.reduce<number>(
-    (bucketIndex, item) => bucketIndex + (item ?? 0),
-    0,
-  );
+  return value;
 }
 
 function readStringField(record: Record<string, unknown>, keys: string[]) {
