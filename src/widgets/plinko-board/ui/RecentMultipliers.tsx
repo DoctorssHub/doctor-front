@@ -6,10 +6,10 @@ type RecentMultipliersProps = {
 
 export function RecentMultipliers({ multipliers }: RecentMultipliersProps) {
   return (
-    <div className="absolute top-6 right-6 hidden flex-col gap-3 md:flex">
+    <div className="absolute top-4 right-3 flex flex-col gap-1.5 md:top-6 md:right-6 md:gap-3">
       {multipliers.slice(0, 3).map((multiplier, index) => (
         <div
-          className={`flex h-6 min-w-10 items-center justify-center rounded-md px-2 text-[11px] font-bold ${getMultiplierTone(multiplier, false)}`}
+          className={`flex h-5 min-w-8 items-center justify-center rounded px-1.5 text-[10px] font-bold md:h-6 md:min-w-10 md:rounded-md md:px-2 md:text-[11px] ${getMultiplierTone(multiplier, false)}`}
           key={`${multiplier}-${index}`}
         >
           {multiplier}x

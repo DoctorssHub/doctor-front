@@ -8,9 +8,12 @@ function subscribeToViewportWidth(onStoreChange: () => void) {
     return () => undefined;
   }
 
+  const frameId = window.requestAnimationFrame(onStoreChange);
+
   window.addEventListener("resize", onStoreChange);
 
   return () => {
+    window.cancelAnimationFrame(frameId);
     window.removeEventListener("resize", onStoreChange);
   };
 }
@@ -21,6 +24,10 @@ function getViewportWidthSnapshot() {
   }
 
   return window.innerWidth;
+}
+
+function getServerViewportWidthSnapshot() {
+  return Number.POSITIVE_INFINITY;
 }
 
 function getLayoutForViewportWidth(width: number): BoardLayout {
@@ -47,7 +54,7 @@ export function usePlinkoBoardLayout(): BoardLayout {
   const viewportWidth = useSyncExternalStore(
     subscribeToViewportWidth,
     getViewportWidthSnapshot,
-    getViewportWidthSnapshot,
+    getServerViewportWidthSnapshot,
   );
 
   return getLayoutForViewportWidth(viewportWidth);
