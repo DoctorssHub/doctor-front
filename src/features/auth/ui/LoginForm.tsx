@@ -4,11 +4,15 @@ import axios from "axios";
 import type ReCAPTCHA from "react-google-recaptcha";
 import { getCurrentUser, loginUser } from "../api/auth-api";
 import { parseAuthError } from "../lib/parse-auth-error";
-import { readUsername } from "../lib/read-auth-response";
+import {
+  readUserBalances,
+  readUsername,
+  type UserBalance,
+} from "../lib/read-auth-response";
 import { AuthRecaptcha } from "./AuthRecaptcha";
 
 type LoginFormProps = {
-  onLoggedIn: (username: string) => void;
+  onLoggedIn: (username: string, balances?: UserBalance[] | null) => void;
   onForgotPasswordClick: () => void;
 };
 
@@ -39,13 +43,14 @@ export function LoginForm({
     },
     onSuccess: (meResponse) => {
       const username = readUsername(meResponse.data);
+      const balances = readUserBalances(meResponse.data);
 
       if (!username) {
         setErrorMessage("Username was not returned by the server.");
         return;
       }
 
-      onLoggedIn(username);
+      onLoggedIn(username, balances);
     },
     onError: (error) => {
       setErrorMessage(

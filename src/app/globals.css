@@ -138,6 +138,79 @@ button:disabled {
   cursor: not-allowed;
 }
 
+@keyframes plinko-bucket-hit {
+  0% {
+    transform: scaleY(1);
+  }
+
+  28% {
+    transform: scaleY(0.68);
+  }
+
+  52% {
+    transform: scaleY(1.08);
+  }
+
+  74% {
+    transform: scaleY(0.94);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.plinko-bucket-hit {
+  animation: plinko-bucket-hit 520ms cubic-bezier(0.2, 0.9, 0.28, 1.1);
+  will-change: transform;
+}
+
+.game-sidebar-range {
+  --game-sidebar-range-progress: 0%;
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    #c82831 0%,
+    #c82831 var(--game-sidebar-range-progress),
+    #334155 var(--game-sidebar-range-progress),
+    #334155 100%
+  );
+  border-radius: 999px;
+  height: 4px;
+  outline: none;
+}
+
+.game-sidebar-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 6px;
+  height: 14px;
+  background: #ffffff;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 16%);
+}
+
+.game-sidebar-range::-moz-range-track {
+  background: transparent;
+  border: 0;
+  height: 4px;
+}
+
+.game-sidebar-range::-moz-range-progress {
+  background: #c82831;
+  border-radius: 999px;
+  height: 4px;
+}
+
+.game-sidebar-range::-moz-range-thumb {
+  width: 6px;
+  height: 14px;
+  background: #ffffff;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 16%);
+}
+
 .auth-checkbox {
   width: 16px;
   height: 16px;

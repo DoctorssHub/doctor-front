@@ -40,7 +40,7 @@ export const navItems: NavItem[] = [
         type: "link",
       },
       {
-        href: "#",
+        href: "/plinko",
         icon: plinkoIcon,
         title: "Plinko",
         type: "link",
