@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import { getRouletteConfig, placeRouletteBet } from "../api/roulette-api";
@@ -29,23 +30,38 @@ export function useRouletteGame() {
   const [betMode, setBetMode] = useState<"manual" | "auto">("manual");
   const [isResultAnimating, setIsResultAnimating] = useState(false);
   const [isWinModalVisible, setIsWinModalVisible] = useState(false);
-  const selectedChip = useRouletteStore((state) => state.selectedChip);
-  const placedBets = useRouletteStore((state) => state.placedBets);
-  const isSpinning = useRouletteStore((state) => state.isSpinning);
-  const result = useRouletteStore((state) => state.result);
-  const resultHistory = useRouletteStore((state) => state.resultHistory);
-  const selectChip = useRouletteStore((state) => state.selectChip);
-  const placeBet = useRouletteStore((state) => state.placeBet);
-  const clearBets = useRouletteStore((state) => state.clearBets);
-  const undoBet = useRouletteStore((state) => state.undoBet);
-  const startSpin = useRouletteStore((state) => state.startSpin);
-  const finishSpin = useRouletteStore((state) => state.finishSpin);
-  const stopSpin = useRouletteStore((state) => state.stopSpin);
-  const addResultToHistory = useRouletteStore(
-    (state) => state.addResultToHistory,
-  );
-  const settleResultHistory = useRouletteStore(
-    (state) => state.settleResultHistory,
+  const {
+    addResultToHistory,
+    clearBets,
+    finishSpin,
+    isSpinning,
+    placeBet,
+    placedBets,
+    result,
+    resultHistory,
+    selectChip,
+    selectedChip,
+    settleResultHistory,
+    startSpin,
+    stopSpin,
+    undoBet,
+  } = useRouletteStore(
+    useShallow((state) => ({
+      addResultToHistory: state.addResultToHistory,
+      clearBets: state.clearBets,
+      finishSpin: state.finishSpin,
+      isSpinning: state.isSpinning,
+      placeBet: state.placeBet,
+      placedBets: state.placedBets,
+      result: state.result,
+      resultHistory: state.resultHistory,
+      selectChip: state.selectChip,
+      selectedChip: state.selectedChip,
+      settleResultHistory: state.settleResultHistory,
+      startSpin: state.startSpin,
+      stopSpin: state.stopSpin,
+      undoBet: state.undoBet,
+    })),
   );
   const autoBetting = useAutoRouletteBetting();
 
