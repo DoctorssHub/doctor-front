@@ -181,7 +181,7 @@ export function VerifyTab({ initialGame }: VerifyTabProps) {
 
       {game === "plinko" ? (
         <>
-          <label className="block text-sm font-medium text-[var(--color-text-muted)]">
+          <label className="block text-sm font-light text-[#c7cbd4]">
             Rows
             <span className="mt-2 flex items-center gap-3">
               <span className="w-6 text-base font-bold text-[var(--color-text-primary)]">
@@ -220,10 +220,10 @@ type VerifyInputProps = {
 
 function VerifyInput({ label, onChange, placeholder, value }: VerifyInputProps) {
   return (
-    <label className="block text-sm font-medium text-[var(--color-text-muted)]">
+    <label className="block text-sm font-light text-[#c7cbd4]">
       {label}
       <input
-        className="mt-2 h-11 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-[15px] font-medium text-[var(--color-text-primary)] outline-none transition placeholder:text-[var(--color-text-disabled)] focus:border-[var(--color-brand)]"
+        className="mt-2 h-11 w-full rounded-[8px] border border-[#1b1f26] bg-[#0e121c] px-3 py-3 text-sm font-normal text-[#c7cbd4] outline-none transition placeholder:text-[#c7cbd4]/45 focus:border-[var(--color-brand)]"
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         value={value}

@@ -2,7 +2,6 @@
 
 import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/shared/ui/button";
 import {
   getFairnessSeed,
   updateFairnessSeed,
@@ -76,23 +75,23 @@ export function SeedsTab() {
         </h3>
         <SeedField label="Total Bets Made with Pair" value={seed.nonce} />
 
-        <label className="block text-sm font-medium text-[var(--color-text-muted)]">
+        <label className="block text-sm font-light text-[#c7cbd4]">
           New client seed
           <span className="mt-2 flex gap-3">
             <input
-              className="h-11 min-w-0 flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-[15px] font-medium text-[var(--color-text-primary)] outline-none transition placeholder:text-[var(--color-text-disabled)] focus:border-[var(--color-brand)]"
+              className="h-11 min-w-0 flex-1 rounded-[8px] border border-[#1b1f26] bg-[#0e121c] px-3 py-3 text-sm font-normal text-[#c7cbd4] outline-none transition placeholder:text-[#c7cbd4]/45 focus:border-[var(--color-brand)]"
               maxLength={128}
               onChange={(event) => setClientSeed(event.target.value)}
               placeholder="Enter new client seed"
               value={editableClientSeed}
             />
-            <Button
-              className="h-11 px-5"
+            <button
+              className="h-12 w-[88px] shrink-0 rounded-[8px] border border-[#1b1f26] bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)] px-4 py-3.5 text-sm font-bold text-[var(--color-text-primary)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={seedMutation.isPending || !editableClientSeed.trim()}
               type="submit"
             >
               {seedMutation.isPending ? "Changing" : "Change"}
-            </Button>
+            </button>
           </span>
         </label>
 

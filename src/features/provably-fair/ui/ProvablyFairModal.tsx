@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
+import closeIcon from "@/assets/games/provably-fair/closeIcon.svg";
 import type { ProvablyFairGame } from "../model/provably-fair-games";
 import { useProvablyFairModalStore } from "../model/provably-fair-modal-store";
 import { ProvablyFairTabs } from "./ProvablyFairTabs";
@@ -72,7 +74,7 @@ function ProvablyFairModalContent({
           onClick={onClose}
           type="button"
         >
-          x
+          <Image alt="" height={16} src={closeIcon} width={16} />
         </button>
 
         <h2 className="mb-7 text-center text-2xl font-bold">Fairness</h2>
