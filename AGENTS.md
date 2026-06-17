@@ -44,6 +44,31 @@ notices and prefer the bundled docs over training-data assumptions.
 - Prefer local feature imports inside a feature. Export only the stable public
   surface from each layer's `index.ts`.
 
+## Feature code organization
+
+- Do not put large feature implementations into a single component file.
+- Before writing or refactoring feature UI, split code by responsibility:
+  - `api/` for backend requests and API types.
+  - `model/` for domain state, constants, stores, and business entities.
+  - `lib/` for pure helper functions, formatters, mappers, calculations, and
+    reusable non-React logic.
+  - `ui/<block-name>/` for composed UI blocks and their private subcomponents.
+- Keep route and screen files thin. Screens should compose feature-level blocks,
+  not contain implementation details.
+- If a component needs more than one responsibility, extract:
+  - presentational subcomponents into nearby `ui/<block-name>/...` files;
+  - animation or stateful React logic into `useSomething.ts`;
+  - pure calculations into `lib/*` or local `*-utils.ts`;
+  - constants into `*-constants.ts`.
+- Prefer folder-level `index.ts` files for stable public imports from a UI
+  block.
+- Do not expose internal subcomponents outside their block unless another block
+  genuinely needs them.
+- A feature UI folder should not become a flat list of unrelated files. Group
+  files by user-facing block or workflow.
+- When refactoring structure, preserve behavior first, update imports, then run
+  `npm run lint`.
+
 ## Next.js rules
 
 - Components are Server Components by default. Add `"use client"` only to files
