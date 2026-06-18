@@ -28,7 +28,7 @@ export const navItems: NavItem[] = [
   {
     children: [
       {
-        href: "#",
+        href: "/all-games/roulette",
         icon: rouletteIcon,
         title: "Roulette",
         type: "link",
@@ -40,7 +40,7 @@ export const navItems: NavItem[] = [
         type: "link",
       },
       {
-        href: "/plinko",
+        href: "/all-games/plinko",
         icon: plinkoIcon,
         title: "Plinko",
         type: "link",
@@ -52,6 +52,7 @@ export const navItems: NavItem[] = [
         type: "link",
       },
     ],
+    href: "/all-games",
     icon: gamesIcon,
     title: "Games",
     type: "dropdown",

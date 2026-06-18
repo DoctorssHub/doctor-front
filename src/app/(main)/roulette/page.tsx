@@ -1,5 +1,5 @@
-import { RouletteScreen } from "@/screens/roulette";
+import { permanentRedirect } from "next/navigation";
 
 export default function RoulettePage() {
-  return <RouletteScreen />;
+  permanentRedirect("/all-games/roulette");
 }
