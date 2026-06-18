@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { Bet } from "@/entities/bet/model/types";
 import type { GameMode, Risk } from "@/entities/game/model/types";
 import type { ActiveRound } from "@/widgets/plinko-board/model/active-round";
+import { useLiveBetRevealStore } from "@/shared/model/live-bet-reveal-store";
 
 const MAX_RECENT_MULTIPLIERS = 20;
 const ROUND_CLEANUP_DELAY_MS = 1200;
@@ -69,6 +70,9 @@ export const usePlinkoRoundsStore = create<PlinkoRoundsStore>((set) => ({
       ),
     }));
 
+    // The result is now visible to the user, so the live feed may show this bet.
+    useLiveBetRevealStore.getState().markBetRevealed(roundId);
+
     const timeoutId = window.setTimeout(() => {
       cleanupTimeoutIds.delete(timeoutId);
       roundById.delete(roundId);
@@ -84,6 +88,7 @@ export const usePlinkoRoundsStore = create<PlinkoRoundsStore>((set) => ({
     clearRoundCleanupTimeouts();
     historyRoundIds.clear();
     roundById.clear();
+    useLiveBetRevealStore.getState().reset();
     set({
       activeRounds: [],
       recentMultipliers: [...initialRecentMultipliers],

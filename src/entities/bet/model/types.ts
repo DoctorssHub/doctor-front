@@ -6,3 +6,21 @@ export type Bet = {
   payout: string;
   multiplier: number;
 };
+
+export type GameType = "roulette" | "keno" | "plinko" | "dice";
+
+export type BetHistoryUser = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+};
+
+export type BetHistoryItem = {
+  id: string;
+  user: BetHistoryUser;
+  game: string;
+  betAmount: string;
+  multiplier: number;
+  prize: string;
+  createdAt: string;
+};
