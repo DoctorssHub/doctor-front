@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
 import ArrowIcon from "@/assets/aside/arrow.svg";
 
 import type { NavDropdownItem } from "../model/types";
@@ -30,7 +33,17 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
             src={item.icon}
             width={20}
           />
-          <span className={isCollapsed ? "sr-only" : ""}>{item.title}</span>
+          {isCollapsed ? (
+            <span className="sr-only">{item.title}</span>
+          ) : (
+            <Link
+              className="transition hover:text-(--color-brand)"
+              href={item.href}
+              onClick={(event) => event.stopPropagation()}
+            >
+              {item.title}
+            </Link>
+          )}
         </span>
         {!isCollapsed ? (
           <Image

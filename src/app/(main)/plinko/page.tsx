@@ -1,5 +1,5 @@
-import { PlinkoScreen } from "@/screens/plinko";
+import { permanentRedirect } from "next/navigation";
 
 export default function PlinkoPage() {
-  return <PlinkoScreen />;
+  permanentRedirect("/all-games/plinko");
 }

@@ -9,6 +9,7 @@ export type NavLinkItem = {
 
 export type NavDropdownItem = {
   children: NavLinkItem[];
+  href: string;
   icon: StaticImageData;
   title: string;
   type: "dropdown";
