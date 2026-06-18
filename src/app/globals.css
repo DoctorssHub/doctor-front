@@ -330,6 +330,26 @@ button:disabled {
   box-shadow: 0 0 0 1px rgb(255 255 255 / 16%);
 }
 
+.dice-range-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 36px;
+  height: 28px;
+  background: transparent;
+  border: 0;
+}
+
+.dice-range-input::-moz-range-track {
+  background: transparent;
+  border: 0;
+}
+
+.dice-range-input::-moz-range-thumb {
+  width: 36px;
+  height: 28px;
+  background: transparent;
+  border: 0;
+}
+
 .auth-checkbox {
   width: 16px;
   height: 16px;

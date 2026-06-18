@@ -2,7 +2,7 @@
 
 import { useShallow } from "zustand/react/shallow";
 import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
-import { AutoBetControls } from "@/widgets/game-sidebar/ui/AutoBetControls";
+import { AutoBetControls } from "@/widgets/game-sidebar";
 import { useIsPlinkoStakeChangeDisabled } from "../../model/usePlinkoSidebarDisabledState";
 
 export function PlinkoAutoBetSection() {
