@@ -17,6 +17,7 @@ import {
 type BettingBoardProps = {
   canUndo: boolean;
   disabled: boolean;
+  isFullscreen?: boolean;
   placedBets: PlacedRouletteBet[];
   onClear: () => void;
   onPlaceBet: (bet: NewRouletteBet) => void;
@@ -26,6 +27,7 @@ type BettingBoardProps = {
 export function BettingBoard({
   canUndo,
   disabled,
+  isFullscreen = false,
   placedBets,
   onClear,
   onPlaceBet,
@@ -47,12 +49,20 @@ export function BettingBoard({
 
   return (
     <div className="w-full overflow-x-auto max-tablet:overflow-visible">
-      <div className="mx-auto min-w-[625px] max-w-[625px] max-tablet:hidden tablet:max-laptop:h-[264px] tablet:max-laptop:min-w-[719px] tablet:max-laptop:max-w-[719px] ">
+      <div
+        className={[
+          "mx-auto max-tablet:hidden",
+          isFullscreen
+            ? "w-full min-w-0 max-w-none"
+            : "min-w-[625px] max-w-[625px] tablet:max-laptop:h-[264px] tablet:max-laptop:min-w-[719px] tablet:max-laptop:max-w-[719px]",
+        ].join(" ")}
+      >
         <BettingNumberGrid
           betAmounts={betAmounts}
           disabled={disabled}
           hasActiveHover={hasActiveHover}
           hoverArea={hoverArea}
+          isFullscreen={isFullscreen}
           isZeroHighlighted={isZeroHighlighted}
           onGetHoverHandlers={getHoverHandlers}
           onPlaceBet={onPlaceBet}
@@ -62,6 +72,7 @@ export function BettingBoard({
           canUndo={canUndo}
           disabled={disabled}
           hoverArea={hoverArea}
+          isFullscreen={isFullscreen}
           onClear={onClear}
           onGetHoverHandlers={getHoverHandlers}
           onPlaceBet={onPlaceBet}
