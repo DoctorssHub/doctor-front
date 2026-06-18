@@ -242,6 +242,48 @@ button:disabled {
   will-change: transform;
 }
 
+@keyframes bet-history-row-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.bet-history-row-in {
+  animation: bet-history-row-in 480ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bet-history-row-in {
+    animation: none;
+  }
+}
+
+.bet-history-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-hover) transparent;
+}
+
+.bet-history-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.bet-history-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bet-history-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-surface-hover);
+  border-radius: 999px;
+}
+
+.bet-history-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-button);
+}
+
 .game-sidebar-range {
   --game-sidebar-range-progress: 0%;
   appearance: none;
