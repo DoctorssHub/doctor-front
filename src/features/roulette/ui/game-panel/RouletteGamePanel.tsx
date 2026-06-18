@@ -11,6 +11,7 @@ import { RouletteWinModal } from "../win-modal";
 type RouletteGamePanelProps = {
   canUndo: boolean;
   disabled: boolean;
+  isFullscreen?: boolean;
   isResultAnimating: boolean;
   isWinModalVisible: boolean;
   isWheelSpinning: boolean;
@@ -27,6 +28,7 @@ type RouletteGamePanelProps = {
 export function RouletteGamePanel({
   canUndo,
   disabled,
+  isFullscreen = false,
   isResultAnimating,
   isWinModalVisible,
   isWheelSpinning,
@@ -46,7 +48,14 @@ export function RouletteGamePanel({
   const isMobileWheelOverlayVisible = isWheelSpinning || isResultAnimating;
 
   return (
-    <section className="relative flex min-w-0 flex-col justify-between gap-7 border-b-2 border-r-2 border-[var(--color-surface)] bg-[var(--color-roulette-panel)] px-[10px] pb-[30px] pt-5 max-laptop:order-1 max-laptop:border-0 max-laptop:bg-transparent max-laptop:pb-0 tablet:max-laptop:px-0 max-tablet:gap-5 max-tablet:px-0 max-tablet:pt-0 laptop:h-[668px] laptop:w-[665px] laptop:rounded-[0_16px_16px_0]">
+    <section
+      className={[
+        "relative flex min-w-0 flex-col gap-7 border-b-2 border-r-2 border-[var(--color-surface)] bg-[var(--color-roulette-panel)] px-[10px] pb-[30px] pt-5 max-laptop:order-1 max-laptop:border-0 max-laptop:bg-transparent max-laptop:pb-0 tablet:max-laptop:px-0 max-tablet:gap-5 max-tablet:px-0 max-tablet:pt-0 laptop:w-full laptop:rounded-[0_16px_16px_0]",
+        isFullscreen
+          ? "justify-start laptop:h-full"
+          : "justify-between laptop:h-[668px]",
+      ].join(" ")}
+    >
       <RouletteHistory
         results={resultHistory}
         onExitComplete={onSettleResultHistory}
@@ -71,6 +80,7 @@ export function RouletteGamePanel({
         <BettingBoard
           canUndo={canUndo}
           disabled={disabled}
+          isFullscreen={isFullscreen}
           placedBets={placedBets}
           onClear={onClear}
           onPlaceBet={onPlaceBet}

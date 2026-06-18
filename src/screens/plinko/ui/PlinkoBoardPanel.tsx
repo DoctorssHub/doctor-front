@@ -8,9 +8,13 @@ import { PlinkoBoard } from "@/widgets/plinko-board/ui/PlinkoBoard";
 
 type PlinkoBoardPanelProps = {
   config: GameConfig;
+  isFullscreen?: boolean;
 };
 
-export function PlinkoBoardPanel({ config }: PlinkoBoardPanelProps) {
+export function PlinkoBoardPanel({
+  config,
+  isFullscreen = false,
+}: PlinkoBoardPanelProps) {
   const {
     activeRounds,
     handleRoundAnimationComplete,
@@ -33,6 +37,7 @@ export function PlinkoBoardPanel({ config }: PlinkoBoardPanelProps) {
     <PlinkoBoard
       activeRounds={activeRounds}
       config={config}
+      isFullscreen={isFullscreen}
       onRoundAnimationComplete={handleRoundAnimationComplete}
       recentMultipliers={recentMultipliers}
       risk={risk}

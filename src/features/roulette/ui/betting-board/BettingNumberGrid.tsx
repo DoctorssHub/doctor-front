@@ -14,6 +14,7 @@ type BettingNumberGridProps = {
   disabled: boolean;
   hasActiveHover: boolean;
   hoverArea: HoverArea | null;
+  isFullscreen?: boolean;
   isZeroHighlighted: boolean;
   onGetHoverHandlers: (area: HoverArea) => HoverHandlers;
   onPlaceBet: (bet: NewRouletteBet) => void;
@@ -24,12 +25,20 @@ export function BettingNumberGrid({
   disabled,
   hasActiveHover,
   hoverArea,
+  isFullscreen = false,
   isZeroHighlighted,
   onGetHoverHandlers,
   onPlaceBet,
 }: BettingNumberGridProps) {
   return (
-    <div className="grid w-[625px] grid-cols-[40px_535px_40px] gap-[5px] tablet:max-laptop:w-[709px] tablet:max-laptop:grid-cols-[46px_607px_46px]">
+    <div
+      className={[
+        "grid gap-[5px]",
+        isFullscreen
+          ? "w-full grid-cols-[minmax(80px,104px)_minmax(0,1fr)_minmax(60px,104px)]"
+          : "w-[625px] grid-cols-[40px_535px_40px] tablet:max-laptop:w-[709px] tablet:max-laptop:grid-cols-[46px_607px_46px]",
+      ].join(" ")}
+    >
       <button
         className={[
           numberButtonClass(
@@ -38,6 +47,7 @@ export function BettingNumberGrid({
             hasActiveHover && !isZeroHighlighted,
           ),
           "row-span-3 !h-[130px] tablet:max-laptop:!h-[148px]",
+          isFullscreen ? "!w-full tablet:max-laptop:!w-full" : "",
         ].join(" ")}
         disabled={disabled}
         {...onGetHoverHandlers({ kind: "numbers", numbers: [0] })}
@@ -70,11 +80,14 @@ export function BettingNumberGrid({
 
                 return (
                   <button
-                    className={numberButtonClass(
-                      number,
-                      isHighlighted,
-                      hasActiveHover && !isHighlighted,
-                    )}
+                    className={[
+                      numberButtonClass(
+                        number,
+                        isHighlighted,
+                        hasActiveHover && !isHighlighted,
+                      ),
+                      isFullscreen ? "!w-full tablet:max-laptop:!w-full" : "",
+                    ].join(" ")}
                     disabled={disabled}
                     key={number}
                     {...onGetHoverHandlers({
@@ -97,10 +110,13 @@ export function BettingNumberGrid({
             </div>
 
             <button
-              className={controlButtonClass(
-                isColumnHighlighted,
-                hasActiveHover && !isColumnHighlighted,
-              )}
+              className={[
+                controlButtonClass(
+                  isColumnHighlighted,
+                  hasActiveHover && !isColumnHighlighted,
+                ),
+                isFullscreen ? "!w-full tablet:max-laptop:!w-full" : "",
+              ].join(" ")}
               disabled={disabled}
               {...onGetHoverHandlers(columnHoverArea)}
               onClick={() =>

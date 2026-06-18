@@ -17,6 +17,7 @@ type BetControlsProps = {
   canUndo: boolean;
   isSubmitting: boolean;
   isAnimating: boolean;
+  isFullscreen?: boolean;
   autoBetCount: string;
   isAutoInfinite: boolean;
   errorMessage: string | null;
@@ -41,6 +42,7 @@ export function BetControls({
   canUndo,
   isSubmitting,
   isAnimating,
+  isFullscreen = false,
   autoBetCount,
   isAutoInfinite,
   errorMessage,
@@ -83,7 +85,12 @@ export function BetControls({
       : "Bet";
 
   return (
-    <aside className="flex flex-col gap-6 bg-[var(--color-surface)] p-5 text-[var(--color-text-primary)] max-laptop:order-2 max-laptop:bg-transparent max-laptop:px-5 max-laptop:pb-0 max-laptop:pt-6 md:p-6 laptop:h-[668px] laptop:w-[352px] laptop:rounded-[16px_0_0_16px]">
+    <aside
+      className={[
+        "flex flex-col gap-6 bg-[var(--color-surface)] p-5 text-[var(--color-text-primary)] max-laptop:order-2 max-laptop:bg-transparent max-laptop:px-5 max-laptop:pb-0 max-laptop:pt-6 md:p-6 laptop:w-[352px] laptop:rounded-[16px_0_0_16px]",
+        isFullscreen ? "laptop:h-full" : "laptop:h-[668px]",
+      ].join(" ")}
+    >
       <div className="max-laptop:order-4 laptop:order-1">
         <BetModeSwitch
           disabled={controlsDisabled}
