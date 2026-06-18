@@ -40,7 +40,7 @@ function renderHeader() {
       <tr>
         {columns.map((column) => (
           <th
-            className="px-4 py-3 text-left font-semibold"
+            className="px-4 py-3 max-mobile:px-2.5 max-mobile:py-2 text-left font-semibold"
             key={column}
             scope="col"
           >
@@ -61,7 +61,7 @@ function renderLoadingRows() {
           key={rowIndex}
         >
           {columns.map((column, columnIndex) => (
-            <td className="px-4 py-3" key={column}>
+            <td className="px-4 py-3 max-mobile:px-2.5 max-mobile:py-2" key={column}>
               <div
                 className={`h-4 animate-pulse rounded bg-(--color-surface-hover) ${
                   columnIndex === 0
@@ -81,8 +81,8 @@ function renderLoadingRows() {
 
 function renderTableFrame(children: ReactNode) {
   return (
-    <div className="overflow-x-auto rounded-lg bg-(--color-surface)/80">
-      <table className="w-full min-w-[760px] table-fixed text-sm">
+    <div className="bet-history-scroll overflow-x-auto rounded-lg bg-(--color-surface)/80">
+      <table className="w-full min-w-[760px] table-fixed text-sm max-mobile:min-w-[600px] max-mobile:text-xs">
         {renderColumnGroup()}
         {renderHeader()}
         {children}
@@ -109,7 +109,7 @@ function renderItems(items: BetHistoryItem[]) {
           className="bet-history-row-in text-(--color-text-muted) odd:bg-(--color-page)"
           key={item.id}
         >
-          <td className="px-4 py-3">
+          <td className="px-4 py-3 max-mobile:px-2.5 max-mobile:py-2">
             <div className="flex min-w-0 items-center gap-3">
               <span
                 aria-hidden="true"
@@ -120,17 +120,17 @@ function renderItems(items: BetHistoryItem[]) {
               </span>
             </div>
           </td>
-          <td className="truncate px-4 py-3">{formatGameLabel(item.game)}</td>
-          <td className="px-4 py-3">
+          <td className="truncate px-4 py-3 max-mobile:px-2.5 max-mobile:py-2">{formatGameLabel(item.game)}</td>
+          <td className="px-4 py-3 max-mobile:px-2.5 max-mobile:py-2">
             <BetHistoryAmount amount={item.betAmount} />
           </td>
-          <td className="truncate px-4 py-3 font-semibold text-(--color-accent-yellow)">
+          <td className="truncate px-4 py-3 max-mobile:px-2.5 max-mobile:py-2 font-semibold text-(--color-accent-yellow)">
             {formatBetMultiplier(item.multiplier)}
           </td>
-          <td className="px-4 py-3">
+          <td className="px-4 py-3 max-mobile:px-2.5 max-mobile:py-2">
             <BetHistoryAmount amount={item.prize} />
           </td>
-          <td className="truncate px-4 py-3 text-(--color-text-subtle)">
+          <td className="truncate px-4 py-3 max-mobile:px-2.5 max-mobile:py-2 text-(--color-text-subtle)">
             {formatBetDateTime(item.createdAt)}
           </td>
         </tr>

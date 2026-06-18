@@ -188,7 +188,7 @@ export function BetHistoryTable(props: BetHistoryTableProps) {
     <section className={`space-y-4 ${className ?? ""}`.trim()}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         {shouldShowTitle ? (
-          <h2 className="text-xl font-semibold tracking-normal text-(--color-text-primary)">
+          <h2 className="text-xl font-semibold tracking-normal text-(--color-text-primary) max-mobile:text-lg">
             {resolvedTitle}
           </h2>
         ) : null}

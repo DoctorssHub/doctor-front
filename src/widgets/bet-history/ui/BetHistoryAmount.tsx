@@ -7,7 +7,7 @@ type BetHistoryAmountProps = {
 
 export function BetHistoryAmount({ amount }: BetHistoryAmountProps) {
   return (
-    <span className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-(--color-text-primary)">
+    <span className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-(--color-text-primary) max-mobile:gap-1.5 max-mobile:text-xs">
       <Image
         src="/red-coin.svg"
         alt=""
