@@ -128,19 +128,17 @@ function SettingsSwitch({ checked, label, onChange }: SettingsSwitchProps) {
       <button
         aria-checked={checked}
         aria-label={label}
-        className={[
-          "flex h-5 w-8 shrink-0 items-center rounded-full p-0.5 transition-colors",
-          checked ? "bg-[#16a34a]" : "bg-[#29303c]",
-        ].join(" ")}
+        className={`flex h-5 w-8 shrink-0 items-center rounded-full p-0.5 transition-colors ${
+          checked ? "bg-[#16a34a]" : "bg-[#29303c]"
+        }`}
         onClick={onChange}
         role="switch"
         type="button"
       >
         <span
-          className={[
-            "block h-4 w-4 rounded-full bg-white transition-transform",
-            checked ? "translate-x-3" : "translate-x-0",
-          ].join(" ")}
+          className={`block h-4 w-4 rounded-full bg-white transition-transform ${
+            checked ? "translate-x-3" : "translate-x-0"
+          }`}
         />
       </button>
     </div>
