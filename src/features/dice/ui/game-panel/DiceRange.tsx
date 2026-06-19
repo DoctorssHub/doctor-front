@@ -4,7 +4,6 @@ import resultPolygonIcon from "@/assets/games/dice/resultPolygonIcon.svg";
 import type { DiceBetResponse } from "../../api/dice-types";
 
 type DiceRangeProps = {
-  above: boolean;
   isLoading: boolean;
   result: DiceBetResponse | null;
   threshold: number;
@@ -14,56 +13,88 @@ type DiceRangeProps = {
 const tickMarks = [2, 25, 50, 75, 100];
 
 export function DiceRange({
-  above,
   isLoading,
   result,
   threshold,
   onThresholdChange,
 }: DiceRangeProps) {
-  const markerPosition = `${threshold}%`;
+  const markerLeft = `clamp(18px, ${threshold}%, calc(100% - 18px))`;
   const visibleResult = result;
   const resultPosition = visibleResult
-    ? `${visibleResult.randomValue}%`
+    ? `clamp(30px, ${visibleResult.randomValue}%, calc(100% - 30px))`
     : null;
-  const gradient = above
-    ? `linear-gradient(90deg, #ef4444 0%, #ef4444 ${threshold}%, #22c55e ${threshold}%, #22c55e 100%)`
-    : `linear-gradient(90deg, #22c55e 0%, #22c55e ${threshold}%, #ef4444 ${threshold}%, #ef4444 100%)`;
+  const resultGradient = visibleResult?.didWin
+    ? "linear-gradient(90deg, rgba(43, 48, 59, 0.4) 0%, rgba(74, 222, 128, 0.4) 54.81%, rgba(43, 48, 59, 0.4) 100%)"
+    : "linear-gradient(90deg, rgba(43, 48, 59, 0.4) 0%, rgba(239, 68, 68, 0.4) 54.81%, rgba(43, 48, 59, 0.4) 100%)";
 
   return (
-    <div className="mx-auto w-full max-w-[565px] pt-12 max-[767px]:pt-20">
-      <div className="relative rounded-2xl border-[6px] border-[#1B222D] bg-[#101722] px-4 py-4 shadow-[0_18px_50px_rgba(0,0,0,0.2)]">
+    <div className="mx-auto w-full max-w-[601px] pt-12 max-[767px]:pt-20">
+      <div className="relative h-12 w-[601px] max-w-full rounded-xl border-[6px] border-[#1b1f26] bg-[#0e121c] px-4 py-2 shadow-[0_18px_50px_rgba(0,0,0,0.2)]">
+        {tickMarks.map((tick) => (
+          <span
+            aria-hidden="true"
+            className="absolute -bottom-[15px] z-0 h-[18px] w-6 -translate-x-1/2 bg-[#1b1f26]"
+            key={`triangle-${tick}`}
+            style={{
+              left: `clamp(12px, ${tick}%, calc(100% - 12px))`,
+              maskImage: `url(${resultPolygonIcon.src})`,
+              maskRepeat: "no-repeat",
+              maskSize: "100% 100%",
+              WebkitMaskImage: `url(${resultPolygonIcon.src})`,
+              WebkitMaskRepeat: "no-repeat",
+              WebkitMaskSize: "100% 100%",
+            }}
+          />
+        ))}
+
         {resultPosition && visibleResult ? (
           <div
-            className="absolute -top-14 z-10 -translate-x-1/2"
-            style={{ left: resultPosition }}
+            className="absolute -top-[80px] z-10 grid h-[42px] w-[60px] place-items-center rounded-[6px] p-1 text-sm font-semibold text-[#fdfdfd] backdrop-blur-[8px] transition-[left,background] duration-500 ease-out will-change-[left]"
+            style={{
+              background: resultGradient,
+              left: resultPosition,
+              transform: "translateX(-50%)",
+            }}
           >
-            <div
-              className={[
-                "rounded-md border px-3 py-2 text-xs font-bold text-white shadow-lg",
-                visibleResult.didWin
-                  ? "border-[#22c55e66] bg-[#14532d]"
-                  : "border-[#ef444466] bg-[#3b1f2a]",
-              ].join(" ")}
-            >
-              {visibleResult.randomValue.toFixed(2)}
-            </div>
-            <Image
-              alt=""
+            <span
               aria-hidden="true"
-              className="mx-auto -mt-0.5 h-3 w-4"
-              src={resultPolygonIcon}
+              className="absolute inset-1 rounded-[3px] bg-[#0a0d19]"
             />
+            <span
+              aria-hidden="true"
+              className="absolute left-1/2 top-full h-2.5 w-[13px] -translate-x-1/2"
+              style={{
+                background: resultGradient,
+                maskImage: `url(${resultPolygonIcon.src})`,
+                maskRepeat: "no-repeat",
+                maskSize: "100% 100%",
+                WebkitMaskImage: `url(${resultPolygonIcon.src})`,
+                WebkitMaskRepeat: "no-repeat",
+                WebkitMaskSize: "100% 100%",
+              }}
+            />
+            <span className="relative">
+              {visibleResult.randomValue.toFixed(2)}
+            </span>
           </div>
         ) : null}
 
-        <div className="relative h-5">
+        <div className="relative z-10 h-full">
+          <div className="absolute inset-x-0 top-1/2 h-3 -translate-y-1/2 overflow-hidden rounded-full bg-[var(--color-brand)]">
+            <div
+              className="absolute top-0 h-full bg-[var(--color-accent-red)]"
+              style={{ left: 0, width: `${threshold}%` }}
+            />
+          </div>
           <div
-            className="absolute inset-x-0 top-1/2 h-2.5 -translate-y-1/2 rounded-full"
-            style={{ background: gradient }}
-          />
+            className="pointer-events-none absolute top-1/2 grid h-8 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-[4px] bg-[#3f4a59]"
+            style={{ left: markerLeft }}
+          >
+            <Image alt="" height={16} src={rangeLineIcon} width={17} />
+          </div>
           <input
             aria-label="Dice rollover threshold"
-            className="dice-range-input absolute inset-0 h-5 w-full cursor-pointer appearance-none bg-transparent disabled:cursor-not-allowed"
+            className="dice-range-input absolute inset-0 h-8 w-full cursor-pointer appearance-none bg-transparent disabled:cursor-not-allowed"
             disabled={isLoading}
             max={99.99}
             min={0.01}
@@ -72,17 +103,10 @@ export function DiceRange({
             type="range"
             value={threshold}
           />
-          <Image
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 h-7 w-9 -translate-x-1/2 -translate-y-1/2"
-            src={rangeLineIcon}
-            style={{ left: markerPosition }}
-          />
         </div>
       </div>
 
-      <div className="relative mt-3 h-7 text-lg font-bold text-white/90">
+      <div className="relative mt-3 h-7 text-center text-xs font-semibold leading-[1.33] text-[rgba(255,255,255,0.95)]">
         {tickMarks.map((tick) => (
           <span
             className="absolute -translate-x-1/2"

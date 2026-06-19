@@ -102,15 +102,16 @@
   --shadow-claim-panel: 0 1px 0 #08923a, inset 0 1px 0 rgb(195 255 239 / 10%);
   --shadow-nav-active: 0 1px 0 #08923a, inset 0 1px 0 rgb(255 255 255 / 4%);
   --shadow-roulette-shell: 0 22px 80px rgb(0 0 0 / 28%);
-  --shadow-roulette-highlight: inset 0 0 0 999px rgb(255 255 255 / 16%),
+  --shadow-roulette-highlight:
+    inset 0 0 0 999px rgb(255 255 255 / 16%),
     inset 0 0 0 1px rgb(255 255 255 / 34%);
   --shadow-roulette-chip: 0 2px 1px rgb(0 0 0 / 45%);
   --shadow-roulette-chip-glow: 0 0 14px rgb(34 197 94 / 34%);
   --shadow-roulette-history-green: 0 8px 18px rgb(32 199 101 / 18%);
   --shadow-roulette-history-red: 0 8px 18px rgb(255 59 63 / 18%);
   --shadow-roulette-history-dark: 0 8px 18px rgb(0 0 0 / 18%);
-  --shadow-roulette-ball: 1px 3px 7px rgb(0 0 0 / 90%),
-    0 0 10px 2px rgb(255 255 255 / 25%),
+  --shadow-roulette-ball:
+    1px 3px 7px rgb(0 0 0 / 90%), 0 0 10px 2px rgb(255 255 255 / 25%),
     inset -1px -2px 3px rgb(0 0 0 / 30%);
   --gradient-hero-overlay: linear-gradient(
     90deg,
@@ -256,8 +257,62 @@ button:disabled {
   animation: bet-history-row-in 480ms ease-out;
 }
 
+@keyframes dice-history-chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dice-history-chip-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.92);
+  }
+}
+
+.dice-history-chip-in {
+  animation: dice-history-chip-in 240ms ease-out both;
+  will-change: opacity, transform;
+}
+
+.dice-history-chip-out {
+  animation: dice-history-chip-out 220ms ease-in both;
+  will-change: opacity, transform;
+}
+
+@keyframes dice-mode-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dice-mode-panel {
+  animation: dice-mode-panel-in 260ms ease-out both;
+  will-change: opacity, transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bet-history-row-in {
+  .bet-history-row-in,
+  .dice-history-chip-in,
+  .dice-history-chip-out,
+  .dice-mode-panel {
     animation: none;
   }
 }
@@ -333,9 +388,10 @@ button:disabled {
 .dice-range-input::-webkit-slider-thumb {
   appearance: none;
   width: 36px;
-  height: 28px;
+  height: 32px;
   background: transparent;
   border: 0;
+  border-radius: 4px;
 }
 
 .dice-range-input::-moz-range-track {
@@ -345,9 +401,10 @@ button:disabled {
 
 .dice-range-input::-moz-range-thumb {
   width: 36px;
-  height: 28px;
+  height: 32px;
   background: transparent;
   border: 0;
+  border-radius: 4px;
 }
 
 .auth-checkbox {

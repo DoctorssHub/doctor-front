@@ -43,6 +43,7 @@ export function PlinkoBetAmountControl({
   return (
     <BetAmountField
       betAmount={betAmount}
+      gameBalance={availableBalance ?? 0}
       isDisabled={isDisabled}
       maxBet={maxBet}
       minBet={minBet}

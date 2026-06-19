@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import {
@@ -31,10 +31,44 @@ import { getDiceErrorMessage } from "../lib/dice-errors";
 
 export type DiceMode = "manual" | "auto";
 
+export type DiceAutoConfig = {
+  onWinMode: "reset" | "increase";
+  onWinIncrease: string;
+  onLossMode: "reset" | "increase";
+  onLossIncrease: string;
+  stopOnProfit: string;
+  stopOnLoss: string;
+};
+
+const DEFAULT_AUTO_CONFIG: DiceAutoConfig = {
+  onWinMode: "reset",
+  onWinIncrease: "0.00",
+  onLossMode: "reset",
+  onLossIncrease: "0.00",
+  stopOnProfit: "1.00",
+  stopOnLoss: "1.00",
+};
+
+const AUTO_BET_DELAY_MS = 550;
+
+function waitForNextAutoBet() {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, AUTO_BET_DELAY_MS);
+  });
+}
+
 export function useDiceGame() {
   const queryClient = useQueryClient();
+  const shouldStopAutoRef = useRef(false);
   const [mode, setMode] = useState<DiceMode>("manual");
   const [betAmount, setBetAmount] = useState("10.00");
+  const [autoBetCount, setAutoBetCount] = useState("10");
+  const [isAutoInfinite, setIsAutoInfinite] = useState(false);
+  const [isAutoRunning, setIsAutoRunning] = useState(false);
+  const [isAutoStopRequested, setIsAutoStopRequested] = useState(false);
+  const [autoConfig, setAutoConfig] =
+    useState<DiceAutoConfig>(DEFAULT_AUTO_CONFIG);
+  const [isAutoConfigOpen, setIsAutoConfigOpen] = useState(false);
   const [threshold, setThreshold] = useState(55.55);
   const [above, setAbove] = useState(true);
   const [result, setResult] = useState<DiceBetResponse | null>(null);
@@ -65,6 +99,11 @@ export function useDiceGame() {
     parsedBetAmount < minBet ||
     parsedBetAmount > maxBet ||
     parsedBetAmount > gameBalance;
+  const parsedAutoBetCount = Number(autoBetCount);
+  const isAutoBetCountInvalid =
+    mode === "auto" &&
+    !isAutoInfinite &&
+    (!Number.isInteger(parsedAutoBetCount) || parsedAutoBetCount < 1);
 
   const betMutation = useMutation<DiceBetResponse, Error, DiceBetRequest>({
     mutationFn: async (payload) => {
@@ -78,6 +117,12 @@ export function useDiceGame() {
       );
     },
   });
+
+  useEffect(() => {
+    return () => {
+      shouldStopAutoRef.current = true;
+    };
+  }, []);
 
   const helperMessage = useMemo(() => {
     if (parsedBetAmount !== null && parsedBetAmount > gameBalance) {
@@ -96,6 +141,10 @@ export function useDiceGame() {
       return getDiceErrorMessage(betMutation.error);
     }
 
+    if (isAutoBetCountInvalid) {
+      return "Enter at least 1 bet";
+    }
+
     if (configQuery.error || meQuery.error) {
       return "Unable to load game data";
     }
@@ -109,6 +158,7 @@ export function useDiceGame() {
     meQuery.error,
     minBet,
     parsedBetAmount,
+    isAutoBetCountInvalid,
   ]);
 
   function handleBetAmountChange(amount: string) {
@@ -129,11 +179,21 @@ export function useDiceGame() {
     );
   }
 
+  function handleAutoBetCountChange(amount: string) {
+    setAutoBetCount(amount.replace(/\D/g, ""));
+  }
+
   function handleThresholdChange(nextThreshold: number) {
     setThreshold(clampDiceThreshold(nextThreshold));
   }
 
   function handleAboveChange(nextAbove: boolean) {
+    if (nextAbove !== above) {
+      setThreshold((currentThreshold) =>
+        clampDiceThreshold(100 - currentThreshold),
+      );
+    }
+
     setAbove(nextAbove);
   }
 
@@ -151,42 +211,115 @@ export function useDiceGame() {
     setThreshold(getDiceThresholdFromChance(nextChance, above));
   }
 
-  function handleSubmit() {
+  function getBetPayload() {
     const betSize = readBetAmount(betAmount);
 
-    if (betSize === null || isBetAmountInvalid || betMutation.isPending) {
-      return;
+    if (betSize === null) {
+      return null;
     }
 
-    betMutation.mutate({
+    return {
       above,
       betSize: formatDiceNumber(betSize),
       threshold: Number(formatDiceNumber(threshold)),
-    });
+    };
+  }
+
+  async function runAutoBets(payload: DiceBetRequest, plannedBets: number) {
+    let remainingBets = plannedBets;
+
+    shouldStopAutoRef.current = false;
+    setIsAutoRunning(true);
+    setIsAutoStopRequested(false);
+
+    try {
+      while (!shouldStopAutoRef.current && remainingBets > 0) {
+        await betMutation.mutateAsync(payload);
+
+        if (!isAutoInfinite) {
+          remainingBets -= 1;
+        }
+
+        if (shouldStopAutoRef.current || remainingBets <= 0) {
+          break;
+        }
+
+        await waitForNextAutoBet();
+      }
+    } finally {
+      shouldStopAutoRef.current = false;
+      setIsAutoRunning(false);
+      setIsAutoStopRequested(false);
+    }
+  }
+
+  function handleSubmit() {
+    if (mode === "auto" && isAutoRunning) {
+      shouldStopAutoRef.current = true;
+      setIsAutoStopRequested(true);
+      return;
+    }
+
+    const payload = getBetPayload();
+
+    if (!payload || isBetAmountInvalid || betMutation.isPending) {
+      return;
+    }
+
+    if (mode === "auto") {
+      if (isAutoBetCountInvalid) {
+        return;
+      }
+
+      void runAutoBets(
+        payload,
+        isAutoInfinite ? Number.POSITIVE_INFINITY : parsedAutoBetCount,
+      );
+      return;
+    }
+
+    betMutation.mutate(payload);
   }
 
   return {
     betControlsProps: {
       betAmount,
+      autoBetCount,
+      autoConfig,
       gameBalance,
       helperMessage,
-      isBetDisabled:
-        isBetAmountInvalid || betMutation.isPending || configQuery.isLoading,
-      isLoading: betMutation.isPending,
+      isAutoConfigOpen,
+      isAutoInfinite,
+      isAutoRunning,
+      isAutoStopRequested,
+      isBetDisabled: isAutoRunning
+        ? isAutoStopRequested
+        : isBetAmountInvalid ||
+          isAutoBetCountInvalid ||
+          betMutation.isPending ||
+          configQuery.isLoading,
+      isLoading: betMutation.isPending || isAutoRunning,
       maxBet: String(maxBet),
       minBet: String(minBet),
       mode,
       profitOnWin,
+      onAutoBetCountChange: handleAutoBetCountChange,
+      onAutoConfigApply: () => setIsAutoConfigOpen(false),
+      onAutoConfigChange: setAutoConfig,
+      onAutoConfigClose: () => setIsAutoConfigOpen(false),
+      onAutoConfigOpen: () => setIsAutoConfigOpen(true),
+      onAutoConfigResetAll: () => setAutoConfig(DEFAULT_AUTO_CONFIG),
       onBetAmountBlur: handleBetAmountBlur,
       onBetAmountChange: handleBetAmountChange,
       onBetAmountControlClick: handleBetAmountControlClick,
       onModeChange: setMode,
       onSubmit: handleSubmit,
+      onToggleAutoInfinite: () => setIsAutoInfinite((current) => !current),
     },
     gamePanelProps: {
       above,
       chance,
-      isLoading: betMutation.isPending,
+      isLoading: betMutation.isPending || isAutoRunning,
       multiplier,
       result,
       resultHistory,

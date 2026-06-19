@@ -1,3 +1,6 @@
+import closeRangeIcon from "@/assets/games/dice/closeRangeIcon.svg";
+import percentIcon from "@/assets/games/dice/percentIcon.svg";
+import relloverIcon from "@/assets/games/dice/relloverIcon.svg";
 import type { DiceBetResponse } from "../../api/dice-types";
 import { formatDiceNumber } from "../../lib/dice-calculations";
 import { DiceHistory } from "./DiceHistory";
@@ -37,7 +40,6 @@ export function DiceGamePanel({
 
       <div className="flex flex-1 items-center">
         <DiceRange
-          above={above}
           isLoading={isLoading}
           result={result}
           threshold={threshold}
@@ -45,46 +47,35 @@ export function DiceGamePanel({
         />
       </div>
 
-      <div className="mx-auto grid w-full max-w-[555px] grid-cols-3 gap-8 rounded-lg bg-[#151C26]/75 p-3 max-[767px]:grid-cols-1 max-[767px]:gap-3">
+      <div className="mx-auto grid h-28 w-[602px] max-w-full grid-cols-3 gap-[34px] rounded-lg bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] px-3 py-5 max-[767px]:h-auto max-[767px]:grid-cols-1 max-[767px]:gap-3">
         <DiceNumberField
+          iconSrc={closeRangeIcon}
           id="dice-multiplier"
+          isDisabled={isLoading}
           label="Multiplier"
           min={1.01}
           value={formatDiceNumber(multiplier)}
           onChange={onMultiplierChange}
         />
-        <label className="block min-w-0" htmlFor="dice-rollover">
-          <span className="mb-2 block text-sm font-semibold text-white">
-            Rollover
-          </span>
-          <span className="flex h-10 overflow-hidden rounded-md bg-[#252B36]/80">
-            <input
-              className="min-w-0 flex-1 bg-transparent px-3 text-sm text-white/75 outline-none"
-              id="dice-rollover"
-              inputMode="decimal"
-              max={99.99}
-              min={0.01}
-              onChange={(event) => onThresholdChange(Number(event.target.value))}
-              step={0.01}
-              type="number"
-              value={formatDiceNumber(threshold)}
-            />
-            <button
-              aria-label={above ? "Switch to roll under" : "Switch to roll over"}
-              className="grid w-12 place-items-center text-lg font-semibold text-white/80 transition hover:bg-white/5"
-              onClick={() => onAboveChange(!above)}
-              type="button"
-            >
-              {above ? ">" : "<"}
-            </button>
-          </span>
-        </label>
         <DiceNumberField
+          iconAlt={above ? "Switch to roll under" : "Switch to roll over"}
+          iconSrc={relloverIcon}
+          id="dice-rollover"
+          isDisabled={isLoading}
+          label="Rollover"
+          max={99.99}
+          min={0.01}
+          value={formatDiceNumber(threshold)}
+          onChange={onThresholdChange}
+          onIconClick={() => onAboveChange(!above)}
+        />
+        <DiceNumberField
+          iconSrc={percentIcon}
           id="dice-chance"
+          isDisabled={isLoading}
           label="Chance"
           max={99.99}
           min={0.01}
-          suffix="%"
           value={chance.toFixed(4)}
           onChange={onChanceChange}
         />

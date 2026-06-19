@@ -13,7 +13,6 @@ type PlinkoBoardPanelProps = {
 
 export function PlinkoBoardPanel({
   config,
-  isFullscreen = false,
 }: PlinkoBoardPanelProps) {
   const {
     activeRounds,
@@ -37,7 +36,6 @@ export function PlinkoBoardPanel({
     <PlinkoBoard
       activeRounds={activeRounds}
       config={config}
-      isFullscreen={isFullscreen}
       onRoundAnimationComplete={handleRoundAnimationComplete}
       recentMultipliers={recentMultipliers}
       risk={risk}

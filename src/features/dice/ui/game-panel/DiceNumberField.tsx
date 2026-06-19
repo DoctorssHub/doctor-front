@@ -1,45 +1,84 @@
+import Image, { type StaticImageData } from "next/image";
+
 type DiceNumberFieldProps = {
+  isDisabled?: boolean;
+  iconAlt?: string;
+  iconSrc?: StaticImageData;
   id: string;
   label: string;
   max?: number;
   min?: number;
   step?: number;
-  suffix?: string;
   value: string;
+  onIconClick?: () => void;
   onChange: (value: number) => void;
 };
 
 export function DiceNumberField({
+  isDisabled = false,
+  iconAlt = "",
+  iconSrc,
   id,
   label,
   max,
   min,
   step = 0.01,
-  suffix,
   value,
+  onIconClick,
   onChange,
 }: DiceNumberFieldProps) {
+  function handleChange(value: string) {
+    const nextValue = Number(value.replace(",", "."));
+
+    if (Number.isFinite(nextValue)) {
+      onChange(nextValue);
+    }
+  }
+
+  const icon = iconSrc ? (
+    <Image
+      alt={iconAlt}
+      aria-hidden={iconAlt ? undefined : true}
+      height={20}
+      src={iconSrc}
+      width={20}
+    />
+  ) : null;
+
   return (
     <label className="block min-w-0" htmlFor={id}>
-      <span className="mb-2 block text-sm font-semibold text-white">
+      <span className="mb-2 block text-base font-medium leading-[1.25] text-[#fdfdfd]">
         {label}
       </span>
-      <span className="flex h-10 items-center rounded-md bg-[#252B36]/80 px-3">
+      <span className="flex h-11 w-[170px] items-center rounded-lg border border-[#1b1f26] bg-[rgba(43,48,59,0.5)] p-3 max-[767px]:w-full">
         <input
           className="min-w-0 flex-1 bg-transparent text-sm text-white/75 outline-none"
+          disabled={isDisabled}
           id={id}
           inputMode="decimal"
           max={max}
           min={min}
-          onChange={(event) => onChange(Number(event.target.value))}
+          onChange={(event) => handleChange(event.target.value)}
           step={step}
-          type="number"
+          type="text"
           value={value}
         />
-        {suffix ? (
-          <span className="ml-2 text-lg font-semibold text-white/80">
-            {suffix}
-          </span>
+        {icon ? (
+          onIconClick ? (
+            <button
+              aria-label={iconAlt}
+              className="ml-2 grid size-5 shrink-0 place-items-center"
+              disabled={isDisabled}
+              onClick={onIconClick}
+              type="button"
+            >
+              {icon}
+            </button>
+          ) : (
+            <span className="ml-2 grid size-5 shrink-0 place-items-center">
+              {icon}
+            </span>
+          )
         ) : null}
       </span>
     </label>
