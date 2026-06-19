@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "@/assets/header/Logo.svg";
 import BurgerMenuIcon from "@/assets/header/burgerMenu.svg";
 import { HeaderAuthButton } from "./header-auth-button";
 
@@ -38,13 +37,16 @@ export function HomeHeader({
         </button>
         <Link
           aria-label="Go to homepage"
-          className="max-tablet:relative max-tablet:block max-tablet:h-10 max-tablet:w-20 max-tablet:self-center max-tablet:justify-self-center max-tablet:overflow-hidden max-tablet:[mask-image:radial-gradient(ellipse_at_center,black_58%,rgba(0,0,0,0.82)_74%,transparent_96%)]"
+          className="block size-12 max-tablet:size-10 max-tablet:self-center max-tablet:justify-self-center"
           href="/"
         >
           <Image
-            src={Logo}
-            alt="The Doctor logo"
-            className="max-tablet:absolute max-tablet:left-1/2 max-tablet:top-1/2 max-tablet:max-w-none max-tablet:-translate-x-1/2 max-tablet:-translate-y-1/2 max-tablet:scale-[0.9]"
+            alt="McQueen 95 logo"
+            className="h-full w-full object-contain"
+            height={48}
+            priority
+            src="/mcqueen-logo.png"
+            width={48}
           />
         </Link>
       </div>
