@@ -42,7 +42,7 @@ export function FeaturesSection() {
       <div className="flex items-center gap-4 laptop:max-large:grid laptop:max-large:grid-cols-3 tablet:max-laptop:grid tablet:max-laptop:grid-cols-2 max-tablet:grid max-tablet:grid-cols-1">
         {features.map((feature) => (
           <Link
-            className="group relative h-[270px] w-[275px] overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface-soft) transition duration-300 hover:-translate-y-1 hover:border-(--color-brand)/60 hover:shadow-[0_18px_50px_rgb(34_197_94/18%)] laptop:max-large:h-[303px] laptop:max-large:w-full tablet:max-laptop:h-[171px] tablet:max-laptop:w-full max-tablet:h-[171px] max-tablet:w-full"
+            className="group relative h-[270px] w-[275px] overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface-soft) transition duration-300 hover:-translate-y-1 hover:border-[#22c55e]/60 hover:shadow-[0_18px_50px_rgb(34_197_94/18%)] laptop:max-large:h-[303px] laptop:max-large:w-full tablet:max-laptop:h-[171px] tablet:max-laptop:w-full max-tablet:h-[171px] max-tablet:w-full"
             href={feature.href}
             key={feature.title}
           >
@@ -62,7 +62,7 @@ export function FeaturesSection() {
               }}
             />
             <div
-              className="absolute inset-0 z-20 transition duration-300 group-hover:bg-(--color-brand)/10"
+              className="absolute inset-0 z-20 transition duration-300 group-hover:bg-[#22c55e]/10"
               style={{ backgroundImage: "var(--gradient-card-overlay)" }}
             />
             <div className="absolute inset-0 z-30 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition duration-700 group-hover:translate-x-full" />

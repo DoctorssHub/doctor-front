@@ -48,7 +48,7 @@ export const games: Game[] = [
     title: "Keno",
   },
   {
-    accent: "var(--color-brand)",
+    accent: "#22c55e",
     blurColor: "rgba(34, 197, 94, 0.75)",
     gradientEnd: "rgba(20, 83, 45, 0.5)",
     gradientId: "game-mark-plinko",
