@@ -1,22 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Logo from "@/assets/footer/Logo_footer.webp";
-
 export function FooterBrand() {
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-6 max-tablet:items-start max-tablet:gap-5">
       <Link
-        aria-label="The Doctor home"
-        className="relative block "
+        aria-label="McQueen home"
+        className="relative block w-fit"
         href="#"
       >
         <Image
-          alt="The Doctor logo"
-          className="max-tablet:h-auto max-tablet:w-[150px]"
-          width={140}
-          height={74}
-          src={Logo}
+          alt="McQueen 95 logo"
+          className="size-24 object-contain"
+          width={96}
+          height={96}
+          src="/mcqueen-logo.png"
         />
       </Link>
       <div className="flex items-center gap-2 text-(--color-text-muted)">

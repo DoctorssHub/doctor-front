@@ -58,7 +58,7 @@ export default function NotFound() {
             <stop stopOpacity="0" />
             <stop
               offset="1"
-              stopColor="#1BD167"
+              stopColor="#c82831"
             />
           </linearGradient>
         </defs>

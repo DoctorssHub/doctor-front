@@ -14,7 +14,7 @@ export function RewardsBanner() {
     "
       style={{
         backgroundImage:
-          "linear-gradient(147deg, rgba(27, 209, 103, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%)",
+          "linear-gradient(147deg, rgb(250 204 21 / 14%) 0%, rgb(0 0 0 / 10%) 100%)",
         backgroundColor: "#11121a",
       }}
     >
@@ -27,7 +27,7 @@ export function RewardsBanner() {
       />
       <div className="relative flex flex-col  sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-[28px] font-black uppercase text-(--color-brand) laptop:max-large:text-[24px] tablet:max-laptop:text-[20px] max-tablet:text-[20px]">
+          <h2 className="text-[28px] font-black uppercase text-(--color-highlight) laptop:max-large:text-[24px] tablet:max-laptop:text-[20px] max-tablet:text-[20px]">
             Total rewards given back!
           </h2>
           <p className="text-[18px] text-(--color-text-muted) tablet:max-laptop:text-[14px] max-tablet:text-[14px]">
