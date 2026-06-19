@@ -2,7 +2,7 @@
 
 import { useShallow } from "zustand/react/shallow";
 import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
-import { ModeTabs } from "@/widgets/game-sidebar/ui/ModeTabs";
+import { ModeTabs } from "@/widgets/game-sidebar";
 import { useIsPlinkoGameControlDisabled } from "../../model/usePlinkoSidebarDisabledState";
 
 export function PlinkoModeControl() {

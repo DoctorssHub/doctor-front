@@ -46,7 +46,7 @@ export const navItems: NavItem[] = [
         type: "link",
       },
       {
-        href: "#",
+        href: "/all-games/dice",
         icon: diceIcon,
         title: "Dice",
         type: "link",

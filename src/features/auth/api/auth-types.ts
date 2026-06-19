@@ -54,7 +54,6 @@ export type MeResponse = {
 export type RegisterResponse = unknown;
 export type VerifyEmailResponse = unknown;
 export type LoginResponse = unknown;
-export type MeResponse = unknown;
 export type SessionResponse = {
   authenticated: boolean;
   user: unknown;

@@ -1,0 +1,1 @@
+export { DiceGamePanel } from "./DiceGamePanel";

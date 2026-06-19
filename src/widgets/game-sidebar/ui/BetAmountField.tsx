@@ -5,12 +5,25 @@ import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-con
 type BetAmountFieldProps = {
   betAmount: string;
   isDisabled?: boolean;
+  gameBalance: number;
   maxBet?: string;
   minBet?: string;
   onBetAmountBlur: () => void;
   onBetAmountChange: (amount: string) => void;
   onBetAmountControlClick: (control: BetAmountControl) => void;
 };
+
+function sanitizeAmountInput(value: string) {
+  const normalizedValue = value.replace(",", ".");
+  const [integerPart = "", ...fractionParts] = normalizedValue
+    .replace(/[^\d.]/g, "")
+    .split(".");
+  const fractionPart = fractionParts.join("");
+
+  return fractionParts.length > 0
+    ? `${integerPart}.${fractionPart}`
+    : integerPart;
+}
 
 const amountControls: Array<[BetAmountControl, string]> = [
   ["half", "1/2"],
@@ -21,6 +34,7 @@ const amountControls: Array<[BetAmountControl, string]> = [
 export const BetAmountField = memo(function BetAmountField({
   betAmount,
   isDisabled = false,
+  gameBalance,
   maxBet,
   minBet,
   onBetAmountBlur,
@@ -30,8 +44,24 @@ export const BetAmountField = memo(function BetAmountField({
   return (
     <div className="mt-8 max-[1023px]:order-3 max-[1023px]:mt-5 max-[767px]:mt-4">
       <div className="mb-2 flex items-center justify-between gap-3">
-        <label className="text-sm font-semibold text-white" htmlFor="bet">
+        <label
+          className="flex w-full items-center justify-between text-sm font-semibold text-white"
+          htmlFor="bet"
+        >
           Bet Amount
+          <div className="flex items-center gap-2 text-sm font-semibold text-white">
+            <Image
+              src="/red-coin.svg"
+              alt=""
+              width={18}
+              height={18}
+              aria-hidden="true"
+            />
+            {gameBalance.toLocaleString("en-US", {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })}
+          </div>
         </label>
       </div>
       <div
@@ -55,15 +85,21 @@ export const BetAmountField = memo(function BetAmountField({
           max={maxBet}
           min={minBet}
           onBlur={onBetAmountBlur}
-          onChange={(event) => onBetAmountChange(event.target.value)}
+          onChange={(event) =>
+            onBetAmountChange(sanitizeAmountInput(event.target.value))
+          }
+          pattern="[0-9]*[.]?[0-9]*"
           placeholder={minBet ? `Min ${minBet}` : undefined}
-          type="number"
+          type="text"
           value={betAmount}
         />
         <div className="ml-2 flex gap-1">
           {amountControls.map(([control, label]) => (
             <button
-              className="h-6 rounded bg-[#1B1F26] border border-[#3F4A5980] px-2 text-[10px] font-semibold text-white/45 transition hover:text-white disabled:cursor-not-allowed disabled:hover:text-white/45"
+              className={[
+                "h-7 rounded-[6px] border-[0.8px] border-[rgba(63,74,89,0.5)] bg-[#1B1F26] p-1.5 text-[10px] font-semibold text-white/45 transition hover:text-white disabled:cursor-not-allowed disabled:hover:text-white/45",
+                control === "max" ? "w-[39px]" : "w-7",
+              ].join(" ")}
               disabled={isDisabled}
               key={control}
               onClick={() => onBetAmountControlClick(control)}

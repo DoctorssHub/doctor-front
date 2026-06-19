@@ -1,5 +1,5 @@
-import { AutoBetSettings } from "./AutoBetSettings";
-import { BetModeSwitch } from "./BetModeSwitch";
+import { AutoBetControls, ModeTabs } from "@/widgets/game-sidebar";
+import infinityIcon from "@/assets/games/roulette/Infinity.svg";
 import { BetSubmitPanel } from "./BetSubmitPanel";
 import { ChipPicker } from "./ChipPicker";
 import { ManualBetActions } from "./ManualBetActions";
@@ -92,9 +92,17 @@ export function BetControls({
       ].join(" ")}
     >
       <div className="max-laptop:order-4 laptop:order-1">
-        <BetModeSwitch
-          disabled={controlsDisabled}
+        <ModeTabs
+          activeButtonClassName="bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]"
+          buttonClassName="h-10 rounded-lg transition duration-300 disabled:cursor-not-allowed disabled:opacity-50"
+          className="grid grid-cols-2 gap-3 rounded-lg text-sm font-semibold"
+          inactiveButtonClassName="text-[var(--color-text-muted)] opacity-70 hover:text-white"
+          isDisabled={controlsDisabled}
           mode={mode}
+          options={[
+            { label: "Manual", value: "manual" },
+            { label: "Auto", value: "auto" },
+          ]}
           onModeChange={onModeChange}
         />
       </div>
@@ -115,22 +123,38 @@ export function BetControls({
           onClear={onClear}
           onUndo={onUndo}
         />
-        <AutoBetSettings
-          autoBetCount={autoBetCount}
-          disabled={isAutoRunning}
-          isAutoInfinite={isAutoInfinite}
-          isAutoRunning={isAutoRunning}
-          isVisible={mode === "auto"}
-          onAutoBetCountChange={onAutoBetCountChange}
-          onToggleAutoInfinite={onToggleAutoInfinite}
-        />
+        <div
+          className={[
+            "overflow-hidden transition-[max-height,opacity,transform] duration-300 ease-out",
+            mode === "auto"
+              ? "max-h-[100px] translate-y-0 opacity-100"
+              : "max-h-0 -translate-y-2 opacity-0",
+          ].join(" ")}
+        >
+          <AutoBetControls
+            autoBetsAmount={autoBetCount}
+            buttonClassName="grid h-7 w-7 place-items-center rounded-[4px] hover:border-[var(--color-roulette-soft-border)] disabled:opacity-55"
+            className="block text-sm font-medium text-[var(--color-text-primary)]"
+            fieldClassName="mt-3 h-11 gap-2 rounded-lg border-[var(--color-border-strong)] bg-[var(--color-roulette-auto-field)] p-3"
+            id="roulette-auto-bet-count"
+            infinityIconSrc={infinityIcon}
+            inputMode="numeric"
+            inputPattern="[0-9]*"
+            inputType="text"
+            isAutoBetsInfinite={isAutoInfinite}
+            isDisabled={isAutoRunning}
+            isInputDisabled={isAutoRunning}
+            label="Number of bets"
+            onAutoBetsAmountChange={onAutoBetCountChange}
+            onAutoBetsInfinityToggle={onToggleAutoInfinite}
+          />
+        </div>
       </div>
 
       <div className="max-laptop:order-1 laptop:order-4">
         <BetSubmitPanel
           actionLabel={actionLabel}
           helperMessage={helperMessage}
-          isAutoRunning={isAutoRunning}
           isBetDisabled={isBetDisabled}
           isLoading={isLoading}
           onSubmit={onSubmit}

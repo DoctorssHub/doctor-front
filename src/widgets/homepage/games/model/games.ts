@@ -23,7 +23,7 @@ export const games: Game[] = [
     gradientEnd: "rgba(147, 51, 234, 0.2)",
     gradientId: "game-mark-dice",
     gradientStart: "#7e22ce",
-    href: "#",
+    href: "/all-games/dice",
     image: gameDice,
     title: "Dice",
   },

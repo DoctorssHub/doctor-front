@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useAuthSessionStore } from "@/features/auth";
 import { usePlinkoBettingStore } from "@/features/plinko/model/plinko-betting-store";
-import { BetAmountField } from "@/widgets/game-sidebar/ui/BetAmountField";
+import { BetAmountField } from "@/widgets/game-sidebar";
 import { usePlinkoBetAmount } from "../../model/usePlinkoBetAmount";
 import { usePlinkoBalance } from "../../model/usePlinkoBalance";
 import { useIsPlinkoStakeChangeDisabled } from "../../model/usePlinkoSidebarDisabledState";
@@ -43,6 +43,7 @@ export function PlinkoBetAmountControl({
   return (
     <BetAmountField
       betAmount={betAmount}
+      gameBalance={availableBalance ?? 0}
       isDisabled={isDisabled}
       maxBet={maxBet}
       minBet={minBet}

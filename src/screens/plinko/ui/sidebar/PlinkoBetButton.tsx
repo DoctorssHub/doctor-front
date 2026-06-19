@@ -6,6 +6,7 @@ import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
 import { usePlinkoBettingStore } from "@/features/plinko/model/plinko-betting-store";
 import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
 import { usePlinkoRoundsStore } from "@/features/plinko/model/plinko-rounds-store";
+import { GameBetButton } from "@/widgets/game-sidebar";
 import { getBetButtonLabel } from "../../lib/plinko-controls";
 import { usePlinkoBalance } from "../../model/usePlinkoBalance";
 import { usePlinkoBetting } from "../../model/usePlinkoBetting";
@@ -54,16 +55,13 @@ export function PlinkoBetButton({
   });
 
   return (
-    <button
-      className="mt-8 h-12 rounded-md bg-[#c82831] text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43] disabled:cursor-not-allowed disabled:opacity-60 max-laptop:order-1 max-laptop:mt-0"
+    <GameBetButton
+      className="mt-8 max-laptop:order-1 max-laptop:mt-0"
       disabled={
         isBetting ||
         (isAuthenticated && (isGameConfigLoading || hasGameConfigError))
       }
-      onClick={handleBetClick}
-      type="button"
-    >
-      {getBetButtonLabel({
+      label={getBetButtonLabel({
         hasConfigError: hasGameConfigError,
         isAuthenticated,
         isAutoBetStopRequested,
@@ -72,6 +70,7 @@ export function PlinkoBetButton({
         isConfigLoading: isGameConfigLoading,
         mode,
       })}
-    </button>
+      onClick={handleBetClick}
+    />
   );
 }
