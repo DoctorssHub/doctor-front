@@ -8,7 +8,7 @@ import { HeroRegisterButton } from "./hero-register-button";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden border-b border-(--color-border-hero) bg-(--color-hero-surface) max-tablet:h-[420px]">
+    <section className="relative min-h-[274px] overflow-hidden border-b border-(--color-border-hero) bg-(--color-hero-surface) max-tablet:h-[420px]">
       <Image
         alt="The Doctor hero background"
         className="object-cover opacity-70"
