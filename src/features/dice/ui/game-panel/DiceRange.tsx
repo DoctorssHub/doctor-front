@@ -80,7 +80,7 @@ export function DiceRange({
         ) : null}
 
         <div className="relative z-10 h-full">
-          <div className="absolute inset-x-0 top-1/2 h-3 -translate-y-1/2 overflow-hidden rounded-full bg-[var(--color-brand)]">
+          <div className="absolute inset-x-0 top-1/2 h-3 -translate-y-1/2 overflow-hidden rounded-full bg-[#22c55e]">
             <div
               className="absolute top-0 h-full bg-[var(--color-accent-red)]"
               style={{ left: 0, width: `${threshold}%` }}
