@@ -202,6 +202,8 @@
 
 * {
   box-sizing: border-box;
+  scrollbar-color: var(--color-surface-hover) transparent;
+  scrollbar-width: thin;
 }
 
 html {
@@ -269,25 +271,21 @@ button:disabled {
   }
 }
 
-.bet-history-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-surface-hover) transparent;
-}
-
-.bet-history-scroll::-webkit-scrollbar {
+*::-webkit-scrollbar {
+  width: 8px;
   height: 8px;
 }
 
-.bet-history-scroll::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.bet-history-scroll::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: var(--color-surface-hover);
   border-radius: 999px;
 }
 
-.bet-history-scroll::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb:hover {
   background: var(--color-border-button);
 }
 

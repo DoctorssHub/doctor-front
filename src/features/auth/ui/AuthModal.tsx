@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { AuthModalBackdrop } from "./AuthModalBackdrop";
 import { AuthCloseButton } from "./AuthCloseButton";
 import { AuthSocialActions } from "./AuthSocialActions";
 import { AuthTabs } from "./AuthTabs";
@@ -85,7 +86,7 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
 
   if (flow === "verify-email") {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-(--color-auth-backdrop)/80 p-4 text-(--color-text-primary) backdrop-blur-sm">
+      <AuthModalBackdrop onClose={onClose}>
         <section
           className="relative w-full max-w-140 overflow-hidden rounded-3xl bg-(--color-page-raised) p-4 shadow-(--shadow-auth-modal) sm:px-8 sm:py-9"
           role="dialog"
@@ -101,14 +102,14 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
             onBack={handleVerifyBack}
           />
         </section>
-      </div>
+      </AuthModalBackdrop>
     );
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-(--color-auth-backdrop)/80 p-4 text-(--color-text-primary) backdrop-blur-sm">
+    <AuthModalBackdrop onClose={onClose}>
       <section
-        className="flex h-240.25 max-h-screen w-full max-w-3xl overflow-hidden rounded-4xl lg:h-187.25 lg:max-w-250"
+        className="flex h-240.25 max-h-[calc(100dvh-2rem)] w-full max-w-3xl overflow-hidden rounded-4xl lg:h-187.25 lg:max-w-250"
         role="dialog"
         aria-modal="true"
         aria-label="Authentication"
@@ -121,12 +122,14 @@ function AuthModalContent({ initialFlow, onClose }: AuthModalContentProps) {
           <section className="flex h-full w-full max-w-none flex-col lg:max-w-105">
             <AuthTabs flow={flow} onChange={setFlow} />
 
-            <div className="min-h-0 flex-1">{authFlowContent}</div>
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              {authFlowContent}
+            </div>
 
             <AuthSocialActions flow={flow} />
           </section>
         </div>
       </section>
-    </div>
+    </AuthModalBackdrop>
   );
 }
