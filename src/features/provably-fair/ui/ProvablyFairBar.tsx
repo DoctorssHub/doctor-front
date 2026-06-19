@@ -103,7 +103,7 @@ function GameSettingsPopover() {
           min={0}
           onChange={(event) => setVolume(Number(event.target.value))}
           style={{
-            background: `linear-gradient(to right, #16a34a 0%, #16a34a ${volume}%, #1c212c ${volume}%, #1c212c 100%)`,
+            background: `linear-gradient(to right, var(--color-brand) 0%, var(--color-brand) ${volume}%, #1c212c ${volume}%, #1c212c 100%)`,
           }}
           type="range"
           value={volume}
@@ -129,7 +129,7 @@ function SettingsSwitch({ checked, label, onChange }: SettingsSwitchProps) {
         aria-checked={checked}
         aria-label={label}
         className={`flex h-5 w-8 shrink-0 items-center rounded-full p-0.5 transition-colors ${
-          checked ? "bg-[#16a34a]" : "bg-[#29303c]"
+          checked ? "bg-(--color-brand)" : "bg-[#29303c]"
         }`}
         onClick={onChange}
         role="switch"

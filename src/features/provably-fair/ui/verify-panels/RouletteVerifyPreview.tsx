@@ -18,7 +18,7 @@ export function RouletteVerifyPreview({
             className={[
               "grid place-items-center rounded-[6px] bg-[var(--color-roulette-green)]",
               resultNumber === 0
-                ? "shadow-[0_0_0_2px_var(--color-brand),0_0_20px_rgb(34_197_94/45%)]"
+                ? "shadow-[0_0_0_2px_var(--color-highlight),0_0_20px_rgb(250_204_21/40%)]"
                 : "",
             ].join(" ")}
           >
@@ -43,7 +43,7 @@ export function RouletteVerifyPreview({
                           ? "bg-[var(--color-roulette-red)]"
                           : "bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)]",
                         isActive
-                          ? "shadow-[0_0_0_2px_var(--color-brand),0_0_20px_rgb(34_197_94/45%)]"
+                          ? "shadow-[0_0_0_2px_var(--color-highlight),0_0_20px_rgb(250_204_21/40%)]"
                           : "",
                       ].join(" ")}
                       key={number}
