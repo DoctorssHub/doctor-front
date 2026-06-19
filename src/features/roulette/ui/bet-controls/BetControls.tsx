@@ -155,7 +155,6 @@ export function BetControls({
         <BetSubmitPanel
           actionLabel={actionLabel}
           helperMessage={helperMessage}
-          isAutoRunning={isAutoRunning}
           isBetDisabled={isBetDisabled}
           isLoading={isLoading}
           onSubmit={onSubmit}

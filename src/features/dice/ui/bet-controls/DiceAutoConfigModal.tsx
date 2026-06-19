@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { DiceAutoConfig } from "../../model/use-dice-game";
 
 type DiceAutoConfigModalProps = {
@@ -28,11 +32,33 @@ export function DiceAutoConfigModal({
   onClose,
   onResetAll,
 }: DiceAutoConfigModalProps) {
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = "hidden";
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+    };
+  }, []);
+
   function updateConfig(nextConfig: Partial<DiceAutoConfig>) {
     onChange({ ...config, ...nextConfig });
   }
 
-  return (
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
     <div className="fixed inset-0 z-50 grid place-items-center bg-[#080c17]/70 px-4 backdrop-blur-[2px]">
       <div className="relative h-[588px] w-[550px] rounded-[24px] bg-[#0a0d19] p-10 shadow-[0_24px_80px_rgb(0_0_0/46%)] max-[620px]:h-auto max-[620px]:w-full max-[420px]:p-5">
         <button
@@ -87,7 +113,7 @@ export function DiceAutoConfigModal({
 
         <div className="mt-8 space-y-3">
           <button
-            className="h-10 w-full rounded-lg bg-[var(--color-brand)] text-sm font-bold text-[var(--color-brand-contrast)] transition hover:bg-[var(--color-brand-hover)]"
+            className="h-10 w-full rounded-lg bg-[#c82831] text-sm font-bold text-[#fff7f7] transition hover:bg-[#d93a43]"
             onClick={onApply}
             type="button"
           >
@@ -102,7 +128,8 @@ export function DiceAutoConfigModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -126,10 +153,10 @@ function AutoModeControl({
       <p className="mb-2 text-xs font-bold text-white">{label}</p>
       <div className="flex h-11 w-[470px] items-center rounded-lg border border-[#1b1f26] bg-[#0e121c] p-3 text-xs font-semibold leading-[1.33] text-[#c7cbd4] max-[620px]:w-full">
         <button
-          className={`h-7 rounded-[4px] border border-[#1b1f26] bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] px-3 py-1.5 text-[10px] font-semibold leading-none transition ${
+          className={`h-7 rounded-[4px] border border-[#1b1f26] px-3 py-1.5 text-[10px] font-semibold leading-none transition ${
             mode === "reset"
-              ? "bg-[var(--color-brand)] text-[var(--color-brand-contrast)]"
-              : "text-[#c7cbd4]"
+              ? "bg-[#c82831] text-[#fff7f7] hover:bg-[#d93a43]"
+              : "bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] text-[#c7cbd4] hover:text-white"
           }`}
           onClick={() => onModeChange("reset")}
           type="button"
@@ -137,10 +164,10 @@ function AutoModeControl({
           Reset
         </button>
         <button
-          className={`ml-1 h-7 rounded-[4px] border border-[#1b1f26] bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] px-3 py-1.5 text-[10px] font-semibold leading-none transition ${
+          className={`ml-1 h-7 rounded-[4px] border border-[#1b1f26] px-3 py-1.5 text-[10px] font-semibold leading-none transition ${
             mode === "increase"
-              ? "bg-[var(--color-brand)] text-[var(--color-brand-contrast)]"
-              : "text-[#c7cbd4]"
+              ? "bg-[#c82831] text-[#fff7f7] hover:bg-[#d93a43]"
+              : "bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] text-[#c7cbd4] hover:text-white"
           }`}
           onClick={() => onModeChange("increase")}
           type="button"

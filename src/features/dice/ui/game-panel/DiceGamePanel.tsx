@@ -35,7 +35,7 @@ export function DiceGamePanel({
   onThresholdChange,
 }: DiceGamePanelProps) {
   return (
-    <section className="relative flex min-w-0 flex-col justify-between overflow-hidden border-b-2 border-r-2 border-[var(--color-surface)] bg-[linear-gradient(180deg,#10151F_0%,#10151F_55%,#0D2428_100%)] px-7 pb-20 pt-8 max-[1023px]:order-1 max-[1023px]:min-h-[500px] max-[1023px]:border-0 max-[1023px]:px-5 max-[767px]:min-h-[540px] max-[767px]:px-4 laptop:h-[668px] laptop:w-full laptop:rounded-[0_16px_16px_0]">
+    <section className="relative flex min-w-0 flex-col justify-between overflow-hidden border-b-2 border-r-2 border-[var(--color-surface)] bg-[linear-gradient(180deg,#10151F_0%,#10151F_55%,#3A170D_100%)] px-7 pb-20 pt-8 max-[1023px]:order-1 max-[1023px]:min-h-[500px] max-[1023px]:border-0 max-[1023px]:px-5 max-[767px]:min-h-[540px] max-[767px]:px-4 laptop:h-[668px] laptop:w-full laptop:rounded-[0_16px_16px_0]">
       <DiceHistory results={resultHistory} />
 
       <div className="flex flex-1 items-center">

@@ -2,6 +2,7 @@ import Image from "next/image";
 import infinityIcon from "@/assets/games/roulette/Infinity.svg";
 import { AutoBetControls } from "@/widgets/game-sidebar/ui/AutoBetControls";
 import { BetAmountField } from "@/widgets/game-sidebar/ui/BetAmountField";
+import { GameBetButton } from "@/widgets/game-sidebar/ui/GameBetButton";
 import { GameSidebar } from "@/widgets/game-sidebar/ui/GameSidebar";
 import { ModeTabs } from "@/widgets/game-sidebar/ui/ModeTabs";
 import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
@@ -198,24 +199,13 @@ export function DiceBetControls({
         </div>
       )}
 
-      <button
-        className={`h-12 w-full rounded-lg bg-[var(--color-brand)] text-sm font-bold text-[var(--color-brand-contrast)] transition hover:bg-[var(--color-brand-hover)] disabled:bg-[var(--color-surface-hover)] disabled:text-[var(--color-text-disabled)] ${
-          mode === "auto" ? "mt-2" : "mt-6"
-        }`}
+      <GameBetButton
+        className={mode === "auto" ? "mt-2" : "mt-6"}
         disabled={isBetDisabled}
+        isLoading={isLoading}
+        label={actionLabel}
         onClick={onSubmit}
-        type="button"
-      >
-        <span className="flex items-center justify-center gap-2">
-          {isLoading ? (
-            <span
-              aria-hidden="true"
-              className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-            />
-          ) : null}
-          {actionLabel}
-        </span>
-      </button>
+      />
 
       {helperMessage ? (
         <p className="mt-3 min-h-5 text-center text-xs font-medium text-[var(--color-text-subtle)]">
