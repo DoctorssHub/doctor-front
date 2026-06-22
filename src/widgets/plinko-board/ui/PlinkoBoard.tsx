@@ -71,8 +71,8 @@ export const PlinkoBoard = memo(function PlinkoBoard({
   return (
     <section
       className={[
-        "relative flex min-h-130 flex-1 flex-col overflow-hidden bg-[#0f1720] px-4 py-6 laptop:min-h-131 max-laptop:order-1 max-laptop:min-h-82.5 max-tablet:min-h-72.5 max-tablet:px-2 max-tablet:py-5 max-[340px]:min-h-65",
-        isFullscreen ? "min-h-0 px-6 py-8 max-laptop:px-4" : "",
+        "relative flex min-h-130 flex-1 flex-col overflow-hidden bg-[linear-gradient(180deg,#10151F_0%,#10151F_55%,#3A170D_100%)] px-4 py-6 laptop:min-h-131 max-laptop:order-1 max-laptop:min-h-82.5 max-tablet:min-h-72.5 max-tablet:px-2 max-tablet:py-5 max-[340px]:min-h-65",
+        isFullscreen ? "min-h-[668px] overflow-visible px-6 py-8 max-laptop:px-4" : "",
       ].join(" ")}
     >
       <RecentMultipliers multipliers={recentMultipliers} />
@@ -80,9 +80,7 @@ export const PlinkoBoard = memo(function PlinkoBoard({
       <div
         className={[
           "flex flex-1 items-end justify-center max-laptop:items-center",
-          isFullscreen
-            ? "items-center overflow-hidden max-laptop:items-center"
-            : "",
+          isFullscreen ? "items-center overflow-visible max-laptop:items-center" : "",
         ].join(" ")}
         ref={boardFrameRef}
       >

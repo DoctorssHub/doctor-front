@@ -30,6 +30,7 @@ export function ProvablyFairBar({
     >
       <div className="flex items-center gap-1.5">
         <FairnessIconButton
+          className="max-[1024px]:hidden"
           icon={fullScreenIcon}
           isPressed={isFullscreen}
           label="Fullscreen"
@@ -52,6 +53,7 @@ export function ProvablyFairBar({
 }
 
 type FairnessIconButtonProps = {
+  className?: string;
   icon: StaticImageData;
   isPressed?: boolean;
   label: string;
@@ -59,6 +61,7 @@ type FairnessIconButtonProps = {
 };
 
 function FairnessIconButton({
+  className = "",
   icon,
   isPressed,
   label,
@@ -68,7 +71,7 @@ function FairnessIconButton({
     <button
       aria-label={label}
       aria-pressed={isPressed}
-      className="grid h-10 w-10 place-items-center rounded-[8px] border border-[#3f4a59] bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)] p-3 transition hover:brightness-110"
+      className={`grid h-10 w-10 place-items-center rounded-[8px] border border-[#3f4a59] bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)] p-3 transition hover:brightness-110 ${className}`}
       onClick={onClick}
       type="button"
     >

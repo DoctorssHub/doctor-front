@@ -37,16 +37,18 @@ export function PlinkoScreen() {
       <div
         ref={fullscreenRef}
         className={[
-          "mx-auto bg-[#080c17] shadow-[0_24px_80px_rgb(0_0_0/28%)] transition-[max-width] duration-300 ease-out",
+          "game-fullscreen-root game-page-shell-in mx-auto bg-[#080c17] shadow-[0_24px_80px_rgb(0_0_0/28%)] transition-[max-width] duration-300 ease-out",
           isFullscreen
-            ? "flex h-screen max-w-none flex-col overflow-hidden"
-            : "max-w-240",
+            ? "flex h-screen max-w-none flex-col overflow-x-hidden overflow-y-auto"
+            : "max-w-[1017px]",
         ].join(" ")}
       >
         <section
           className={[
-            "flex flex-col overflow-hidden rounded-t-xl border border-b-0 border-[#111827] bg-[#0c111d] laptop:flex-row max-laptop:min-h-0",
-            isFullscreen ? "min-h-0 flex-1 rounded-none" : "min-h-131",
+            "flex flex-col rounded-t-xl border border-b-0 border-[#111827] bg-[#0c111d] laptop:flex-row max-laptop:min-h-0",
+            isFullscreen
+              ? "min-h-[668px] flex-1 shrink-0 overflow-visible rounded-none"
+              : "min-h-131 overflow-hidden laptop:h-[668px]",
           ].join(" ")}
         >
           <PlinkoSidebar
@@ -66,7 +68,7 @@ export function PlinkoScreen() {
         />
       </div>
       <BetHistoryTable
-        className="mx-auto mt-8 max-w-240"
+        className="game-page-table-in mx-auto mt-8 w-full max-w-[1017px]"
         game="plinko"
         variant="game-live"
       />

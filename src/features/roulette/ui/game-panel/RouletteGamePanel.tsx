@@ -50,7 +50,7 @@ export function RouletteGamePanel({
   return (
     <section
       className={[
-        "relative flex min-w-0 flex-col gap-7 border-b-2 border-r-2 border-[var(--color-surface)] bg-[var(--color-roulette-panel)] px-[10px] pb-[30px] pt-5 max-laptop:order-1 max-laptop:border-0 max-laptop:bg-transparent max-laptop:pb-0 tablet:max-laptop:px-0 max-tablet:gap-5 max-tablet:px-0 max-tablet:pt-0 laptop:w-full laptop:rounded-[0_16px_16px_0]",
+        "relative flex min-w-0 flex-col gap-7 border-b-2 border-r-2 border-[var(--color-surface)] bg-[linear-gradient(180deg,#10151F_0%,#10151F_55%,#3A170D_100%)] px-[10px] pb-[30px] pt-5 max-laptop:order-1 max-laptop:border-0 max-laptop:pb-0 tablet:max-laptop:px-0 max-tablet:gap-5 max-tablet:px-0 max-tablet:pt-0 laptop:w-full laptop:rounded-[0_16px_16px_0]",
         isFullscreen
           ? "justify-start laptop:h-full"
           : "justify-between laptop:h-[668px]",
