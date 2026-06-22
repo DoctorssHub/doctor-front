@@ -47,7 +47,7 @@ export function DiceGamePanel({
         />
       </div>
 
-      <div className="mx-auto grid h-28 w-[602px] max-w-full grid-cols-3 gap-[34px] rounded-lg bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] px-3 py-5 max-[767px]:h-auto max-[767px]:grid-cols-1 max-[767px]:gap-3">
+      <div className="mx-auto grid h-28 w-[602px] max-w-full grid-cols-3 gap-[34px] rounded-lg bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] px-3 py-5 max-mobile:h-[110px] max-mobile:w-full max-mobile:gap-3 mobile:max-tablet:h-[110px] mobile:max-tablet:w-full mobile:max-tablet:gap-3">
         <DiceNumberField
           iconSrc={closeRangeIcon}
           id="dice-multiplier"

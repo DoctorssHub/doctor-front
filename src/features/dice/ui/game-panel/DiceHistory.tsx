@@ -83,7 +83,7 @@ export function DiceHistory({ results }: DiceHistoryProps) {
   return (
     <div
       aria-label="Recent dice results"
-      className="absolute right-7 top-7 z-10 flex flex-wrap justify-end gap-2 max-[1023px]:right-4 max-[1023px]:top-4 max-[767px]:left-4 max-[767px]:justify-start"
+      className="absolute right-7 top-7 z-10 flex flex-wrap justify-end gap-2 max-laptop:right-4 max-laptop:top-4 max-tablet:left-4"
     >
       {visibleResults.map(({ key, result, status }) => (
         <div
