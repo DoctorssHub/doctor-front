@@ -26,8 +26,8 @@ export function DiceScreen() {
               : "laptop:h-[668px] laptop:grid-cols-[352px_665px]"
           }`}
         >
-          <DiceBetControls {...betControlsProps} />
-          <DiceGamePanel {...gamePanelProps} />
+          <DiceBetControls {...betControlsProps} isFullscreen={isFullscreen} />
+          <DiceGamePanel {...gamePanelProps} isFullscreen={isFullscreen} />
         </div>
         <ProvablyFairBar
           game="dice"

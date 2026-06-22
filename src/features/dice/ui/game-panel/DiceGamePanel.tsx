@@ -10,6 +10,7 @@ import { DiceRange } from "./DiceRange";
 type DiceGamePanelProps = {
   above: boolean;
   chance: number;
+  isFullscreen?: boolean;
   isLoading: boolean;
   multiplier: number;
   result: DiceBetResponse | null;
@@ -24,6 +25,7 @@ type DiceGamePanelProps = {
 export function DiceGamePanel({
   above,
   chance,
+  isFullscreen = false,
   isLoading,
   multiplier,
   result,
@@ -35,11 +37,19 @@ export function DiceGamePanel({
   onThresholdChange,
 }: DiceGamePanelProps) {
   return (
-    <section className="relative flex min-w-0 flex-col justify-between overflow-hidden border-b-2 border-r-2 border-[var(--color-surface)] bg-[linear-gradient(180deg,#10151F_0%,#10151F_55%,#3A170D_100%)] px-7 pb-20 pt-8 max-[1023px]:order-1 max-[1023px]:min-h-[500px] max-[1023px]:border-0 max-[1023px]:px-5 max-[767px]:min-h-[540px] max-[767px]:px-4 laptop:h-[668px] laptop:w-full laptop:rounded-[0_16px_16px_0]">
+    <section
+      className={[
+        "relative flex min-w-0 flex-col overflow-hidden border-b-2 border-r-2 border-[var(--color-surface)] bg-[linear-gradient(180deg,#10151F_0%,#10151F_55%,#3A170D_100%)] px-7 pt-8 max-[1023px]:order-1 max-[1023px]:min-h-[500px] max-[1023px]:border-0 max-[1023px]:px-5 max-[767px]:min-h-[540px] max-[767px]:px-4 laptop:w-full laptop:rounded-[0_16px_16px_0]",
+        isFullscreen
+          ? "justify-between pb-7 laptop:h-full"
+          : "justify-between pb-20 laptop:h-[668px]",
+      ].join(" ")}
+    >
       <DiceHistory results={resultHistory} />
 
       <div className="flex flex-1 items-center">
         <DiceRange
+          isFullscreen={isFullscreen}
           isLoading={isLoading}
           result={result}
           threshold={threshold}
@@ -47,8 +57,14 @@ export function DiceGamePanel({
         />
       </div>
 
-      <div className="mx-auto grid h-28 w-[602px] max-w-full grid-cols-3 gap-[34px] rounded-lg bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] px-3 py-5 max-mobile:h-[110px] max-mobile:w-full max-mobile:gap-3 mobile:max-tablet:h-[110px] mobile:max-tablet:w-full mobile:max-tablet:gap-3">
+      <div
+        className={[
+          "mx-auto grid h-28 max-w-full grid-cols-3 gap-[34px] rounded-lg bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] px-3 py-5 max-mobile:h-[110px] max-mobile:w-full max-mobile:gap-3 mobile:max-tablet:h-[110px] mobile:max-tablet:w-full mobile:max-tablet:gap-3",
+          isFullscreen ? "w-full" : "w-[602px]",
+        ].join(" ")}
+      >
         <DiceNumberField
+          className={isFullscreen ? "min-[768px]:w-full" : undefined}
           iconSrc={closeRangeIcon}
           id="dice-multiplier"
           isDisabled={isLoading}
@@ -58,6 +74,7 @@ export function DiceGamePanel({
           onChange={onMultiplierChange}
         />
         <DiceNumberField
+          className={isFullscreen ? "min-[768px]:w-full" : undefined}
           iconAlt={above ? "Switch to roll under" : "Switch to roll over"}
           iconSrc={relloverIcon}
           id="dice-rollover"
@@ -70,6 +87,7 @@ export function DiceGamePanel({
           onIconClick={() => onAboveChange(!above)}
         />
         <DiceNumberField
+          className={isFullscreen ? "min-[768px]:w-full" : undefined}
           iconSrc={percentIcon}
           id="dice-chance"
           isDisabled={isLoading}

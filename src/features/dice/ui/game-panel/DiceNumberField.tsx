@@ -1,6 +1,7 @@
 import Image, { type StaticImageData } from "next/image";
 
 type DiceNumberFieldProps = {
+  className?: string;
   isDisabled?: boolean;
   iconAlt?: string;
   iconSrc?: StaticImageData;
@@ -15,6 +16,7 @@ type DiceNumberFieldProps = {
 };
 
 export function DiceNumberField({
+  className,
   isDisabled = false,
   iconAlt = "",
   iconSrc,
@@ -50,7 +52,14 @@ export function DiceNumberField({
       <span className="mb-2 block text-base font-medium leading-[1.25] text-[#fdfdfd]">
         {label}
       </span>
-      <span className="flex h-11 w-[170px] items-center rounded-lg border border-[#1b1f26] bg-[rgba(43,48,59,0.5)] p-3 max-[767px]:w-full max-mobile:h-9 max-mobile:px-2 mobile:max-tablet:h-9 mobile:max-tablet:px-2">
+      <span
+        className={[
+          "flex h-11 w-[170px] items-center rounded-lg border border-[#1b1f26] bg-[rgba(43,48,59,0.5)] p-3 max-[767px]:w-full max-mobile:h-9 max-mobile:px-2 mobile:max-tablet:h-9 mobile:max-tablet:px-2",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
         <input
           className="min-w-0 flex-1 bg-transparent text-sm font-normal text-white/75 outline-none"
           disabled={isDisabled}

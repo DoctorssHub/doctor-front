@@ -4,6 +4,7 @@ import resultPolygonIcon from "@/assets/games/dice/resultPolygonIcon.svg";
 import type { DiceBetResponse } from "../../api/dice-types";
 
 type DiceRangeProps = {
+  isFullscreen?: boolean;
   isLoading: boolean;
   result: DiceBetResponse | null;
   threshold: number;
@@ -13,6 +14,7 @@ type DiceRangeProps = {
 const tickMarks = [2, 25, 50, 75, 100];
 
 export function DiceRange({
+  isFullscreen = false,
   isLoading,
   result,
   threshold,
@@ -28,8 +30,18 @@ export function DiceRange({
     : "linear-gradient(90deg, rgba(43, 48, 59, 0.4) 0%, rgba(239, 68, 68, 0.4) 54.81%, rgba(43, 48, 59, 0.4) 100%)";
 
   return (
-    <div className="mx-auto w-full max-w-[601px] pt-12 max-[767px]:pt-20">
-      <div className="relative h-12 w-[601px] max-w-full rounded-xl border-[6px] border-[#1b1f26] bg-[#0e121c] px-4 py-2 shadow-[0_18px_50px_rgba(0,0,0,0.2)]">
+    <div
+      className={[
+        "mx-auto w-full pt-12 max-[767px]:pt-20",
+        isFullscreen ? "max-w-none" : "max-w-[601px]",
+      ].join(" ")}
+    >
+      <div
+        className={[
+          "relative h-12 max-w-full rounded-xl border-[6px] border-[#1b1f26] bg-[#0e121c] px-4 py-2 shadow-[0_18px_50px_rgba(0,0,0,0.2)]",
+          isFullscreen ? "w-full" : "w-[601px]",
+        ].join(" ")}
+      >
         {tickMarks.map((tick) => (
           <span
             aria-hidden="true"

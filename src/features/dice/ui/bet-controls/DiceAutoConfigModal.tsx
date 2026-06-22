@@ -58,8 +58,10 @@ export function DiceAutoConfigModal({
     return null;
   }
 
+  const portalTarget = document.fullscreenElement ?? document.body;
+
   return createPortal(
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[#080c17]/70 px-4 backdrop-blur-[2px]">
+    <div className="fixed inset-0 z-100 grid place-items-center bg-[#080c17]/70 px-4 backdrop-blur-[2px]">
       <div className="relative h-[588px] w-[550px] rounded-[24px] bg-[#0a0d19] p-10 shadow-[0_24px_80px_rgb(0_0_0/46%)] max-[620px]:h-auto max-[620px]:w-full max-[420px]:p-5">
         <button
           aria-label="Close auto bet configuration"
@@ -129,7 +131,7 @@ export function DiceAutoConfigModal({
         </div>
       </div>
     </div>,
-    document.body,
+    portalTarget,
   );
 }
 

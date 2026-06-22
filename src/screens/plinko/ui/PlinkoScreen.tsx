@@ -59,17 +59,17 @@ export function PlinkoScreen() {
           />
           <PlinkoBoardPanel config={plinkoConfig} isFullscreen={isFullscreen} />
         </section>
-      <BetHistoryTable
-        className="mx-auto mt-8 max-w-240"
-        game="plinko"
-        variant="game-live"
-      />
         <ProvablyFairBar
           game="plinko"
           isFullscreen={isFullscreen}
           onToggleFullscreen={toggleFullscreen}
         />
       </div>
+      <BetHistoryTable
+        className="mx-auto mt-8 max-w-240"
+        game="plinko"
+        variant="game-live"
+      />
     </main>
   );
 }
