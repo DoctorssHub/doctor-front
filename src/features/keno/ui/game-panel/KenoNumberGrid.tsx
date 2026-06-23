@@ -180,7 +180,7 @@ export function KenoNumberGrid({
 
   return (
     <section
-      className="flex min-w-0 flex-col bg-[#0e1519] px-[43px] pt-11"
+      className="flex min-w-0 flex-col bg-[#0e1519] px-[43px] pt-11 max-[1023px]:order-1 max-[1023px]:items-center max-[1023px]:px-5 max-[1023px]:pt-[84px] max-[1023px]:pb-[84px] max-[767px]:px-4 max-[767px]:pt-10 max-[767px]:pb-10"
       onClickCapture={(event) => {
         if (!hasSettledResults) {
           return;
@@ -190,7 +190,7 @@ export function KenoNumberGrid({
         onResultsReset();
       }}
     >
-      <div className="grid grid-cols-8 gap-1.5">
+      <div className="grid w-fit grid-cols-8 gap-1.5 max-[767px]:gap-[3px]">
         {KENO_NUMBERS.map((number) => {
           const isSelected = selectedNumbers.includes(number);
           const isRevealedResult = revealedResultNumbers.includes(number);
@@ -250,7 +250,7 @@ function getTileClassName({
   isSelected,
 }: TileState) {
   const baseClassName =
-    "relative grid size-[67px] place-items-center overflow-hidden rounded-xl border text-xl font-semibold transition-[transform,border-color,background-color,box-shadow,color] duration-150 ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-highlight)] disabled:cursor-wait disabled:hover:scale-100 disabled:active:scale-100";
+    "relative grid size-[67px] place-items-center overflow-hidden rounded-xl border text-xl max-[767px]:size-[38px] max-[767px]:rounded-lg max-[767px]:text-xs font-semibold transition-[transform,border-color,background-color,box-shadow,color] duration-150 ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-highlight)] disabled:cursor-wait disabled:hover:scale-100 disabled:active:scale-100";
 
   if (isHit) {
     return [
@@ -297,7 +297,7 @@ function KenoMultiplierPanel({
 }: KenoMultiplierPanelProps) {
   if (selectedNumbersCount === 0) {
     return (
-      <div className="mt-8 grid h-[67px] place-items-center rounded-xl bg-[#202731] text-sm font-medium text-white/75">
+      <div className="mt-8 grid h-[67px] w-full max-w-[578px] place-items-center rounded-xl bg-[#202731] text-sm font-medium text-white/75 max-[767px]:mt-5 max-[767px]:h-11 max-[767px]:max-w-[325px] max-[767px]:text-[10px]">
         Select numbers 1-10 to start
       </div>
     );
@@ -305,7 +305,7 @@ function KenoMultiplierPanel({
 
   return (
     <div
-      className="mt-8 grid h-[50px] gap-1"
+      className="mt-8 grid h-[50px] w-full max-w-[578px] gap-1 max-[767px]:mt-5 max-[767px]:h-11 max-[767px]:max-w-[325px] max-[767px]:gap-0.5"
       style={{
         gridTemplateColumns: `repeat(${multipliers.length}, minmax(0, 1fr))`,
       }}
@@ -315,11 +315,11 @@ function KenoMultiplierPanel({
           className="overflow-hidden rounded-[7px] border border-[#2e3a46] bg-[#242b36] text-center shadow-[0_8px_18px_rgb(0_0_0/18%)]"
           key={`${hitCount}-${multiplier}`}
         >
-          <div className="flex h-[25px] items-center justify-center gap-1 bg-[linear-gradient(rgb(10,39,26)_0%,rgb(57,177,125)_100%)] text-[11px] font-semibold text-white shadow-[inset_0_-1px_0_rgb(255_255_255/12%)]">
+          <div className="flex h-[25px] items-center justify-center gap-1 max-[767px]:h-[22px] max-[767px]:gap-0.5 bg-[linear-gradient(rgb(10,39,26)_0%,rgb(57,177,125)_100%)] text-[11px] font-semibold text-white max-[767px]:text-[8px] shadow-[inset_0_-1px_0_rgb(255_255_255/12%)]">
             <KenoSmallGem />
             <span>{hitCount}x</span>
           </div>
-          <div className="grid h-[25px] place-items-center text-[9px] font-semibold text-white">
+          <div className="grid h-[25px] place-items-center text-[9px] max-[767px]:h-[22px] max-[767px]:text-[8px] font-semibold text-white">
             {multiplier.toFixed(2)}x
           </div>
         </div>
@@ -360,7 +360,7 @@ function KenoSmallGem() {
     <Image
       alt=""
       aria-hidden="true"
-      className="drop-shadow-[0_0_8px_rgb(109_243_155/70%)]"
+      className="drop-shadow-[0_0_8px_rgb(109_243_155/70%)] max-[767px]:size-3"
       height={16}
       src="/icon-diamond.svg"
       width={16}
@@ -377,7 +377,7 @@ function KenoDiamond() {
       <Image
         alt=""
         aria-hidden="true"
-        className="drop-shadow-[0_0_18px_rgb(74_222_128/85%)]"
+        className="drop-shadow-[0_0_18px_rgb(74_222_128/85%)] max-[767px]:size-7"
         height={44}
         src="/icon-diamond.svg"
         width={44}

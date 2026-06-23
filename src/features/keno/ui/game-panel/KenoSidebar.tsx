@@ -95,7 +95,7 @@ export function KenoSidebar({
     <GameSidebar>
       <ModeTabs
         buttonClassName="flex h-12 items-center justify-center rounded-lg px-4 text-sm font-medium"
-        className="grid grid-cols-2 gap-3"
+        className="grid grid-cols-2 gap-3 max-[1023px]:order-7 max-[1023px]:mt-6"
         isDisabled={isInteractionLocked}
         mode={mode}
         onModeChange={setMode}
@@ -124,7 +124,7 @@ export function KenoSidebar({
           onAutoBetsInfinityToggle={toggleAutoBetsInfinite}
         />
       ) : null}
-      <div className="mt-8 grid grid-cols-2 gap-2">
+      <div className="mt-8 grid grid-cols-2 gap-2 max-[1023px]:order-2 max-[1023px]:mt-2">
         <button
           className="h-12 rounded-md bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] text-sm font-semibold text-white/70 transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:text-white/30"
           disabled={
@@ -156,7 +156,7 @@ export function KenoSidebar({
         </p>
       ) : null}
       <GameBetButton
-        className="mt-3"
+        className="mt-3 max-[1023px]:order-1 max-[1023px]:mt-0"
         disabled={isBetDisabled}
         isLoading={isBetting && betButtonLabel !== "Stop Autobet"}
         label={betButtonLabel}

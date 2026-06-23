@@ -9,7 +9,7 @@ export function KenoGamePanel() {
   const game = useKenoGame();
 
   return (
-    <div className="relative grid h-[560px] w-[1017px] grid-cols-[352px_665px] overflow-hidden rounded-t-2xl">
+    <div className="relative grid h-[560px] w-[1017px] grid-cols-[352px_665px] overflow-hidden rounded-t-2xl max-[1023px]:flex max-[1023px]:h-auto max-[1023px]:w-full max-[1023px]:flex-col">
       <KenoSidebar {...game} />
       <KenoNumberGrid
         key={game.resultRoundId}
