@@ -8,6 +8,7 @@ type BetAmountFieldProps = {
   gameBalance: number;
   maxBet?: string;
   minBet?: string;
+  showBalance?: boolean;
   onBetAmountBlur: () => void;
   onBetAmountChange: (amount: string) => void;
   onBetAmountControlClick: (control: BetAmountControl) => void;
@@ -37,6 +38,7 @@ export const BetAmountField = memo(function BetAmountField({
   gameBalance,
   maxBet,
   minBet,
+  showBalance = true,
   onBetAmountBlur,
   onBetAmountChange,
   onBetAmountControlClick,
@@ -49,19 +51,21 @@ export const BetAmountField = memo(function BetAmountField({
           htmlFor="bet"
         >
           Bet Amount
-          <div className="flex items-center gap-2 text-sm font-semibold text-white">
-            <Image
-              src="/red-coin.svg"
-              alt=""
-              width={18}
-              height={18}
-              aria-hidden="true"
-            />
-            {gameBalance.toLocaleString("en-US", {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2,
-            })}
-          </div>
+          {showBalance ? (
+            <div className="flex items-center gap-2 text-sm font-semibold text-white">
+              <Image
+                src="/red-coin.svg"
+                alt=""
+                width={18}
+                height={18}
+                aria-hidden="true"
+              />
+              {gameBalance.toLocaleString("en-US", {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2,
+              })}
+            </div>
+          ) : null}
         </label>
       </div>
       <div
