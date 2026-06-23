@@ -20,6 +20,7 @@ type DiceBetControlsProps = {
   isAutoRunning: boolean;
   isAutoStopRequested: boolean;
   isBetDisabled: boolean;
+  isFullscreen?: boolean;
   isLoading: boolean;
   maxBet: string;
   minBet: string;
@@ -50,6 +51,7 @@ export function DiceBetControls({
   isAutoRunning,
   isAutoStopRequested,
   isBetDisabled,
+  isFullscreen = false,
   isLoading,
   maxBet,
   minBet,
@@ -78,7 +80,9 @@ export function DiceBetControls({
       : "Bet";
 
   return (
-    <GameSidebar>
+    <GameSidebar
+      className={isFullscreen ? "min-[1024px]:h-full" : undefined}
+    >
       <ModeTabs
         activeButtonClassName="bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]"
         buttonClassName="h-10 rounded-lg transition duration-300 disabled:cursor-not-allowed disabled:opacity-50"
