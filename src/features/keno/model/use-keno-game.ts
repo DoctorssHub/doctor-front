@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
@@ -15,35 +15,35 @@ import {
 import { getKenoConfig, placeKenoBet } from "../api/keno-api";
 import type { KenoBetRequest, KenoBetResponse } from "../api/keno-types";
 import { getKenoGameBalance } from "../lib/keno-balance";
+import { useKenoAutoBet, type KenoBetRound } from "./use-keno-auto-bet";
 import { useKenoBettingStore } from "./keno-betting-store";
-import { useKenoControlsStore, type KenoRisk } from "./keno-controls-store";
-
-const MAX_AUTO_BETS = 100;
-const AUTO_BET_DELAY_MS = 500;
-
-type KenoBetRound = {
-  betSize: string;
-  risk: KenoRisk;
-  selectedNumbers: number[];
-};
+import { useKenoControlsStore } from "./keno-controls-store";
+import { useKenoResultModal } from "./use-keno-result-modal";
+import { useKenoRoundState } from "./use-keno-round-state";
 
 export function useKenoGame() {
   const queryClient = useQueryClient();
   const revealCompleteResolverRef = useRef<(() => void) | null>(null);
-  const shouldStopAutoBetRef = useRef(false);
-  const [lastBetResult, setLastBetResult] = useState<KenoBetResponse | null>(
-    null,
-  );
   const [localErrorMessage, setLocalErrorMessage] = useState<string | null>(
     null,
   );
-  const [resultNumbers, setResultNumbers] = useState<number[]>([]);
-  const [roundSelectedNumbers, setRoundSelectedNumbers] = useState<number[]>(
-    [],
-  );
-  const [resultRoundId, setResultRoundId] = useState(0);
-  const [isResultModalVisible, setIsResultModalVisible] = useState(false);
-  const [isRevealingResults, setIsRevealingResults] = useState(false);
+  const {
+    beginRound,
+    completeReveal,
+    isRevealingResults,
+    lastBetResult,
+    resetRound,
+    resultHitCount,
+    resultNumbers,
+    resultRoundId,
+    roundSelectedNumbers,
+    setRoundResult,
+  } = useKenoRoundState();
+  const {
+    hideResultModal,
+    isResultModalVisible,
+    showResultModal,
+  } = useKenoResultModal();
   const {
     autoBetsAmount,
     betAmount,
@@ -63,19 +63,10 @@ export function useKenoGame() {
       setBetAmount: state.setBetAmount,
     })),
   );
-  const {
-    isAutoBetStopRequested,
-    isAutoBetting,
-    requestAutoBetStop,
-    setAutoBetStopRequested,
-    setAutoBetting,
-  } = useKenoBettingStore(
+  const { isAutoBetStopRequested, isAutoBetting } = useKenoBettingStore(
     useShallow((state) => ({
       isAutoBetStopRequested: state.isAutoBetStopRequested,
       isAutoBetting: state.isAutoBetting,
-      requestAutoBetStop: state.requestAutoBetStop,
-      setAutoBetStopRequested: state.setAutoBetStopRequested,
-      setAutoBetting: state.setAutoBetting,
     })),
   );
   const configQuery = useQuery({
@@ -90,9 +81,7 @@ export function useKenoGame() {
     mutationFn: async (payload: KenoBetRequest) =>
       (await placeKenoBet(payload)).data,
     onSuccess: async (data: KenoBetResponse) => {
-      setLastBetResult(data);
-      setResultNumbers(data.results.map((number) => number + 1));
-      setIsRevealingResults(true);
+      setRoundResult(data);
       await queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
@@ -109,9 +98,6 @@ export function useKenoGame() {
   const isInteractionLocked =
     betMutation.isPending || isRevealingResults || isAutoBetting;
   const isGameUnavailable = Boolean(configQuery.error || meQuery.error);
-  const resultHitCount = roundSelectedNumbers.filter((number) =>
-    resultNumbers.includes(number),
-  ).length;
   const isBetDisabled = isAutoBetting
     ? isAutoBetStopRequested
     : isBetAmountInvalid ||
@@ -143,12 +129,8 @@ export function useKenoGame() {
 
   const runKenoBet = useCallback(
     async ({ betSize, risk: roundRisk, selectedNumbers }: KenoBetRound) => {
-      setIsResultModalVisible(false);
-      setLastBetResult(null);
-      setResultNumbers([]);
-      setRoundSelectedNumbers([...selectedNumbers]);
-      setResultRoundId((currentRoundId) => currentRoundId + 1);
-      setIsRevealingResults(false);
+      hideResultModal();
+      beginRound(selectedNumbers);
 
       await betMutation.mutateAsync({
         betSize,
@@ -156,13 +138,23 @@ export function useKenoGame() {
         selected: selectedNumbers.map((number) => number - 1),
       });
     },
-    [betMutation],
+    [beginRound, betMutation, hideResultModal],
   );
+
+  const { requestStop, runAutoBet } = useKenoAutoBet({
+    autoBetsAmount,
+    gameBalance,
+    isAutoBetsInfinite,
+    parsedBetAmount: parsedBetAmount ?? 0,
+    runKenoBet,
+    setLocalErrorMessage,
+    showFinalResultModal: showResultModal,
+    waitForRevealComplete,
+  });
 
   const handleSubmit = useCallback(async () => {
     if (isAutoBetting) {
-      shouldStopAutoBetRef.current = true;
-      requestAutoBetStop();
+      requestStop();
       return;
     }
 
@@ -180,9 +172,8 @@ export function useKenoGame() {
       return;
     }
 
-    const betSize = formatBetAmount(parsedBetAmount);
     const round: KenoBetRound = {
-      betSize,
+      betSize: formatBetAmount(parsedBetAmount),
       risk,
       selectedNumbers: [...selectedNumbers],
     };
@@ -197,68 +188,9 @@ export function useKenoGame() {
       return;
     }
 
-    const autoBetsCount = Number(autoBetsAmount);
-
-    if (
-      !isAutoBetsInfinite &&
-      (!Number.isInteger(autoBetsCount) || autoBetsCount < 1)
-    ) {
-      setLocalErrorMessage("Number of Bets must be at least 1.");
-      return;
-    }
-
-    if (!isAutoBetsInfinite && autoBetsCount > MAX_AUTO_BETS) {
-      setLocalErrorMessage(
-        `Number of Bets cannot be greater than ${MAX_AUTO_BETS}.`,
-      );
-      return;
-    }
-
-    if (!isAutoBetsInfinite && parsedBetAmount * autoBetsCount > gameBalance) {
-      setLocalErrorMessage(`Not enough balance for ${autoBetsCount} auto bets.`);
-      return;
-    }
-
-    shouldStopAutoBetRef.current = false;
-    setAutoBetting(true);
-    setAutoBetStopRequested(false);
-
-    try {
-      let index = 0;
-
-      while (isAutoBetsInfinite || index < autoBetsCount) {
-        if (shouldStopAutoBetRef.current) {
-          break;
-        }
-
-        await runKenoBet(round);
-        await waitForRevealComplete();
-
-        if (shouldStopAutoBetRef.current) {
-          break;
-        }
-
-        index += 1;
-
-        if (isAutoBetsInfinite || index < autoBetsCount) {
-          await delay(AUTO_BET_DELAY_MS);
-        }
-      }
-    } catch {
-      setLocalErrorMessage(
-        "Autobet stopped. Balance may be too low or the bet was rejected.",
-      );
-    } finally {
-      shouldStopAutoBetRef.current = false;
-      setAutoBetting(false);
-      setAutoBetStopRequested(false);
-      setIsResultModalVisible(true);
-    }
+    await runAutoBet(round);
   }, [
-    autoBetsAmount,
     betMutation.isPending,
-    gameBalance,
-    isAutoBetsInfinite,
     isAutoBetting,
     isBetAmountInvalid,
     isGameUnavailable,
@@ -266,58 +198,28 @@ export function useKenoGame() {
     isManualMode,
     isRevealingResults,
     parsedBetAmount,
-    requestAutoBetStop,
+    requestStop,
     risk,
+    runAutoBet,
     runKenoBet,
     selectedNumbers,
-    setAutoBetStopRequested,
-    setAutoBetting,
-    waitForRevealComplete,
   ]);
 
   const handleRevealComplete = useCallback(() => {
-    setIsRevealingResults(false);
+    completeReveal();
 
     if (!useKenoBettingStore.getState().isAutoBetting) {
-      setIsResultModalVisible(true);
+      showResultModal();
     }
 
     revealCompleteResolverRef.current?.();
     revealCompleteResolverRef.current = null;
-  }, []);
-
-  const handleResultModalClose = useCallback(() => {
-    setIsResultModalVisible(false);
-  }, []);
-
-  useEffect(() => {
-    if (!isResultModalVisible) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setIsResultModalVisible(false);
-    }, 2000);
-
-    function dismissResultModal() {
-      setIsResultModalVisible(false);
-    }
-
-    document.addEventListener("pointerdown", dismissResultModal);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-      document.removeEventListener("pointerdown", dismissResultModal);
-    };
-  }, [isResultModalVisible]);
+  }, [completeReveal, showResultModal]);
 
   const handleResultsReset = useCallback(() => {
-    setIsResultModalVisible(false);
-    setLastBetResult(null);
-    setResultNumbers([]);
-    setRoundSelectedNumbers([]);
-    setResultRoundId((currentRoundId) => currentRoundId + 1);
-  }, []);
+    hideResultModal();
+    resetRound();
+  }, [hideResultModal, resetRound]);
 
   return {
     betAmount,
@@ -333,7 +235,7 @@ export function useKenoGame() {
     onBetAmountBlur: () => setBetAmount(formatBetAmountInput(betAmount)),
     onBetAmountChange: setBetAmount,
     onBetAmountControlClick: handleBetAmountControlClick,
-    onResultModalClose: handleResultModalClose,
+    onResultModalClose: hideResultModal,
     onResultsReset: handleResultsReset,
     onRevealComplete: handleRevealComplete,
     onSubmit: () => {
@@ -390,10 +292,4 @@ function getKenoErrorMessage(error: unknown) {
   }
 
   return "Unable to complete the request";
-}
-
-function delay(duration: number) {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, duration);
-  });
 }
