@@ -2,8 +2,8 @@
 
 import { useKenoGame } from "../../model/use-keno-game";
 import { KenoResultModal } from "../result-modal";
-import { KenoNumberGrid } from "./KenoNumberGrid";
-import { KenoSidebar } from "./KenoSidebar";
+import { KenoNumberGrid } from "./number-grid";
+import { KenoSidebar } from "./sidebar";
 
 export function KenoGamePanel() {
   const game = useKenoGame();

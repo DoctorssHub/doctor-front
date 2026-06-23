@@ -1,6 +1,5 @@
 "use client";
 
-import { useShallow } from "zustand/react/shallow";
 import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
 import {
   AutoBetControls,
@@ -10,11 +9,9 @@ import {
   ModeTabs,
   RiskSelector,
 } from "@/widgets/game-sidebar/ui";
-import { KENO_MAX_SELECTION } from "../../model/keno-constants";
-import {
-  type KenoRisk,
-  useKenoControlsStore,
-} from "../../model/keno-controls-store";
+import { type KenoRisk } from "../../../model/keno-controls-store";
+import { KenoActionButtons } from "./KenoActionButtons";
+import { useKenoSidebarControls } from "./useKenoSidebarControls";
 
 const kenoRiskOptions: Array<{
   label: string;
@@ -59,7 +56,7 @@ export function KenoSidebar({
   const {
     autoBetsAmount,
     autoPickNumbers,
-    clearNumbers,
+    handleClearTable,
     isAutoBetsInfinite,
     isAutoPicking,
     mode,
@@ -69,27 +66,7 @@ export function KenoSidebar({
     setMode,
     setRisk,
     toggleAutoBetsInfinite,
-  } = useKenoControlsStore(
-    useShallow((state) => ({
-      autoBetsAmount: state.autoBetsAmount,
-      autoPickNumbers: state.autoPickNumbers,
-      clearNumbers: state.clearNumbers,
-      isAutoBetsInfinite: state.isAutoBetsInfinite,
-      isAutoPicking: state.isAutoPicking,
-      mode: state.mode,
-      risk: state.risk,
-      selectedNumbersCount: state.selectedNumbers.length,
-      setAutoBetsAmount: state.setAutoBetsAmount,
-      setMode: state.setMode,
-      setRisk: state.setRisk,
-      toggleAutoBetsInfinite: state.toggleAutoBetsInfinite,
-    })),
-  );
-
-  function handleClearTable() {
-    clearNumbers();
-    onResultsReset();
-  }
+  } = useKenoSidebarControls(onResultsReset);
 
   return (
     <GameSidebar>
@@ -124,32 +101,15 @@ export function KenoSidebar({
           onAutoBetsInfinityToggle={toggleAutoBetsInfinite}
         />
       ) : null}
-      <div className="mt-8 grid grid-cols-2 gap-2 max-[1023px]:order-2 max-[1023px]:mt-2">
-        <button
-          className="h-12 rounded-md bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] text-sm font-semibold text-white/70 transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:text-white/30"
-          disabled={
-            isAutoPicking || isInteractionLocked || selectedNumbersCount === 0
-          }
-          onClick={handleClearTable}
-          type="button"
-        >
-          Clear Table
-        </button>
-        <button
-          className="h-12 rounded-md bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] text-sm font-semibold text-white transition-transform active:scale-[0.98] disabled:cursor-wait disabled:text-white/40"
-          disabled={
-            isAutoPicking ||
-            isInteractionLocked ||
-            selectedNumbersCount >= KENO_MAX_SELECTION
-          }
-          onClick={() => {
-            void autoPickNumbers();
-          }}
-          type="button"
-        >
-          Auto Pick
-        </button>
-      </div>
+      <KenoActionButtons
+        isAutoPicking={isAutoPicking}
+        isInteractionLocked={isInteractionLocked}
+        onAutoPick={() => {
+          void autoPickNumbers();
+        }}
+        onClearTable={handleClearTable}
+        selectedNumbersCount={selectedNumbersCount}
+      />
       {errorMessage ? (
         <p className="mt-2 text-xs font-medium text-red-400" role="alert">
           {errorMessage}
