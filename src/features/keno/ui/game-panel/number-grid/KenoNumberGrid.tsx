@@ -62,7 +62,10 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
 
   return (
     <section
-      className="flex min-w-0 flex-col bg-[#0e1519] px-[43px] pt-11 max-[1023px]:order-1 max-[1023px]:items-center max-[1023px]:px-5 max-[1023px]:pt-[84px] max-[1023px]:pb-[84px] max-[767px]:px-4 max-[767px]:pt-10 max-[767px]:pb-10"
+      className={[
+        "flex min-w-0 flex-col bg-[#0e1519] px-[43px] pt-11 max-[1023px]:order-1 max-[1023px]:items-center max-[1023px]:px-5 max-[1023px]:pt-[84px] max-[1023px]:pb-[84px] max-[767px]:px-4 max-[767px]:pt-10 max-[767px]:pb-10",
+        isAutoPicking ? "pointer-events-none" : "",
+      ].join(" ")}
       onClickCapture={(event) => {
         if (!hasSettledResults) {
           return;
@@ -83,7 +86,7 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
 
           return (
             <KenoTile
-              disabled={isAutoPicking || isInteractionLocked}
+              disabled={isInteractionLocked}
               key={number}
               number={number}
               onSelect={toggleNumber}

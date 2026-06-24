@@ -20,6 +20,8 @@ type KenoAutoBetConfig = {
 
 type UseKenoAutoBetParams = {
   gameBalance: number;
+  maxBet: number;
+  minBet: number;
   runKenoBet: (round: KenoBetRound) => Promise<void>;
   setLocalErrorMessage: (message: string | null) => void;
   waitForRevealComplete: () => Promise<void>;
@@ -27,6 +29,8 @@ type UseKenoAutoBetParams = {
 
 export function useKenoAutoBet({
   gameBalance,
+  maxBet,
+  minBet,
   runKenoBet,
   setLocalErrorMessage,
   waitForRevealComplete,
@@ -45,6 +49,8 @@ export function useKenoAutoBet({
         autoBetsAmount,
         gameBalance,
         isAutoBetsInfinite,
+        maxBet,
+        minBet,
         parsedBetAmount,
       });
 
@@ -92,7 +98,14 @@ export function useKenoAutoBet({
         setAutoBetStopRequested(false);
       }
     },
-    [gameBalance, runKenoBet, setLocalErrorMessage, waitForRevealComplete],
+    [
+      gameBalance,
+      maxBet,
+      minBet,
+      runKenoBet,
+      setLocalErrorMessage,
+      waitForRevealComplete,
+    ],
   );
 
   return {

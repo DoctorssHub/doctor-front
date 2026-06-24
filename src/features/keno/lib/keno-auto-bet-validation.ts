@@ -4,6 +4,8 @@ type ValidateKenoAutoBetParams = {
   autoBetsAmount: string;
   gameBalance: number;
   isAutoBetsInfinite: boolean;
+  maxBet: number;
+  minBet: number;
   parsedBetAmount: number;
 };
 
@@ -11,6 +13,8 @@ export function validateKenoAutoBet({
   autoBetsAmount,
   gameBalance,
   isAutoBetsInfinite,
+  maxBet,
+  minBet,
   parsedBetAmount,
 }: ValidateKenoAutoBetParams) {
   const autoBetsCount = Number(autoBetsAmount);
@@ -24,6 +28,14 @@ export function validateKenoAutoBet({
 
   if (!isAutoBetsInfinite && autoBetsCount > KENO_MAX_AUTO_BETS) {
     return `Number of Bets cannot be greater than ${KENO_MAX_AUTO_BETS}.`;
+  }
+
+  if (parsedBetAmount < minBet) {
+    return `Minimum bet is ${minBet.toFixed(2)}`;
+  }
+
+  if (parsedBetAmount > maxBet) {
+    return `Maximum bet is ${maxBet.toFixed(2)}`;
   }
 
   if (!isAutoBetsInfinite && parsedBetAmount * autoBetsCount > gameBalance) {

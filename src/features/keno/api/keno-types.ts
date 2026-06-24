@@ -14,4 +14,7 @@ export type KenoBetResponse = {
   multiplier: number;
   results: number[];
 };
-export type KenoConfigResponse = unknown;
+export type KenoConfigResponse = {
+  minBet: number;
+  maxBet: number;
+};

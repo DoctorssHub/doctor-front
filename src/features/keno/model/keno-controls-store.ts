@@ -104,7 +104,7 @@ export const useKenoControlsStore = create<KenoControlsStore>((set, get) => ({
   },
   toggleNumber: (number) => {
     set((state) => {
-      if (!KENO_NUMBERS.includes(number)) {
+      if (state.isAutoPicking || !KENO_NUMBERS.includes(number)) {
         return state;
       }
 

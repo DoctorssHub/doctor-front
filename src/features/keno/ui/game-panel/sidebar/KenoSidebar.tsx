@@ -40,6 +40,8 @@ type KenoSidebarProps = {
   isGameUnavailable: boolean;
   isInteractionLocked: boolean;
   isLoadingGameData: boolean;
+  maxBet: number;
+  minBet: number;
   isRevealingResults: boolean;
   onResultsReset: () => void;
   onSubmit: () => void;
@@ -54,6 +56,8 @@ export const KenoSidebar = memo(function KenoSidebar({
   isGameUnavailable,
   isInteractionLocked,
   isLoadingGameData,
+  maxBet,
+  minBet,
   isRevealingResults,
   onResultsReset,
   onSubmit,
@@ -72,8 +76,20 @@ export const KenoSidebar = memo(function KenoSidebar({
     toggleAutoBetsInfinite,
   } = useKenoSidebarControls();
   const parsedBetAmount = readBetAmount(betAmount);
+  const maxBetAmount = Math.min(maxBet, gameBalance);
   const isBetAmountInvalid =
-    parsedBetAmount === null || parsedBetAmount > gameBalance;
+    parsedBetAmount === null ||
+    parsedBetAmount < minBet ||
+    parsedBetAmount > maxBetAmount;
+  const amountErrorMessage =
+    parsedBetAmount !== null && parsedBetAmount < minBet
+      ? `Minimum bet is ${minBet.toFixed(2)}`
+      : parsedBetAmount !== null && parsedBetAmount > maxBet
+        ? `Maximum bet is ${maxBet.toFixed(2)}`
+        : parsedBetAmount !== null && parsedBetAmount > gameBalance
+          ? "Not enough coins"
+          : null;
+  const sidebarErrorMessage = amountErrorMessage ?? errorMessage;
   const isBetDisabled = isAutoBetting
     ? isAutoBetStopRequested
     : isBetAmountInvalid ||
@@ -96,10 +112,12 @@ export const KenoSidebar = memo(function KenoSidebar({
       setBetAmount((amount) =>
         getNextBetAmount(amount, control, {
           availableBalance: gameBalance,
+          maxBet: String(maxBet),
+          minBet: String(minBet),
         }),
       );
     },
-    [gameBalance, setBetAmount],
+    [gameBalance, maxBet, minBet, setBetAmount],
   );
 
   return (
@@ -115,6 +133,8 @@ export const KenoSidebar = memo(function KenoSidebar({
         betAmount={betAmount}
         gameBalance={gameBalance}
         isDisabled={isInteractionLocked}
+        maxBet={String(maxBet)}
+        minBet={String(minBet)}
         showBalance={false}
         onBetAmountBlur={handleBetAmountBlur}
         onBetAmountChange={setBetAmount}
@@ -139,9 +159,9 @@ export const KenoSidebar = memo(function KenoSidebar({
         isInteractionLocked={isInteractionLocked}
         onResultsReset={onResultsReset}
       />
-      {errorMessage ? (
+      {sidebarErrorMessage ? (
         <p className="mt-2 text-xs font-medium text-red-400" role="alert">
-          {errorMessage}
+          {sidebarErrorMessage}
         </p>
       ) : null}
       <GameBetButton
