@@ -1,6 +1,7 @@
 import { memo } from "react";
 import Image from "next/image";
 import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
+import redCoinIcon from "@/assets/shared/red-coin.svg";
 
 type BetAmountFieldProps = {
   betAmount: string;
@@ -54,7 +55,7 @@ export const BetAmountField = memo(function BetAmountField({
           {showBalance ? (
             <div className="flex items-center gap-2 text-sm font-semibold text-white">
               <Image
-                src="/red-coin.svg"
+                src={redCoinIcon}
                 alt=""
                 width={18}
                 height={18}
@@ -74,7 +75,7 @@ export const BetAmountField = memo(function BetAmountField({
         }`}
       >
         <Image
-          src="/red-coin.svg"
+          src={redCoinIcon}
           alt=""
           width={16}
           height={16}

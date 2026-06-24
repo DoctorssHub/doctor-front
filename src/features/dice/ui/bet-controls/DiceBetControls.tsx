@@ -8,6 +8,7 @@ import { ModeTabs } from "@/widgets/game-sidebar/ui/ModeTabs";
 import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
 import type { DiceAutoConfig, DiceMode } from "../../model/use-dice-game";
 import { DiceAutoConfigModal } from "./DiceAutoConfigModal";
+import redCoinIcon from "@/assets/shared/red-coin.svg";
 
 type DiceBetControlsProps = {
   autoBetCount: string;
@@ -181,7 +182,7 @@ export function DiceBetControls({
           </label>
           <div className="flex h-10 items-center rounded-md border border-[#1B1F26] bg-[#1B1F2640] px-3">
             <Image
-              src="/red-coin.svg"
+              src={redCoinIcon}
               alt=""
               width={16}
               height={16}
@@ -238,7 +239,7 @@ function AutoSummaryCard({ coin = false, label, value }: AutoSummaryCardProps) {
       <div className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-[#fdfdfd]">
         {coin ? (
           <Image
-            src="/red-coin.svg"
+            src={redCoinIcon}
             alt=""
             width={14}
             height={14}

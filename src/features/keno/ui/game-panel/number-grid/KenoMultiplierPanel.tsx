@@ -1,4 +1,5 @@
 import Image from "next/image";
+import kenoDiamondIcon from "@/assets/games/keno/diamond.svg";
 
 type KenoMultiplierPanelProps = {
   multipliers: number[];
@@ -35,7 +36,7 @@ export function KenoMultiplierPanel({
               aria-hidden="true"
               className="drop-shadow-[0_0_8px_rgb(109_243_155/70%)] max-[767px]:size-3"
               height={16}
-              src="/icon-diamond.svg"
+              src={kenoDiamondIcon}
               width={16}
             />
             <span>{hitCount}x</span>

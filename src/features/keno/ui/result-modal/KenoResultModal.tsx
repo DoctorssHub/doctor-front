@@ -3,6 +3,7 @@ import coinIcon from "@/assets/BetCointIcon.svg";
 import gobletIcon from "@/assets/games/roulette/whiteGoblet.svg";
 import type { KenoBetResponse } from "../../api/keno-types";
 import { formatKenoAmount } from "../../lib/keno-format";
+import kenoDiamondIcon from "@/assets/games/keno/diamond.svg";
 
 type KenoResultModalProps = {
   hitCount: number;
@@ -46,7 +47,7 @@ export function KenoResultModal({
               aria-hidden="true"
               className="drop-shadow-[0_0_8px_rgb(109_243_155/70%)]"
               height={24}
-              src="/icon-diamond.svg"
+              src={kenoDiamondIcon}
               width={24}
             />
             <span>{hitCount}x</span>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { formatBetAmount } from "@/entities/bet/lib/formatters";
+import redCoinIcon from "@/assets/shared/red-coin.svg";
 
 type BetHistoryAmountProps = {
   amount: string;
@@ -9,7 +10,7 @@ export function BetHistoryAmount({ amount }: BetHistoryAmountProps) {
   return (
     <span className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-(--color-text-primary) max-mobile:gap-1.5 max-mobile:text-xs">
       <Image
-        src="/red-coin.svg"
+        src={redCoinIcon}
         alt=""
         width={16}
         height={16}

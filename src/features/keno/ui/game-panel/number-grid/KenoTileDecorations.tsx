@@ -1,4 +1,5 @@
 import Image from "next/image";
+import kenoDiamondIcon from "@/assets/games/keno/diamond.svg";
 
 export function KenoHitPulseBorder() {
   return (
@@ -39,7 +40,7 @@ export function KenoDiamond() {
         aria-hidden="true"
         className="drop-shadow-[0_0_18px_rgb(74_222_128/85%)] max-[767px]:size-7"
         height={44}
-        src="/icon-diamond.svg"
+        src={kenoDiamondIcon}
         width={44}
       />
     </span>

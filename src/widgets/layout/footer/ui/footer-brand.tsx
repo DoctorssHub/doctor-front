@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import mcqueenLogo from "@/assets/brand/mcqueen-logo.png";
 
 export function FooterBrand() {
   return (
@@ -14,7 +15,7 @@ export function FooterBrand() {
           className="size-24 object-contain"
           width={96}
           height={96}
-          src="/mcqueen-logo.png"
+          src={mcqueenLogo}
         />
       </Link>
       <div className="flex items-center gap-2 text-(--color-text-muted)">

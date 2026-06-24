@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { useMutation } from "@tanstack/react-query";
+import mcqueenLogo from "@/assets/brand/mcqueen-logo.png";
 import { getCurrentUser, verifyEmail } from "../api/auth-api";
 import { parseAuthError } from "../lib/parse-auth-error";
 import {
@@ -15,7 +16,6 @@ import {
   readUsername,
   type UserBalance,
 } from "../lib/read-auth-response";
-
 const CODE_LENGTH = 6;
 
 type VerifyEmailFormProps = {
@@ -126,7 +126,7 @@ export function VerifyEmailForm({
     <form className="w-full" onSubmit={handleSubmit}>
       <div className="flex justify-center">
         <Image
-          src="/mcqueen-logo.png"
+          src={mcqueenLogo}
           alt="Logo"
           width={190}
           height={90}
