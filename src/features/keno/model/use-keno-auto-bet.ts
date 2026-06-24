@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
-import { validateKenoAutoBet } from "./keno-auto-bet-validation";
+import { delay } from "../lib/keno-delay";
+import { validateKenoAutoBet } from "../lib/keno-auto-bet-validation";
 import { useKenoBettingStore } from "./keno-betting-store";
 import type { KenoRisk } from "./keno-controls-store";
 
@@ -109,10 +110,4 @@ export function useKenoAutoBet({
     requestStop,
     runAutoBet,
   };
-}
-
-function delay(duration: number) {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, duration);
-  });
 }

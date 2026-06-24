@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import { useCallback, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
@@ -14,7 +13,9 @@ import {
 } from "@/widgets/game-sidebar/lib/bet-amount-controls";
 import { getKenoConfig, placeKenoBet } from "../api/keno-api";
 import type { KenoBetRequest, KenoBetResponse } from "../api/keno-types";
+import { getKenoBetButtonLabel } from "../lib/keno-bet-label";
 import { getKenoGameBalance } from "../lib/keno-balance";
+import { getKenoErrorMessage } from "../lib/keno-error-message";
 import { useKenoAutoBet, type KenoBetRound } from "./use-keno-auto-bet";
 import { useKenoBettingStore } from "./keno-betting-store";
 import { useKenoControlsStore } from "./keno-controls-store";
@@ -246,50 +247,4 @@ export function useKenoGame() {
     resultRoundId,
     roundSelectedNumbers,
   };
-}
-
-function getKenoBetButtonLabel({
-  isAutoBetStopRequested,
-  isAutoBetting,
-  isAutoMode,
-  isBetting,
-}: {
-  isAutoBetStopRequested: boolean;
-  isAutoBetting: boolean;
-  isAutoMode: boolean;
-  isBetting: boolean;
-}) {
-  if (isAutoBetting) {
-    return isAutoBetStopRequested ? "Stopping..." : "Stop Autobet";
-  }
-
-  if (isAutoMode) {
-    return "Start Autobet";
-  }
-
-  if (isBetting) {
-    return "Betting...";
-  }
-
-  return "Bet";
-}
-
-function getKenoErrorMessage(error: unknown) {
-  if (!error) {
-    return null;
-  }
-
-  if (axios.isAxiosError(error)) {
-    const data = error.response?.data;
-
-    if (data && typeof data === "object" && "message" in data) {
-      const message = data.message;
-
-      if (typeof message === "string" && message.trim()) {
-        return message;
-      }
-    }
-  }
-
-  return "Unable to complete the request";
 }

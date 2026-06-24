@@ -2,6 +2,7 @@ import Image from "next/image";
 import coinIcon from "@/assets/BetCointIcon.svg";
 import gobletIcon from "@/assets/games/roulette/whiteGoblet.svg";
 import type { KenoBetResponse } from "../../api/keno-types";
+import { formatKenoAmount } from "../../lib/keno-format";
 
 type KenoResultModalProps = {
   hitCount: number;
@@ -54,10 +55,4 @@ export function KenoResultModal({
       </div>
     </button>
   );
-}
-
-function formatKenoAmount(amount: string) {
-  const parsedAmount = Number(amount);
-
-  return Number.isFinite(parsedAmount) ? parsedAmount.toFixed(2) : amount;
 }

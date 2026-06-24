@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import type { GameMode } from "@/entities/game/model/types";
+import { delay } from "../lib/keno-delay";
+import { pickRandomKenoNumbers } from "../lib/keno-random-selection";
 import { KENO_MAX_SELECTION, KENO_NUMBERS } from "./keno-constants";
 
 const AUTO_PICK_DELAY_MS = 100;
@@ -31,28 +33,6 @@ type KenoControlsStore = typeof initialKenoControlsState & {
   toggleNumber: (number: number) => void;
 };
 
-function delay(duration: number) {
-  return new Promise<void>((resolve) => {
-    globalThis.setTimeout(resolve, duration);
-  });
-}
-
-function pickRandomNumbers(excludedNumbers: number[], amount: number) {
-  const excluded = new Set(excludedNumbers);
-  const availableNumbers = KENO_NUMBERS.filter(
-    (number) => !excluded.has(number),
-  );
-
-  for (let index = availableNumbers.length - 1; index > 0; index -= 1) {
-    const randomIndex = Math.floor(Math.random() * (index + 1));
-    [availableNumbers[index], availableNumbers[randomIndex]] = [
-      availableNumbers[randomIndex],
-      availableNumbers[index],
-    ];
-  }
-
-  return availableNumbers.slice(0, amount);
-}
 
 export const useKenoControlsStore = create<KenoControlsStore>((set, get) => ({
   ...initialKenoControlsState,
@@ -65,7 +45,7 @@ export const useKenoControlsStore = create<KenoControlsStore>((set, get) => ({
       return;
     }
 
-    const numbersToSelect = pickRandomNumbers(
+    const numbersToSelect = pickRandomKenoNumbers(
       selectedNumbers,
       remainingSelectionCount,
     );
