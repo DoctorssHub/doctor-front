@@ -34,7 +34,7 @@ export const navItems: NavItem[] = [
         type: "link",
       },
       {
-        href: "#",
+        href: "/all-games/keno",
         icon: kenoIcon,
         title: "Keno",
         type: "link",

@@ -1,5 +1,6 @@
 import { memo } from "react";
 import Image, { type ImageProps } from "next/image";
+import infinityIcon from "@/assets/shared/infinity-icon.svg";
 
 type AutoBetControlsProps = {
   autoBetsAmount: string;
@@ -27,7 +28,7 @@ export const AutoBetControls = memo(function AutoBetControls({
   className = "mt-6 block text-sm font-semibold text-white max-[1023px]:order-6 max-[1023px]:mt-5",
   fieldClassName,
   id = "auto-bets",
-  infinityIconSrc = "/infinity-icon.svg",
+  infinityIconSrc = infinityIcon,
   inputClassName,
   inputMode = "numeric",
   inputPattern,

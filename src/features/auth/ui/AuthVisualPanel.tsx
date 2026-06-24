@@ -1,4 +1,9 @@
 import Image from "next/image";
+import gasStationImage from "@/assets/auth/gas-station.png";
+import racingFlagImage from "@/assets/auth/racing-flag.png";
+import wheelImage from "@/assets/auth/wheel.png";
+import lightningMcqueenImage from "@/assets/brand/lightning-mcqueen.png";
+import mcqueenLogo from "@/assets/brand/mcqueen-logo.png";
 
 export function AuthVisualPanel() {
   return (
@@ -6,7 +11,7 @@ export function AuthVisualPanel() {
       <div className="absolute inset-0 bg-(--gradient-auth-visual)" />
       <div className="absolute left-1/2 top-8 z-10 -translate-x-1/2">
         <Image
-          src="/mcqueen-logo.png"
+          src={mcqueenLogo}
           alt="McQueen logo"
           width={190}
           height={90}
@@ -16,7 +21,7 @@ export function AuthVisualPanel() {
       </div>
       <div className="absolute bottom-0 left-0 right-0 h-28" />
       <Image
-        src="/racing-flag.png"
+        src={racingFlagImage}
         alt="Racing flag"
         width={260}
         height={220}
@@ -24,7 +29,7 @@ export function AuthVisualPanel() {
         aria-hidden="true"
       />
       <Image
-        src="/racing-flag.png"
+        src={racingFlagImage}
         alt="Racing flag"
         width={360}
         height={220}
@@ -33,7 +38,7 @@ export function AuthVisualPanel() {
       />
       <div className="absolute left-[52%] top-[72%] h-12 w-75 -translate-x-1/2 rounded-full bg-black/35 blur-xl" />
       <Image
-        src="/lightning-mcqueen.png"
+        src={lightningMcqueenImage}
         alt="mcqueen"
         width={430}
         height={260}
@@ -42,7 +47,7 @@ export function AuthVisualPanel() {
         priority
       />
       <Image
-        src="/gas-station.png"
+        src={gasStationImage}
         alt="gas station"
         width={260}
         height={220}
@@ -50,7 +55,7 @@ export function AuthVisualPanel() {
         aria-hidden="true"
       />
       <Image
-        src="/wheel.png"
+        src={wheelImage}
         alt="wheel"
         width={170}
         height={170}

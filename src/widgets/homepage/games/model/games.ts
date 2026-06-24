@@ -43,7 +43,7 @@ export const games: Game[] = [
     gradientEnd: "rgba(250, 204, 21, 0.1)",
     gradientId: "game-mark-keno",
     gradientStart: "#facc15",
-    href: "#",
+    href: "/all-games/keno",
     image: gameKeno,
     title: "Keno",
   },

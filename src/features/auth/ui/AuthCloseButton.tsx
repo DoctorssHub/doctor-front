@@ -1,4 +1,5 @@
 import Image from "next/image";
+import closeIcon from "@/assets/auth/close-icon.svg";
 
 type AuthCloseButtonProps = {
   onClose: () => void;
@@ -13,7 +14,7 @@ export function AuthCloseButton({ onClose }: AuthCloseButtonProps) {
       onClick={onClose}
     >
       <Image
-        src="/close-icon.svg"
+        src={closeIcon}
         alt=""
         width={20}
         height={20}

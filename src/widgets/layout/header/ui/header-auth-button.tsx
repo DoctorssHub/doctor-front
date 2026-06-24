@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-
+import redCoinIcon from "@/assets/shared/red-coin.svg";
 import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
 import { getCurrentSession, logoutUser } from "@/features/auth/api/auth-api";
 import {
@@ -12,7 +12,6 @@ import {
 } from "@/features/auth/lib/read-auth-response";
 import type { UserBalance } from "@/features/auth/lib/read-auth-response";
 import { Button } from "@/shared/ui/button";
-
 export function HeaderAuthButton() {
   const openAuthModal = useAuthModalStore((state) => state.openAuthModal);
   const username = useAuthSessionStore((state) => state.username);
@@ -111,7 +110,7 @@ function HeaderBalance({
     <span className="flex shrink-0 items-center gap-1 rounded-md border border-(--color-border-button) bg-(--color-surface-elevated)/70 px-2 py-1 text-xs font-semibold text-(--color-text-primary) max-tablet:px-1.5 max-tablet:text-[10px]">
       {iconType === "coin" ? (
         <Image
-          src="/red-coin.svg"
+          src={redCoinIcon}
           alt=""
           width={16}
           height={16}

@@ -1,5 +1,8 @@
 import Image from "next/image";
 import type { AuthFlow } from "./types";
+import discordIcon from "@/assets/auth/social/discord.webp";
+import googleIcon from "@/assets/auth/social/google.webp";
+import steamIcon from "@/assets/auth/social/steam.webp";
 
 type AuthSocialActionsProps = {
   flow: AuthFlow;
@@ -25,7 +28,7 @@ export function AuthSocialActions({ flow }: AuthSocialActionsProps) {
           aria-label="Continue with Google"
         >
           <Image
-            src="/google.webp"
+            src={googleIcon}
             alt=""
             width={22}
             height={22}
@@ -38,7 +41,7 @@ export function AuthSocialActions({ flow }: AuthSocialActionsProps) {
           aria-label="Continue with Discord"
         >
           <Image
-            src="/discord.webp"
+            src={discordIcon}
             alt=""
             width={24}
             height={24}
@@ -51,7 +54,7 @@ export function AuthSocialActions({ flow }: AuthSocialActionsProps) {
           aria-label="Continue with Steam"
         >
           <Image
-            src="/steam.webp"
+            src={steamIcon}
             alt=""
             width={24}
             height={24}

@@ -1,11 +1,8 @@
 import Image from "next/image";
-
-import heroBg from "@/assets/homePage/heroSection/hero-bg.svg";
-
+import lightningMcqueenImage from "@/assets/brand/lightning-mcqueen.png";
 import BgBlur from "@/assets/homePage/heroSection/bgBlur.svg";
-
+import heroBg from "@/assets/homePage/heroSection/hero-bg.svg";
 import { HeroRegisterButton } from "./hero-register-button";
-
 export function HeroSection() {
   return (
     <section className="relative min-h-[274px] overflow-hidden border-b border-(--color-border-hero) bg-(--color-hero-surface) max-tablet:h-[420px]">
@@ -50,7 +47,7 @@ export function HeroSection() {
         className="pointer-events-none absolute -bottom-1 right-[2%] z-10 h-auto w-[450px] drop-shadow-[0_22px_28px_rgb(0_0_0/45%)] max-tablet:-right-12 max-tablet:w-[280px] min-[768px]:max-[1279px]:w-[clamp(250px,34vw,360px)] min-[1280px]:max-[1535px]:right-[-4%] min-[1280px]:max-[1535px]:w-[430px]"
         height={297}
         priority
-        src="/lightning-mcqueen.png"
+        src={lightningMcqueenImage}
         width={500}
       />
     </section>

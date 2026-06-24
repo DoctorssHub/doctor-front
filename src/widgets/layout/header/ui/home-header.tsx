@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import BurgerMenuIcon from "@/assets/header/burgerMenu.svg";
 import { HeaderAuthButton } from "./header-auth-button";
+import mcqueenLogo from "@/assets/brand/mcqueen-logo.png";
 
 type HomeHeaderProps = {
   isSidebarOpen?: boolean;
@@ -45,7 +46,7 @@ export function HomeHeader({
             className="h-full w-full object-contain"
             height={48}
             priority
-            src="/mcqueen-logo.png"
+            src={mcqueenLogo}
             width={48}
           />
         </Link>

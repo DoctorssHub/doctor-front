@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { DiceAutoConfig } from "../../model/use-dice-game";
+import redCoinIcon from "@/assets/shared/red-coin.svg";
 
 type DiceAutoConfigModalProps = {
   config: DiceAutoConfig;
@@ -206,7 +207,7 @@ function CurrencyField({ id, label, value, onChange }: CurrencyFieldProps) {
       <span className="mb-2 block text-xs font-bold text-white">{label}</span>
       <span className="flex h-11 w-[470px] items-center rounded-lg border border-[#1b1f26] bg-[#0e121c] p-3 text-xs font-semibold leading-[1.33] text-[#c7cbd4] max-[620px]:w-full">
         <Image
-          src="/red-coin.svg"
+          src={redCoinIcon}
           alt=""
           width={16}
           height={16}
