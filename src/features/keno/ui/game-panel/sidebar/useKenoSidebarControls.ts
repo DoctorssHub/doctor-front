@@ -1,54 +1,20 @@
 import { useShallow } from "zustand/react/shallow";
 import { useKenoControlsStore } from "../../../model/keno-controls-store";
 
-export function useKenoSidebarControls(onResultsReset: () => void) {
-  const {
-    autoBetsAmount,
-    autoPickNumbers,
-    clearNumbers,
-    isAutoBetsInfinite,
-    isAutoPicking,
-    mode,
-    risk,
-    selectedNumbersCount,
-    setAutoBetsAmount,
-    setMode,
-    setRisk,
-    toggleAutoBetsInfinite,
-  } = useKenoControlsStore(
+export function useKenoSidebarControls() {
+  return useKenoControlsStore(
     useShallow((state) => ({
       autoBetsAmount: state.autoBetsAmount,
-      autoPickNumbers: state.autoPickNumbers,
-      clearNumbers: state.clearNumbers,
+      betAmount: state.betAmount,
+      hasSelectedNumbers: state.selectedNumbers.length > 0,
       isAutoBetsInfinite: state.isAutoBetsInfinite,
-      isAutoPicking: state.isAutoPicking,
       mode: state.mode,
       risk: state.risk,
-      selectedNumbersCount: state.selectedNumbers.length,
       setAutoBetsAmount: state.setAutoBetsAmount,
+      setBetAmount: state.setBetAmount,
       setMode: state.setMode,
       setRisk: state.setRisk,
       toggleAutoBetsInfinite: state.toggleAutoBetsInfinite,
     })),
   );
-
-  function handleClearTable() {
-    clearNumbers();
-    onResultsReset();
-  }
-
-  return {
-    autoBetsAmount,
-    autoPickNumbers,
-    handleClearTable,
-    isAutoBetsInfinite,
-    isAutoPicking,
-    mode,
-    risk,
-    selectedNumbersCount,
-    setAutoBetsAmount,
-    setMode,
-    setRisk,
-    toggleAutoBetsInfinite,
-  };
 }

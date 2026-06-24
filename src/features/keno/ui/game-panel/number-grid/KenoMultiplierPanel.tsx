@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Image from "next/image";
 import kenoDiamondIcon from "@/assets/games/keno/diamond.svg";
 
@@ -6,7 +7,7 @@ type KenoMultiplierPanelProps = {
   selectedNumbersCount: number;
 };
 
-export function KenoMultiplierPanel({
+export const KenoMultiplierPanel = memo(function KenoMultiplierPanel({
   multipliers,
   selectedNumbersCount,
 }: KenoMultiplierPanelProps) {
@@ -48,4 +49,4 @@ export function KenoMultiplierPanel({
       ))}
     </div>
   );
-}
+});

@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 type GameBetButtonProps = {
   className?: string;
   disabled?: boolean;
@@ -8,7 +10,7 @@ type GameBetButtonProps = {
   onClick: () => void;
 };
 
-export function GameBetButton({
+export const GameBetButton = memo(function GameBetButton({
   className,
   disabled = false,
   isLoading = false,
@@ -36,4 +38,4 @@ export function GameBetButton({
       </span>
     </button>
   );
-}
+});

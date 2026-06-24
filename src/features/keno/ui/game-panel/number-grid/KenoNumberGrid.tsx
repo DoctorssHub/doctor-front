@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { KENO_NUMBERS } from "../../../model/keno-constants";
 import { useKenoControlsStore } from "../../../model/keno-controls-store";
@@ -10,6 +11,8 @@ import { KenoTile } from "./KenoTile";
 import { useKenoRevealSequence } from "./useKenoRevealSequence";
 import { useKenoTileAnimations } from "./useKenoTileAnimations";
 
+const EMPTY_KENO_MULTIPLIERS: number[] = [];
+
 type KenoNumberGridProps = {
   isInteractionLocked: boolean;
   isRevealingResults: boolean;
@@ -19,7 +22,7 @@ type KenoNumberGridProps = {
   roundSelectedNumbers: number[];
 };
 
-export function KenoNumberGrid({
+export const KenoNumberGrid = memo(function KenoNumberGrid({
   isInteractionLocked,
   isRevealingResults,
   onResultsReset,
@@ -54,7 +57,8 @@ export function KenoNumberGrid({
   });
   const selectedNumbersCount = selectedNumbers.length;
   const hasSettledResults = resultNumbers.length > 0 && !isRevealingResults;
-  const multipliers = KENO_MULTIPLIERS[risk][selectedNumbersCount] ?? [];
+  const multipliers =
+    KENO_MULTIPLIERS[risk][selectedNumbersCount] ?? EMPTY_KENO_MULTIPLIERS;
 
   return (
     <section
@@ -95,4 +99,4 @@ export function KenoNumberGrid({
       />
     </section>
   );
-}
+});

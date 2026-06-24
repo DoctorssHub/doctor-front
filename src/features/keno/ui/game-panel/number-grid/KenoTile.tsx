@@ -1,4 +1,4 @@
-import type { MouseEvent } from "react";
+import { memo, type MouseEvent } from "react";
 import {
   KENO_TILE_SCALE_ANIMATION_OPTIONS,
   KENO_TILE_SCALE_KEYFRAMES,
@@ -33,7 +33,7 @@ type KenoTileProps = {
   state: KenoTileState;
 };
 
-export function KenoTile({
+export const KenoTile = memo(function KenoTile({
   disabled,
   number,
   onSelect,
@@ -61,7 +61,7 @@ export function KenoTile({
       />
     </button>
   );
-}
+});
 
 function animateTileSelection(element: HTMLButtonElement) {
   element.animate(

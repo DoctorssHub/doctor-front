@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Image from "next/image";
 import coinIcon from "@/assets/BetCointIcon.svg";
 import kenoDiamondIcon from "@/assets/games/keno/diamond.svg";
@@ -16,7 +17,7 @@ type KenoResultModalProps = {
   onClose: () => void;
 };
 
-export function KenoResultModal({
+export const KenoResultModal = memo(function KenoResultModal({
   hitCount,
   onClose,
   result,
@@ -63,4 +64,4 @@ export function KenoResultModal({
       </div>
     </button>
   );
-}
+});

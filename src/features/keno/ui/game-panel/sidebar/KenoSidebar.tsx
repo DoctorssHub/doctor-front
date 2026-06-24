@@ -1,6 +1,12 @@
 "use client";
 
-import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
+import { memo, useCallback } from "react";
+import {
+  formatBetAmountInput,
+  getNextBetAmount,
+  readBetAmount,
+  type BetAmountControl,
+} from "@/widgets/game-sidebar/lib/bet-amount-controls";
 import {
   AutoBetControls,
   BetAmountField,
@@ -9,6 +15,7 @@ import {
   ModeTabs,
   RiskSelector,
 } from "@/widgets/game-sidebar/ui";
+import { getKenoBetButtonLabel } from "../../../lib/keno-bet-label";
 import { type KenoRisk } from "../../../model/keno-controls-store";
 import { KenoActionButtons } from "./KenoActionButtons";
 import { useKenoSidebarControls } from "./useKenoSidebarControls";
@@ -25,48 +32,75 @@ const kenoRiskOptions: Array<{
 ];
 
 type KenoSidebarProps = {
-  betAmount: string;
-  betButtonLabel: string;
   errorMessage: string | null;
   gameBalance: number;
-  isBetDisabled: boolean;
+  isAutoBetStopRequested: boolean;
+  isAutoBetting: boolean;
   isBetting: boolean;
+  isGameUnavailable: boolean;
   isInteractionLocked: boolean;
-  onBetAmountBlur: () => void;
-  onBetAmountChange: (amount: string) => void;
-  onBetAmountControlClick: (control: BetAmountControl) => void;
+  isLoadingGameData: boolean;
+  isRevealingResults: boolean;
   onResultsReset: () => void;
   onSubmit: () => void;
 };
 
-export function KenoSidebar({
-  betAmount,
-  betButtonLabel,
+export const KenoSidebar = memo(function KenoSidebar({
   errorMessage,
   gameBalance,
-  isBetDisabled,
+  isAutoBetStopRequested,
+  isAutoBetting,
   isBetting,
+  isGameUnavailable,
   isInteractionLocked,
-  onBetAmountBlur,
-  onBetAmountChange,
-  onBetAmountControlClick,
+  isLoadingGameData,
+  isRevealingResults,
   onResultsReset,
   onSubmit,
 }: KenoSidebarProps) {
   const {
     autoBetsAmount,
-    autoPickNumbers,
-    handleClearTable,
+    betAmount,
+    hasSelectedNumbers,
     isAutoBetsInfinite,
-    isAutoPicking,
     mode,
     risk,
-    selectedNumbersCount,
     setAutoBetsAmount,
+    setBetAmount,
     setMode,
     setRisk,
     toggleAutoBetsInfinite,
-  } = useKenoSidebarControls(onResultsReset);
+  } = useKenoSidebarControls();
+  const parsedBetAmount = readBetAmount(betAmount);
+  const isBetAmountInvalid =
+    parsedBetAmount === null || parsedBetAmount > gameBalance;
+  const isBetDisabled = isAutoBetting
+    ? isAutoBetStopRequested
+    : isBetAmountInvalid ||
+      !hasSelectedNumbers ||
+      isLoadingGameData ||
+      isBetting ||
+      isRevealingResults ||
+      isGameUnavailable;
+  const betButtonLabel = getKenoBetButtonLabel({
+    isAutoBetStopRequested,
+    isAutoBetting,
+    isAutoMode: mode === "Auto",
+    isBetting,
+  });
+  const handleBetAmountBlur = useCallback(() => {
+    setBetAmount(formatBetAmountInput(betAmount));
+  }, [betAmount, setBetAmount]);
+  const handleBetAmountControlClick = useCallback(
+    (control: BetAmountControl) => {
+      setBetAmount((amount) =>
+        getNextBetAmount(amount, control, {
+          availableBalance: gameBalance,
+        }),
+      );
+    },
+    [gameBalance, setBetAmount],
+  );
 
   return (
     <GameSidebar>
@@ -82,9 +116,9 @@ export function KenoSidebar({
         gameBalance={gameBalance}
         isDisabled={isInteractionLocked}
         showBalance={false}
-        onBetAmountBlur={onBetAmountBlur}
-        onBetAmountChange={onBetAmountChange}
-        onBetAmountControlClick={onBetAmountControlClick}
+        onBetAmountBlur={handleBetAmountBlur}
+        onBetAmountChange={setBetAmount}
+        onBetAmountControlClick={handleBetAmountControlClick}
       />
       <RiskSelector<KenoRisk>
         isDisabled={isInteractionLocked}
@@ -102,13 +136,8 @@ export function KenoSidebar({
         />
       ) : null}
       <KenoActionButtons
-        isAutoPicking={isAutoPicking}
         isInteractionLocked={isInteractionLocked}
-        onAutoPick={() => {
-          void autoPickNumbers();
-        }}
-        onClearTable={handleClearTable}
-        selectedNumbersCount={selectedNumbersCount}
+        onResultsReset={onResultsReset}
       />
       {errorMessage ? (
         <p className="mt-2 text-xs font-medium text-red-400" role="alert">
@@ -124,4 +153,4 @@ export function KenoSidebar({
       />
     </GameSidebar>
   );
-}
+});

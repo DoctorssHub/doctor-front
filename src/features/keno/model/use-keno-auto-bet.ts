@@ -12,21 +12,21 @@ export type KenoBetRound = {
   selectedNumbers: number[];
 };
 
-type UseKenoAutoBetParams = {
+type KenoAutoBetConfig = {
   autoBetsAmount: string;
-  gameBalance: number;
   isAutoBetsInfinite: boolean;
   parsedBetAmount: number;
+};
+
+type UseKenoAutoBetParams = {
+  gameBalance: number;
   runKenoBet: (round: KenoBetRound) => Promise<void>;
   setLocalErrorMessage: (message: string | null) => void;
   waitForRevealComplete: () => Promise<void>;
 };
 
 export function useKenoAutoBet({
-  autoBetsAmount,
   gameBalance,
-  isAutoBetsInfinite,
-  parsedBetAmount,
   runKenoBet,
   setLocalErrorMessage,
   waitForRevealComplete,
@@ -39,7 +39,8 @@ export function useKenoAutoBet({
   }, []);
 
   const runAutoBet = useCallback(
-    async (round: KenoBetRound) => {
+    async (round: KenoBetRound, config: KenoAutoBetConfig) => {
+      const { autoBetsAmount, isAutoBetsInfinite, parsedBetAmount } = config;
       const validationError = validateKenoAutoBet({
         autoBetsAmount,
         gameBalance,
@@ -91,15 +92,7 @@ export function useKenoAutoBet({
         setAutoBetStopRequested(false);
       }
     },
-    [
-      autoBetsAmount,
-      gameBalance,
-      isAutoBetsInfinite,
-      parsedBetAmount,
-      runKenoBet,
-      setLocalErrorMessage,
-      waitForRevealComplete,
-    ],
+    [gameBalance, runKenoBet, setLocalErrorMessage, waitForRevealComplete],
   );
 
   return {
