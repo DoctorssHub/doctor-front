@@ -1,13 +1,18 @@
 import {
   FaqSection,
+  homepageFaqItems,
+  homepageFaqTitle,
+  homepageFaqToggleLabels,
+} from "@/widgets/faq";
+import {
   FeaturesSection,
   GamesSection,
   HeroSection,
-  LeaderboardSection,
   OnboardingSection,
   PromotionsSection,
   RewardsBanner,
 } from "@/widgets/homepage";
+import { LeaderboardSection } from "@/widgets/leaderboard";
 
 export function HomePage() {
   return (
@@ -19,8 +24,13 @@ export function HomePage() {
         <FeaturesSection />
         <OnboardingSection />
         <GamesSection />
-        <LeaderboardSection />
-        <FaqSection />
+        <LeaderboardSection title="Monthly Leaderboard" />
+        <FaqSection
+          defaultOpenIndex={1}
+          items={homepageFaqItems}
+          title={homepageFaqTitle}
+          toggleLabels={homepageFaqToggleLabels}
+        />
       </div>
     </main>
   );

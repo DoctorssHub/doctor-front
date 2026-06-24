@@ -7,45 +7,31 @@ import arrow from "@/assets/aside/arrowSidebar.svg";
 import FAQIcon from "@/assets/homePage/faq/faqIcon.svg";
 import { SectionTitle } from "@/shared/ui/section-title";
 
-const questions = [
-  {
-    answer:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    question: "Question close",
-  },
-  {
-    answer:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    question: "Question open",
-  },
-  {
-    answer:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    question: "Question close",
-  },
-  {
-    answer:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    question: "Question close",
-  },
-  {
-    answer:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    question: "Question close",
-  },
-];
+import { FaqItem, FaqToggleLabels } from "../model/faq-content";
 
-export function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(1);
+type FaqSectionProps = {
+  defaultOpenIndex?: number | null;
+  items: FaqItem[];
+  title: string;
+  toggleLabels: FaqToggleLabels;
+};
+
+export function FaqSection({
+  defaultOpenIndex = null,
+  items,
+  title,
+  toggleLabels,
+}: FaqSectionProps) {
+  const [openIndex, setOpenIndex] = useState<number | null>(defaultOpenIndex);
 
   return (
     <section className="mx-auto flex w-full max-w-[928px] flex-col items-center gap-4">
       <SectionTitle
-        title="Frequently asked questions"
         icon={FAQIcon}
+        title={title}
       />
       <div className="flex w-full flex-col gap-2">
-        {questions.map((item, index) => {
+        {items.map((item, index) => {
           const isOpen = openIndex === index;
 
           return (
@@ -61,7 +47,11 @@ export function FaqSection() {
               >
                 <span>{item.question}</span>
                 <Image
-                  alt={isOpen ? "Collapse answer" : "Expand answer"}
+                  alt={
+                    isOpen
+                      ? toggleLabels.collapseAnswer
+                      : toggleLabels.expandAnswer
+                  }
                   className={`shrink-0 rotate-90 transition-transform duration-300 ease-out ${
                     isOpen ? "rotate-270" : ""
                   }`}
