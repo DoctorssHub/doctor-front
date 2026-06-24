@@ -149,7 +149,6 @@ export function useKenoGame() {
     parsedBetAmount: parsedBetAmount ?? 0,
     runKenoBet,
     setLocalErrorMessage,
-    showFinalResultModal: showResultModal,
     waitForRevealComplete,
   });
 
@@ -209,9 +208,7 @@ export function useKenoGame() {
   const handleRevealComplete = useCallback(() => {
     completeReveal();
 
-    if (!useKenoBettingStore.getState().isAutoBetting) {
-      showResultModal();
-    }
+    showResultModal();
 
     revealCompleteResolverRef.current?.();
     revealCompleteResolverRef.current = null;

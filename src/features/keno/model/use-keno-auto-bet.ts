@@ -4,7 +4,7 @@ import { validateKenoAutoBet } from "../lib/keno-auto-bet-validation";
 import { useKenoBettingStore } from "./keno-betting-store";
 import type { KenoRisk } from "./keno-controls-store";
 
-const AUTO_BET_DELAY_MS = 500;
+const AUTO_BET_DELAY_MS = 1900;
 
 export type KenoBetRound = {
   betSize: string;
@@ -19,7 +19,6 @@ type UseKenoAutoBetParams = {
   parsedBetAmount: number;
   runKenoBet: (round: KenoBetRound) => Promise<void>;
   setLocalErrorMessage: (message: string | null) => void;
-  showFinalResultModal: () => void;
   waitForRevealComplete: () => Promise<void>;
 };
 
@@ -30,7 +29,6 @@ export function useKenoAutoBet({
   parsedBetAmount,
   runKenoBet,
   setLocalErrorMessage,
-  showFinalResultModal,
   waitForRevealComplete,
 }: UseKenoAutoBetParams) {
   const shouldStopAutoBetRef = useRef(false);
@@ -91,7 +89,6 @@ export function useKenoAutoBet({
         shouldStopAutoBetRef.current = false;
         setAutoBetting(false);
         setAutoBetStopRequested(false);
-        showFinalResultModal();
       }
     },
     [
@@ -101,7 +98,6 @@ export function useKenoAutoBet({
       parsedBetAmount,
       runKenoBet,
       setLocalErrorMessage,
-      showFinalResultModal,
       waitForRevealComplete,
     ],
   );
