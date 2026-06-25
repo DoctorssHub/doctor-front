@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 
@@ -71,11 +72,15 @@ export function HeaderAuthButton() {
               key={`${balance.balanceType}-${index}`}
             />
           ))}
-          <div className="min-w-0 max-w-[min(34vw,22rem)] text-right max-tablet:max-w-[30vw]">
+          <Link
+            aria-label="Go to profile"
+            className="min-w-0 max-w-[min(34vw,22rem)] rounded text-right transition hover:opacity-80 max-tablet:max-w-[30vw]"
+            href="/profile"
+          >
             <span className="block whitespace-normal break-words text-sm leading-4 font-bold text-(--color-text-primary) max-tablet:text-[11px] max-tablet:leading-3.5">
               {displayUsername}
             </span>
-          </div>
+          </Link>
         </div>
         <Button
           className="h-10 shrink-0 cursor-pointer text-[16px] font-medium text-(--color-brand-contrast) disabled:cursor-not-allowed disabled:opacity-60 max-tablet:h-9 max-tablet:px-3 max-tablet:text-[13px] max-tablet:leading-none"
