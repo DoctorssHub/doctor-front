@@ -1,5 +1,11 @@
 import { BetHistoryTable } from "@/widgets/bet-history";
-import { FaqSection, GamesGrid } from "@/widgets/homepage";
+import {
+  FaqSection,
+  homepageFaqItems,
+  homepageFaqTitle,
+  homepageFaqToggleLabels,
+} from "@/widgets/faq";
+import { GamesGrid } from "@/widgets/homepage";
 
 import { AllGamesIntro } from "./AllGamesIntro";
 
@@ -23,7 +29,12 @@ export function AllGamesScreen() {
           <GamesGrid variant="all-games" />
         </section>
         <BetHistoryTable variant="games-live" />
-        <FaqSection />
+        <FaqSection
+          defaultOpenIndex={1}
+          items={homepageFaqItems}
+          title={homepageFaqTitle}
+          toggleLabels={homepageFaqToggleLabels}
+        />
       </div>
     </main>
   );

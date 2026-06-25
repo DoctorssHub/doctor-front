@@ -4,7 +4,6 @@ import gamesIcon from "@/assets/aside/games.svg";
 import kenoIcon from "@/assets/aside/keno.svg";
 import leaderboardIcon from "@/assets/aside/leaderboard.svg";
 import plinkoIcon from "@/assets/aside/plinko.svg";
-import pointshopIcon from "@/assets/aside/pointshop.svg";
 import rewardsIcon from "@/assets/aside/rewards.svg";
 import rouletteIcon from "@/assets/aside/roulette.svg";
 import wheelIcon from "@/assets/aside/wheel.svg";
@@ -13,14 +12,9 @@ import winnersIcon from "@/assets/aside/winners.svg";
 import type { NavItem } from "./types";
 
 export const navItems: NavItem[] = [
+ 
   {
-    href: "#",
-    icon: pointshopIcon,
-    title: "Pointshop",
-    type: "link",
-  },
-  {
-    href: "#",
+    href: "/leaderboard",
     icon: leaderboardIcon,
     title: "Leaderboard",
     type: "link",
@@ -34,7 +28,7 @@ export const navItems: NavItem[] = [
         type: "link",
       },
       {
-        href: "#",
+        href: "/all-games/keno",
         icon: kenoIcon,
         title: "Keno",
         type: "link",
