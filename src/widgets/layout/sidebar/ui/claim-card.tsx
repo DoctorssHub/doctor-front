@@ -68,10 +68,10 @@ export function ClaimCard({ isCollapsed = false }: ClaimCardProps) {
     return Math.max(0, status.secondsUntilNextClaim - elapsedSeconds);
   }, [nowMs, status, statusQuery.dataUpdatedAt]);
   const isClaimerEnabled = status?.enabled !== false && !status?.invalidConfig;
-  const isClaimAvailable =
-    Boolean(status) &&
-    isClaimerEnabled &&
-    (Boolean(status.available) || secondsUntilNextClaim <= 0);
+  const isClaimAvailable = status
+    ? isClaimerEnabled &&
+      (Boolean(status.available) || secondsUntilNextClaim <= 0)
+    : false;
 
   const claimMutation = useMutation({
     mutationFn: async () => (await claimDailyPoints()).data,
