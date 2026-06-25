@@ -1,32 +1,39 @@
 import axios from "axios";
-import { getCurrentUser, refreshSession } from "@/features/auth/api/auth-api";
-import type {
-  ProfileSettingsResponse,
-  ProfileStatsResponse,
-} from "./profile-types";
+import { refreshSession } from "@/features/auth/api/auth-api";
+
+export { getCurrentUser } from "@/features/auth/api/auth-api";
 
 const profileClient = axios.create({
   baseURL: "/api",
   withCredentials: true,
 });
 
-export { getCurrentUser };
+export type UpdateUserInfoPayload = {
+  username: string;
+};
 
-export async function getProfileStats() {
-  return withRefreshRetry(() =>
-    profileClient.get<ProfileStatsResponse>("/user/query/me/stats"),
-  );
+export type UpdateCryptoAddressesPayload = {
+  btcAddress: string | null;
+  ethAddress: string | null;
+  ltcAddress: string | null;
+};
+
+export async function updateUserInfo(payload: UpdateUserInfoPayload) {
+  return patchWithRefreshRetry("/user/command/update/user-info", payload);
 }
 
-export async function getProfileSettings() {
-  return withRefreshRetry(() =>
-    profileClient.get<ProfileSettingsResponse>("/user/query/settings"),
-  );
+// The endpoint replaces the full crypto-address set, so callers must send all
+// three addresses (current values plus the edited one) to avoid clearing the
+// others.
+export async function updateCryptoAddresses(
+  payload: UpdateCryptoAddressesPayload,
+) {
+  return patchWithRefreshRetry("/user/command/update/crypto-addresses", payload);
 }
 
-async function withRefreshRetry<T>(request: () => Promise<T>) {
+async function patchWithRefreshRetry(url: string, payload: unknown) {
   try {
-    return await request();
+    return await profileClient.patch(url, payload);
   } catch (error) {
     if (!isUnauthorizedAxiosError(error)) {
       throw error;
@@ -34,7 +41,7 @@ async function withRefreshRetry<T>(request: () => Promise<T>) {
 
     await refreshSession();
 
-    return request();
+    return profileClient.patch(url, payload);
   }
 }
 

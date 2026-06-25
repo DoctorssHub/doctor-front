@@ -3,31 +3,12 @@ import type { StaticImageData } from "next/image";
 import coinIcon from "@/assets/BetCointIcon.svg";
 import coinBagImage from "@/assets/profile/coin-bag.png";
 import coinsImage from "@/assets/profile/coins.png";
-import type { ProfileStats } from "../../api/profile-types";
 
-type ProfileStatisticsProps = {
-  stats?: ProfileStats;
-  isLoading: boolean;
-};
-
-export function ProfileStatistics({
-  stats,
-  isLoading,
-}: ProfileStatisticsProps) {
+export function ProfileStatistics() {
   return (
     <div className="grid grid-cols-2 gap-4 max-tablet:grid-cols-1">
-      <StatCard
-        image={coinBagImage}
-        isLoading={isLoading}
-        label="Total wagered"
-        value={stats?.totalWagered}
-      />
-      <StatCard
-        image={coinsImage}
-        isLoading={isLoading}
-        label="Wager points spent"
-        value={stats?.wagerPointsSpent}
-      />
+      <StatCard image={coinBagImage} label="Total wagered" value="0.00" />
+      <StatCard image={coinsImage} label="Wager points spent" value="0.00" />
     </div>
   );
 }
@@ -36,12 +17,10 @@ function StatCard({
   label,
   value,
   image,
-  isLoading,
 }: {
   label: string;
-  value?: string;
+  value: string;
   image: StaticImageData;
-  isLoading: boolean;
 }) {
   return (
     <div className="relative flex min-h-20 items-center overflow-hidden rounded-xl bg-(--color-surface) py-3 pr-5 pl-24">
@@ -63,8 +42,12 @@ function StatCard({
           {label}
         </p>
         <p className="flex items-center gap-2 text-[18px] font-medium text-(--color-text-primary)">
-          <Image alt="Game points coin" className="size-[20px]" src={coinIcon} />
-          {isLoading ? "—" : (value ?? "0.00")}
+          <Image
+            alt="Game points coin"
+            className="size-[20px]"
+            src={coinIcon}
+          />
+          {value}
         </p>
       </div>
     </div>

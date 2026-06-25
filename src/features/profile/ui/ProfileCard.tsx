@@ -1,10 +1,7 @@
 import Image from "next/image";
 import coinIcon from "@/assets/BetCointIcon.svg";
 import type { MeResponse } from "@/features/auth/api/auth-types";
-import {
-  formatPointsValue,
-  getUsernameInitial,
-} from "../../lib/profile-format";
+import { formatPointsValue, getUsernameInitial } from "../lib/profile-format";
 
 type ProfileCardProps = {
   user: MeResponse;

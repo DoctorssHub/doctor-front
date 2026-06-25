@@ -3,7 +3,7 @@
 import archiveIcon from "@/assets/profile/archive.svg";
 import userIcon from "@/assets/profile/user.svg";
 import { ModeTabs } from "@/shared/ui/mode-tabs";
-import { PROFILE_TABS, type ProfileTab } from "../../model/profile-tabs";
+import { PROFILE_TABS, type ProfileTab } from "../model/profile-tabs";
 
 type ProfileTabsProps = {
   activeTab: ProfileTab;
@@ -20,12 +20,12 @@ export function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps) {
       mode={activeTab}
       onModeChange={onTabChange}
       options={PROFILE_TABS}
-      renderIcon={renderTabIcon}
+      renderIcon={(tab, active) => <TabIcon active={active} tab={tab} />}
     />
   );
 }
 
-function renderTabIcon(tab: ProfileTab, active: boolean) {
+function TabIcon({ tab, active }: { tab: ProfileTab; active: boolean }) {
   const icon = tab === "profile" ? userIcon : archiveIcon;
 
   return (

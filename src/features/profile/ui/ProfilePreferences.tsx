@@ -1,20 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 
 type ProfilePreferencesProps = {
   initialPrivateMode?: boolean;
 };
 
-// UI-only for now: the toggle holds local state. Persisting to
-// `/user/query/settings` is wired once the backend contract is confirmed.
-export function ProfilePreferences({
+export const ProfilePreferences = memo(function ProfilePreferences({
   initialPrivateMode = false,
 }: ProfilePreferencesProps) {
   const [privateMode, setPrivateMode] = useState(initialPrivateMode);
   const [seededValue, setSeededValue] = useState(initialPrivateMode);
 
-  // Re-seed from async settings without an effect (render-phase sync).
   if (seededValue !== initialPrivateMode) {
     setSeededValue(initialPrivateMode);
     setPrivateMode(initialPrivateMode);
@@ -51,4 +48,4 @@ export function ProfilePreferences({
       </div>
     </div>
   );
-}
+});
