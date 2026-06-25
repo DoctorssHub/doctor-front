@@ -11,6 +11,7 @@ import {
 } from "@/features/auth/lib/read-auth-response";
 import { Button } from "@/shared/ui/button";
 import { HeaderBalances } from "./header-balances";
+import { HeaderProfileMenu } from "./header-profile";
 
 export function HeaderAuthButton() {
   const { openAuthModal } = useAuthModalStore(
@@ -72,20 +73,12 @@ export function HeaderAuthButton() {
       <div className="flex min-w-0 items-center gap-3 max-tablet:gap-2">
         <div className="flex min-w-0 items-center gap-2 max-tablet:gap-1.5">
           <HeaderBalances balances={balances} />
-          <div className="min-w-0 max-w-[min(34vw,22rem)] text-right max-tablet:max-w-[30vw]">
-            <span className="block whitespace-normal break-words text-sm leading-4 font-bold text-(--color-text-primary) max-tablet:text-[11px] max-tablet:leading-3.5">
-              {displayUsername}
-            </span>
-          </div>
+          <HeaderProfileMenu
+            isLogoutPending={logoutMutation.isPending}
+            username={displayUsername}
+            onLogout={() => logoutMutation.mutate()}
+          />
         </div>
-        <Button
-          className="h-10 shrink-0 cursor-pointer text-[16px] font-medium text-(--color-brand-contrast) disabled:cursor-not-allowed disabled:opacity-60 max-tablet:h-9 max-tablet:px-3 max-tablet:text-[13px] max-tablet:leading-none"
-          type="button"
-          disabled={logoutMutation.isPending}
-          onClick={() => logoutMutation.mutate()}
-        >
-          {logoutMutation.isPending ? "Logging out..." : "Logout"}
-        </Button>
       </div>
     );
   }
