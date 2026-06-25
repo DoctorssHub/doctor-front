@@ -3,6 +3,7 @@ import profileIcon from "@/assets/shared/profileIcon.svg";
 
 export const headerProfileItems = [
   {
+    href: "/profile",
     icon: profileIcon,
     label: "Profile",
     type: "profile",

@@ -89,6 +89,7 @@ export function HeaderProfileMenu({
       {isOpen ? (
         <HeaderProfileDropdown
           isLogoutPending={isLogoutPending}
+          onItemSelect={() => setIsOpen(false)}
           onLogout={onLogout}
         />
       ) : null}

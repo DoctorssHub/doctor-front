@@ -1,29 +1,46 @@
 import Image from "next/image";
+import Link from "next/link";
 import { headerProfileItems } from "./profile-items";
 
 type HeaderProfileDropdownProps = {
   isLogoutPending: boolean;
+  onItemSelect: () => void;
   onLogout: () => void;
 };
 
+const profileItemClassName = "relative flex h-9 cursor-pointer items-center gap-2 overflow-hidden rounded-[6px] p-2 text-center text-[16px] leading-[125%] font-normal text-[#c7cbd4] transition before:absolute before:inset-0 before:bg-[linear-gradient(90deg,var(--color-brand)_0%,#70171d_100%)] before:opacity-0 before:transition-opacity before:content-[''] hover:text-[#fdfdfd] hover:before:opacity-70 focus-visible:text-[#fdfdfd] focus-visible:outline-none focus-visible:before:opacity-70";
+
 export function HeaderProfileDropdown({
   isLogoutPending,
+  onItemSelect,
   onLogout,
 }: HeaderProfileDropdownProps) {
   return (
     <div className="fixed top-16 right-0 z-50 w-[260px] max-mobile:w-[min(260px,calc(100vw-16px))]">
       <div className="origin-top-right rounded-bl-[14px] bg-[#0a0d19] px-4 pt-5 pb-4 shadow-[0_16px_32px_rgb(0_0_0/35%)] ring-1 ring-[#121826] [animation:dice-mode-panel-in_180ms_cubic-bezier(0.22,1,0.36,1)_both]">
         <div className="flex flex-col gap-2">
-          {headerProfileItems.map((item) => (
-            <button
-              className="relative flex h-9 cursor-pointer items-center gap-2 overflow-hidden rounded-[6px] p-2 text-center text-[16px] leading-[125%] font-normal text-[#c7cbd4] transition before:absolute before:inset-0 before:bg-[linear-gradient(90deg,var(--color-brand)_0%,#70171d_100%)] before:opacity-0 before:transition-opacity before:content-[''] hover:text-[#fdfdfd] hover:before:opacity-70 focus-visible:text-[#fdfdfd] focus-visible:outline-none focus-visible:before:opacity-70"
-              key={item.label}
-              type="button"
-            >
-              <ProfileItemIcon item={item} />
-              <span className="relative z-10">{item.label}</span>
-            </button>
-          ))}
+          {headerProfileItems.map((item) =>
+            "href" in item ? (
+              <Link
+                className={profileItemClassName}
+                href={item.href}
+                key={item.label}
+                onClick={onItemSelect}
+              >
+                <ProfileItemIcon item={item} />
+                <span className="relative z-10">{item.label}</span>
+              </Link>
+            ) : (
+              <button
+                className={profileItemClassName}
+                key={item.label}
+                type="button"
+              >
+                <ProfileItemIcon item={item} />
+                <span className="relative z-10">{item.label}</span>
+              </button>
+            ),
+          )}
         </div>
 
         <div className="my-4 h-px bg-[#3f4a59]/50" />
