@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
+import { sanitizeIntegerInput } from "@/widgets/game-sidebar/lib/numeric-input";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import {
   formatBetAmountInput,
@@ -180,7 +181,7 @@ export function useDiceGame() {
   }
 
   function handleAutoBetCountChange(amount: string) {
-    setAutoBetCount(amount.replace(/\D/g, ""));
+    setAutoBetCount(sanitizeIntegerInput(amount));
   }
 
   function handleThresholdChange(nextThreshold: number) {

@@ -1,6 +1,7 @@
 import { memo } from "react";
 import Image, { type ImageProps } from "next/image";
-import infinityIcon from "@/assets/shared/infinity-icon.svg";
+import infinityIcon from "@/assets/games/roulette/Infinity.svg";
+import { sanitizeIntegerInput } from "../lib/numeric-input";
 
 type AutoBetControlsProps = {
   autoBetsAmount: string;
@@ -24,19 +25,19 @@ type AutoBetControlsProps = {
 
 export const AutoBetControls = memo(function AutoBetControls({
   autoBetsAmount,
-  buttonClassName,
-  className = "mt-6 block text-sm font-semibold text-white max-[1023px]:order-6 max-[1023px]:mt-5",
-  fieldClassName,
+  buttonClassName = "grid h-7 w-7 place-items-center rounded-[4px] hover:border-[var(--color-roulette-soft-border)] disabled:opacity-55",
+  className = "mt-6 block text-sm font-medium text-[var(--color-text-primary)] max-[1023px]:order-6 max-[1023px]:mt-5",
+  fieldClassName = "mt-3 h-11 gap-2 rounded-lg border-[var(--color-border-strong)] bg-[var(--color-roulette-auto-field)] p-3",
   id = "auto-bets",
   infinityIconSrc = infinityIcon,
   inputClassName,
   inputMode = "numeric",
-  inputPattern,
-  inputType = "number",
+  inputPattern = "[0-9]*",
+  inputType = "text",
   isAutoBetsInfinite,
   isDisabled = false,
   isInputDisabled = false,
-  label = "Number of Bets",
+  label = "Number of bets",
   labelClassName,
   onAutoBetsAmountChange,
   onAutoBetsInfinityToggle,
@@ -83,7 +84,11 @@ export const AutoBetControls = memo(function AutoBetControls({
               id={id}
               inputMode={inputMode}
               min={1}
-              onChange={(event) => onAutoBetsAmountChange(event.target.value)}
+              onChange={(event) =>
+                onAutoBetsAmountChange(
+                  sanitizeIntegerInput(event.target.value),
+                )
+              }
               pattern={inputPattern}
               type={inputType}
               value={autoBetsAmount}

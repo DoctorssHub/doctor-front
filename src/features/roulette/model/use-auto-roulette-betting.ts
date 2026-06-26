@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { sanitizeIntegerInput } from "@/widgets/game-sidebar/lib/numeric-input";
 import type { RouletteBetRequest } from "../api/roulette-types";
 
 const AUTO_NEXT_SPIN_DELAY_MS = 6200;
@@ -35,7 +36,7 @@ export function useAutoRouletteBetting() {
   }, [clearAutoTimeout]);
 
   function handleAutoBetCountChange(value: string) {
-    setAutoBetCount(value.replace(/[^\d]/g, ""));
+    setAutoBetCount(sanitizeIntegerInput(value));
   }
 
   function handleToggleAutoInfinite() {

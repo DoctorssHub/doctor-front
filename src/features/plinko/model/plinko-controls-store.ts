@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import type { GameMode, Risk } from "@/entities/game/model/types";
+import { sanitizeIntegerInput } from "@/widgets/game-sidebar/lib/numeric-input";
 
 const initialPlinkoControlsState = {
-  autoBetsAmount: "2",
+  autoBetsAmount: "10",
   betAmount: "1.00",
   isAutoBetsInfinite: false,
   mode: "Manual" as GameMode,
@@ -28,7 +29,7 @@ export const usePlinkoControlsStore = create<PlinkoControlsStore>((set) => ({
     set(initialPlinkoControlsState);
   },
   setAutoBetsAmount: (autoBetsAmount) => {
-    set({ autoBetsAmount });
+    set({ autoBetsAmount: sanitizeIntegerInput(autoBetsAmount) });
   },
   setBetAmount: (betAmount) => {
     set((state) => ({

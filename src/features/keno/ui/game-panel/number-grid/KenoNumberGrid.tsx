@@ -14,6 +14,7 @@ import { useKenoTileAnimations } from "./useKenoTileAnimations";
 const EMPTY_KENO_MULTIPLIERS: number[] = [];
 
 type KenoNumberGridProps = {
+  isFullscreen?: boolean;
   isInteractionLocked: boolean;
   isRevealingResults: boolean;
   onResultsReset: () => void;
@@ -23,6 +24,7 @@ type KenoNumberGridProps = {
 };
 
 export const KenoNumberGrid = memo(function KenoNumberGrid({
+  isFullscreen = false,
   isInteractionLocked,
   isRevealingResults,
   onResultsReset,
@@ -59,11 +61,16 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
   const hasSettledResults = resultNumbers.length > 0 && !isRevealingResults;
   const multipliers =
     KENO_MULTIPLIERS[risk][selectedNumbersCount] ?? EMPTY_KENO_MULTIPLIERS;
+  const contentWidthClassName = isFullscreen
+    ? "max-w-[min(720px,calc(100vh_-_220px),100%)]"
+    : "max-w-[578px]";
+  const compactWidthClassName = isFullscreen ? "" : "max-[768px]:max-w-none";
 
   return (
     <section
       className={[
-        "flex min-w-0 flex-col bg-[#0e1519] px-[43px] pt-11 max-[1023px]:order-1 max-[1023px]:items-center max-[1023px]:px-5 max-[1023px]:pt-[84px] max-[1023px]:pb-[84px] max-[767px]:px-4 max-[767px]:pt-10 max-[767px]:pb-10",
+        "flex min-w-0 flex-col bg-[linear-gradient(180deg,#10151F_0%,#10151F_55%,#3A170D_100%)] px-[43px] pt-11 max-[1023px]:order-1 max-[1023px]:items-center max-[1023px]:px-5 max-[1023px]:pt-[84px] max-[1023px]:pb-[84px] max-[480px]:px-4 max-[480px]:pt-10 max-[480px]:pb-10",
+        isFullscreen ? "items-center justify-center px-5 py-11" : "",
         isAutoPicking ? "pointer-events-none" : "",
       ].join(" ")}
       onClickCapture={(event) => {
@@ -75,7 +82,13 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
         onResultsReset();
       }}
     >
-      <div className="grid w-fit grid-cols-8 gap-1.5 max-[767px]:gap-[3px]">
+      <div
+        className={[
+          "grid w-full grid-cols-8 gap-1.5 max-[480px]:gap-[3px]",
+          contentWidthClassName,
+          compactWidthClassName,
+        ].join(" ")}
+      >
         {KENO_NUMBERS.map((number) => {
           const state = getKenoTileState({
             isRevealedMiss: revealedMissNumbers.includes(number),
@@ -97,6 +110,7 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
         })}
       </div>
       <KenoMultiplierPanel
+        className={[contentWidthClassName, compactWidthClassName].join(" ")}
         multipliers={multipliers}
         selectedNumbersCount={selectedNumbersCount}
       />
