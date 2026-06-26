@@ -12,7 +12,7 @@ import {
 export type KenoTileState = "default" | "selected" | "result" | "hit" | "miss";
 
 const baseTileClassName =
-  "relative grid size-[67px] place-items-center overflow-hidden rounded-xl border text-xl max-[767px]:size-[38px] max-[767px]:rounded-lg max-[767px]:text-xs font-semibold transition-[transform,border-color,background-color,box-shadow,color] duration-150 ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-highlight)] disabled:cursor-wait disabled:hover:scale-100 disabled:active:scale-100";
+  "relative grid aspect-square w-full place-items-center overflow-hidden rounded-xl border text-xl max-[480px]:rounded-lg max-[480px]:text-xs font-semibold transition-[transform,border-color,background-color,box-shadow,color] duration-150 ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-highlight)] disabled:cursor-wait disabled:hover:scale-100 disabled:active:scale-100";
 
 const tileStateClassName: Record<KenoTileState, string> = {
   default:
