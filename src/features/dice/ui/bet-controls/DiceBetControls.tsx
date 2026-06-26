@@ -1,5 +1,4 @@
 import Image from "next/image";
-import infinityIcon from "@/assets/games/roulette/Infinity.svg";
 import { AutoBetControls } from "@/widgets/game-sidebar/ui/AutoBetControls";
 import { BetAmountField } from "@/widgets/game-sidebar/ui/BetAmountField";
 import { GameBetButton } from "@/widgets/game-sidebar/ui/GameBetButton";
@@ -85,10 +84,7 @@ export function DiceBetControls({
       className={isFullscreen ? "min-[1024px]:h-full" : undefined}
     >
       <ModeTabs
-        activeButtonClassName="bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]"
-        buttonClassName="h-10 rounded-lg transition duration-300 disabled:cursor-not-allowed disabled:opacity-50"
         className="grid grid-cols-2 gap-3 rounded-lg text-sm font-semibold"
-        inactiveButtonClassName="text-[var(--color-text-muted)] opacity-70 hover:text-white"
         isDisabled={isLoading}
         mode={mode}
         options={[
@@ -113,19 +109,12 @@ export function DiceBetControls({
         <div className="dice-mode-panel" key="dice-auto-panel">
           <AutoBetControls
             autoBetsAmount={autoBetCount}
-            buttonClassName="grid h-7 w-7 place-items-center rounded-[4px] hover:border-[var(--color-roulette-soft-border)] disabled:opacity-55"
-            className="mt-5 block text-sm font-semibold text-white"
-            fieldClassName="mt-2 h-11 gap-2 rounded-lg border-[var(--color-border-strong)] bg-[#0e121c] p-3"
+            className="mt-5 block text-sm font-medium text-[var(--color-text-primary)]"
             id="dice-auto-bet-count"
-            infinityIconSrc={infinityIcon}
             inputMode="numeric"
-            inputPattern="[0-9]*"
-            inputType="text"
             isAutoBetsInfinite={isAutoInfinite}
             isDisabled={isLoading}
             isInputDisabled={isLoading}
-            label="Number of bets"
-            labelClassName="text-sm font-semibold text-white"
             onAutoBetsAmountChange={onAutoBetCountChange}
             onAutoBetsInfinityToggle={onToggleAutoInfinite}
           />

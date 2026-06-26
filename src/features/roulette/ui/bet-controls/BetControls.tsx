@@ -1,5 +1,4 @@
 import { AutoBetControls, ModeTabs } from "@/widgets/game-sidebar";
-import infinityIcon from "@/assets/games/roulette/Infinity.svg";
 import { BetSubmitPanel } from "./BetSubmitPanel";
 import { ChipPicker } from "./ChipPicker";
 import { ManualBetActions } from "./ManualBetActions";
@@ -93,10 +92,7 @@ export function BetControls({
     >
       <div className="max-laptop:order-4 laptop:order-1">
         <ModeTabs
-          activeButtonClassName="bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]"
-          buttonClassName="h-10 rounded-lg transition duration-300 disabled:cursor-not-allowed disabled:opacity-50"
           className="grid grid-cols-2 gap-3 rounded-lg text-sm font-semibold"
-          inactiveButtonClassName="text-[var(--color-text-muted)] opacity-70 hover:text-white"
           isDisabled={controlsDisabled}
           mode={mode}
           options={[
@@ -133,18 +129,12 @@ export function BetControls({
         >
           <AutoBetControls
             autoBetsAmount={autoBetCount}
-            buttonClassName="grid h-7 w-7 place-items-center rounded-[4px] hover:border-[var(--color-roulette-soft-border)] disabled:opacity-55"
             className="block text-sm font-medium text-[var(--color-text-primary)]"
-            fieldClassName="mt-3 h-11 gap-2 rounded-lg border-[var(--color-border-strong)] bg-[var(--color-roulette-auto-field)] p-3"
             id="roulette-auto-bet-count"
-            infinityIconSrc={infinityIcon}
             inputMode="numeric"
-            inputPattern="[0-9]*"
-            inputType="text"
             isAutoBetsInfinite={isAutoInfinite}
             isDisabled={isAutoRunning}
             isInputDisabled={isAutoRunning}
-            label="Number of bets"
             onAutoBetsAmountChange={onAutoBetCountChange}
             onAutoBetsInfinityToggle={onToggleAutoInfinite}
           />

@@ -15,8 +15,21 @@ type GameModeTabsProps<TMode extends string = GameMode> = Omit<
 };
 
 export function ModeTabs<TMode extends string = GameMode>({
+  activeButtonClassName = "bg-[var(--color-surface-elevated)] text-white shadow-[var(--shadow-inset-soft)]",
+  buttonClassName = "h-10 rounded-lg transition duration-300 disabled:cursor-not-allowed disabled:opacity-50",
+  className = "grid grid-cols-2 gap-3 rounded-lg text-sm font-semibold max-[1023px]:order-7 max-[1023px]:mt-6",
+  inactiveButtonClassName = "text-[var(--color-text-muted)] opacity-70 hover:text-white",
   options = defaultModeOptions as Array<ModeTabOption<TMode>>,
   ...props
 }: GameModeTabsProps<TMode>) {
-  return <SharedModeTabs options={options} {...props} />;
+  return (
+    <SharedModeTabs
+      activeButtonClassName={activeButtonClassName}
+      buttonClassName={buttonClassName}
+      className={className}
+      inactiveButtonClassName={inactiveButtonClassName}
+      options={options}
+      {...props}
+    />
+  );
 }

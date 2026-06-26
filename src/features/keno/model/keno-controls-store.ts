@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { GameMode } from "@/entities/game/model/types";
+import { sanitizeIntegerInput } from "@/widgets/game-sidebar/lib/numeric-input";
 import { delay } from "../lib/keno-delay";
 import { pickRandomKenoNumbers } from "../lib/keno-random-selection";
 import { KENO_MAX_SELECTION, KENO_NUMBERS } from "./keno-constants";
@@ -9,7 +10,7 @@ const AUTO_PICK_DELAY_MS = 100;
 export type KenoRisk = "CLASSIC" | "LOW" | "MEDIUM" | "HIGH";
 
 const initialKenoControlsState = {
-  autoBetsAmount: "2",
+  autoBetsAmount: "10",
   autoPickingNumber: null as number | null,
   betAmount: "1.00",
   isAutoBetsInfinite: false,
@@ -81,7 +82,7 @@ export const useKenoControlsStore = create<KenoControlsStore>((set, get) => ({
     set(initialKenoControlsState);
   },
   setAutoBetsAmount: (autoBetsAmount) => {
-    set({ autoBetsAmount });
+    set({ autoBetsAmount: sanitizeIntegerInput(autoBetsAmount) });
   },
   setBetAmount: (betAmount) => {
     set((state) => ({

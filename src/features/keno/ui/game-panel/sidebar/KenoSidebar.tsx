@@ -123,8 +123,7 @@ export const KenoSidebar = memo(function KenoSidebar({
   return (
     <GameSidebar>
       <ModeTabs
-        buttonClassName="flex h-12 items-center justify-center rounded-lg px-4 text-sm font-medium"
-        className="grid grid-cols-2 gap-3 max-[1023px]:order-7 max-[1023px]:mt-6"
+        className="grid grid-cols-2 gap-3 rounded-lg text-sm font-semibold max-[1023px]:order-7 max-[1023px]:mt-6"
         isDisabled={isInteractionLocked}
         mode={mode}
         onModeChange={setMode}
