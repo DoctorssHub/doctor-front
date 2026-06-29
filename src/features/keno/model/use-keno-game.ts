@@ -7,7 +7,7 @@ import { getCurrentUser } from "@/features/auth/api/auth-api";
 import {
   formatBetAmount,
   readBetAmount,
-} from "@/widgets/game-sidebar/lib/bet-amount-controls";
+} from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
 import { getKenoConfig, placeKenoBet } from "../api/keno-api";
 import type { KenoBetRequest, KenoBetResponse } from "../api/keno-types";
 import { getKenoGameBalance } from "../lib/keno-balance";

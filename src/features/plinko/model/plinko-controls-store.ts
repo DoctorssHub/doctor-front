@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { GameMode, Risk } from "@/entities/game/model/types";
-import { sanitizeIntegerInput } from "@/widgets/game-sidebar/lib/numeric-input";
+import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 
 const initialPlinkoControlsState = {
   autoBetsAmount: "10",

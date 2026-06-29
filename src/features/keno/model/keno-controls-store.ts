@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { GameMode } from "@/entities/game/model/types";
-import { sanitizeIntegerInput } from "@/widgets/game-sidebar/lib/numeric-input";
+import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import { delay } from "../lib/keno-delay";
 import { pickRandomKenoNumbers } from "../lib/keno-random-selection";
 import { KENO_MAX_SELECTION, KENO_NUMBERS } from "./keno-constants";

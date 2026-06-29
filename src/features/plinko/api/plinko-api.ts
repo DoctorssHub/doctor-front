@@ -1,11 +1,11 @@
+import { authenticatedClient, requestWithAuthRetry } from "@/shared/api";
 import type { PlinkoBetRequest } from "./plinko-parsers";
-import { plinkoClient, requestWithAuthRetry } from "./plinko-client";
 
 export type { PlinkoBetRequest } from "./plinko-parsers";
 export { readPlinkoBet, readPlinkoConfig } from "./plinko-parsers";
 
 export async function getPlinkoConfig() {
-  const response = await plinkoClient.get<unknown>(
+  const response = await authenticatedClient.get<unknown>(
     "/games/house/plinko/config",
   );
 
@@ -14,7 +14,7 @@ export async function getPlinkoConfig() {
 
 export async function placePlinkoBet(payload: PlinkoBetRequest) {
   const response = await requestWithAuthRetry(() =>
-    plinkoClient.post<unknown>(
+    authenticatedClient.post<unknown>(
       "/games/house/plinko/bet",
       createPlinkoBetPayload(payload),
     ),

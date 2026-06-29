@@ -64,7 +64,7 @@ export function readPlinkoBet(
 
   if (!record) {
     throw new Error(
-      "Plinko bet response shape is unknown. Check [plinko-api] console logs.",
+      "Plinko bet response shape is unknown. Check [api] console logs.",
     );
   }
 
@@ -80,7 +80,7 @@ export function readPlinkoBet(
 
   if (bucketIndex === null || multiplier === null || payout === null) {
     throw new Error(
-      "Plinko bet response is missing a valid bucketIndex/path, multiplier, or payout. Check [plinko-api] console logs.",
+      "Plinko bet response is missing a valid bucketIndex/path, multiplier, or payout. Check [api] console logs.",
     );
   }
 

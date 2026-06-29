@@ -1,7 +1,7 @@
 import {
-  plinkoClient,
+  authenticatedClient,
   requestWithAuthRetry,
-} from "@/features/plinko/api/plinko-client";
+} from "@/shared/api";
 import type {
   BetHistoryQueryParams,
   BetHistoryResponse,
@@ -61,14 +61,14 @@ export async function getBetHistory(
 
   if (params.variant === "profile") {
     const response = await requestWithAuthRetry(() =>
-      plinkoClient.get<RawProfileBetResponse>(url, { params: requestParams }),
+      authenticatedClient.get<RawProfileBetResponse>(url, { params: requestParams }),
     );
 
     return mapProfileBetHistoryResponse(response.data);
   }
 
   const response = await requestWithAuthRetry(() =>
-    plinkoClient.get<RawLiveBetItem[]>(url, { params: requestParams }),
+    authenticatedClient.get<RawLiveBetItem[]>(url, { params: requestParams }),
   );
 
   return mapLiveBetHistoryResponse(response.data);
@@ -101,7 +101,7 @@ async function fetchUserBetHistoryPage(
   page: number,
 ): Promise<BetHistoryResponse> {
   const response = await requestWithAuthRetry(() =>
-    plinkoClient.get<RawProfileBetResponse>("/bets/my", {
+    authenticatedClient.get<RawProfileBetResponse>("/bets/my", {
       params: { page, take: PROFILE_FETCH_PAGE_SIZE },
     }),
   );
