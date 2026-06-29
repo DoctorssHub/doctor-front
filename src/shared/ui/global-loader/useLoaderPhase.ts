@@ -18,12 +18,10 @@ export function useLoaderPhase(): LoaderPhase {
     predicate: (query) => isCriticalQueryKey(pathname, query.queryKey),
   });
 
-  const pathnameRef = useRef(pathname);
-  const previousPathnameRef = useRef(pathname);
-  const didMountRef = useRef(false);
-  const observedCriticalFetchRef = useRef(activeFetchCount > 0);
-  const activeFetchCountRef = useRef(activeFetchCount);
+  const prevPathnameRef = useRef(pathname);
   const pendingRef = useRef(true);
+  const seenFetchRef = useRef(activeFetchCount > 0);
+  const fetchCountRef = useRef(activeFetchCount);
   const readinessTimerRef = useRef<number | null>(null);
   const hideTimerRef = useRef<number | null>(null);
   const watchdogTimerRef = useRef<number | null>(null);
@@ -31,18 +29,18 @@ export function useLoaderPhase(): LoaderPhase {
   const [phase, setPhase] = useState<LoaderPhase>("visible");
 
   useEffect(() => {
-    pathnameRef.current = pathname;
-  }, [pathname]);
-
-  useEffect(() => {
-    activeFetchCountRef.current = activeFetchCount;
+    fetchCountRef.current = activeFetchCount;
   }, [activeFetchCount]);
 
-  const clearTimers = useCallback(() => {
+  const clearReadinessTimer = useCallback(() => {
     if (readinessTimerRef.current !== null) {
       window.clearTimeout(readinessTimerRef.current);
       readinessTimerRef.current = null;
     }
+  }, []);
+
+  const clearAllTimers = useCallback(() => {
+    clearReadinessTimer();
 
     if (hideTimerRef.current !== null) {
       window.clearTimeout(hideTimerRef.current);
@@ -53,99 +51,78 @@ export function useLoaderPhase(): LoaderPhase {
       window.clearTimeout(watchdogTimerRef.current);
       watchdogTimerRef.current = null;
     }
-  }, []);
+  }, [clearReadinessTimer]);
 
   const hideLoader = useCallback(() => {
-    clearTimers();
+    clearAllTimers();
+    pendingRef.current = false;
+    seenFetchRef.current = false;
     setPhase("exiting");
 
     hideTimerRef.current = window.setTimeout(() => {
-      pendingRef.current = false;
-      observedCriticalFetchRef.current = false;
       setPhase("hidden");
     }, EXIT_MS);
-  }, [clearTimers]);
+  }, [clearAllTimers]);
 
-  const scheduleHideWhenReady = useCallback(() => {
-    if (!pendingRef.current) {
+  const scheduleHide = useCallback((currentPathname: string) => {
+    if (!pendingRef.current || fetchCountRef.current > 0) {
       return;
     }
 
-    if (activeFetchCountRef.current > 0) {
-      return;
-    }
+    clearReadinessTimer();
 
-    if (readinessTimerRef.current !== null) {
-      window.clearTimeout(readinessTimerRef.current);
-    }
-
-    const shouldWaitForQueryRegistration =
-      hasCriticalQueries(pathnameRef.current) && !observedCriticalFetchRef.current;
-    const readinessDelayMs = shouldWaitForQueryRegistration
-      ? CRITICAL_QUERY_SETTLE_MS
-      : READINESS_DELAY_MS;
+    const awaitingFirstFetch =
+      hasCriticalQueries(currentPathname) && !seenFetchRef.current;
+    const delayMs = awaitingFirstFetch ? CRITICAL_QUERY_SETTLE_MS : READINESS_DELAY_MS;
 
     readinessTimerRef.current = window.setTimeout(() => {
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          if (activeFetchCountRef.current === 0) {
-            hideLoader();
-          }
-        });
+      requestAnimationFrame(() => {
+        if (fetchCountRef.current === 0) {
+          hideLoader();
+        }
       });
-    }, readinessDelayMs);
-  }, [hideLoader]);
+    }, delayMs);
+  }, [clearReadinessTimer, hideLoader]);
 
+  // Navigation: show loader when pathname changes
   useEffect(() => {
-    scheduleHideWhenReady();
-  }, [scheduleHideWhenReady]);
-
-  useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true;
-      previousPathnameRef.current = pathname;
+    if (prevPathnameRef.current === pathname) {
       return;
     }
 
-    if (previousPathnameRef.current === pathname) {
-      return;
-    }
+    prevPathnameRef.current = pathname;
 
-    previousPathnameRef.current = pathname;
-
-    clearTimers();
+    clearAllTimers();
     pendingRef.current = true;
-    observedCriticalFetchRef.current = false;
+    seenFetchRef.current = false;
     setPhase("visible");
 
     watchdogTimerRef.current = window.setTimeout(() => {
       hideLoader();
     }, NAVIGATION_TIMEOUT_MS);
 
-    scheduleHideWhenReady();
-  }, [pathname, clearTimers, hideLoader, scheduleHideWhenReady]);
+    scheduleHide(pathname);
+  }, [pathname, clearAllTimers, hideLoader, scheduleHide]);
 
+  // Hold loader while critical queries are in-flight
   useEffect(() => {
     if (activeFetchCount > 0) {
-      observedCriticalFetchRef.current = true;
+      seenFetchRef.current = true;
+      clearReadinessTimer();
 
-      clearTimers();
-
-      if (pendingRef.current) {
+      if (hideTimerRef.current !== null) {
+        window.clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = null;
         setPhase("visible");
       }
 
       return;
     }
 
-    scheduleHideWhenReady();
-  }, [activeFetchCount, clearTimers, scheduleHideWhenReady]);
+    scheduleHide(pathname);
+  }, [activeFetchCount, pathname, clearReadinessTimer, scheduleHide]);
 
-  useEffect(() => {
-    return () => {
-      clearTimers();
-    };
-  }, [clearTimers]);
+  useEffect(() => clearAllTimers, [clearAllTimers]);
 
   return phase;
 }
