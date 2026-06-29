@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { AutoBetControls } from "@/widgets/game-sidebar/ui/AutoBetControls";
-import { BetAmountField } from "@/widgets/game-sidebar/ui/BetAmountField";
-import { GameBetButton } from "@/widgets/game-sidebar/ui/GameBetButton";
-import { GameSidebar } from "@/widgets/game-sidebar/ui/GameSidebar";
-import { ModeTabs } from "@/widgets/game-sidebar/ui/ModeTabs";
-import type { BetAmountControl } from "@/widgets/game-sidebar/lib/bet-amount-controls";
+import { AutoBetControls } from "@/shared/ui/game-sidebar/ui/AutoBetControls";
+import { BetAmountField } from "@/shared/ui/game-sidebar/ui/BetAmountField";
+import { GameBetButton } from "@/shared/ui/game-sidebar/ui/GameBetButton";
+import { GameSidebar } from "@/shared/ui/game-sidebar/ui/GameSidebar";
+import { ModeTabs } from "@/shared/ui/game-sidebar/ui/ModeTabs";
+import type { BetAmountControl } from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
 import type { DiceAutoConfig, DiceMode } from "../../model/use-dice-game";
 import { DiceAutoConfigModal } from "./DiceAutoConfigModal";
 import redCoinIcon from "@/assets/shared/red-coin.svg";

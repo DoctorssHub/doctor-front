@@ -4,12 +4,11 @@ import { useEffect } from "react";
 import { usePlinkoBettingStore } from "@/features/plinko/model/plinko-betting-store";
 import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
 import { usePlinkoRoundsStore } from "@/features/plinko/model/plinko-rounds-store";
+import { usePlinkoConfig } from "@/features/plinko/model/usePlinkoConfig";
+import { PlinkoBoardPanel, PlinkoSidebar } from "@/features/plinko/ui";
 import { ProvablyFairBar } from "@/features/provably-fair";
 import { GameFullscreenShell } from "@/shared";
 import { BetHistoryTable } from "@/widgets/bet-history";
-import { usePlinkoConfig } from "../model/usePlinkoConfig";
-import { PlinkoBoardPanel } from "./PlinkoBoardPanel";
-import { PlinkoSidebar } from "./PlinkoSidebar";
 
 export function PlinkoScreen() {
   const {

@@ -6,7 +6,7 @@ import {
   getNextBetAmount,
   readBetAmount,
   type BetAmountControl,
-} from "@/widgets/game-sidebar/lib/bet-amount-controls";
+} from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
 import {
   AutoBetControls,
   BetAmountField,
@@ -14,7 +14,7 @@ import {
   GameSidebar,
   ModeTabs,
   RiskSelector,
-} from "@/widgets/game-sidebar/ui";
+} from "@/shared/ui/game-sidebar/ui";
 import { getKenoBetButtonLabel } from "../../../lib/keno-bet-label";
 import { type KenoRisk } from "../../../model/keno-controls-store";
 import { KenoActionButtons } from "./KenoActionButtons";

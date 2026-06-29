@@ -1,4 +1,4 @@
-import { plinkoClient } from "@/features/plinko/api/plinko-client";
+import { authenticatedClient } from "@/shared/api";
 
 import type {
   LeaderboardDetailsResponse,
@@ -43,7 +43,7 @@ type RawLeaderboardDetailsResponse = RawLeaderboardMonth & {
 };
 
 export async function getLatestLeaderboardMonth(): Promise<LeaderboardMonthResponse | null> {
-  const response = await plinkoClient.get<RawLeaderboardMonthResponse>(
+  const response = await authenticatedClient.get<RawLeaderboardMonthResponse>(
     "/leaderboard",
     {
       params: { page: 1, take: 1 },
@@ -66,7 +66,7 @@ export async function getLeaderboardDetails(
   month: string,
   take: number,
 ): Promise<LeaderboardDetailsResponse> {
-  const response = await plinkoClient.get<RawLeaderboardDetailsResponse>(
+  const response = await authenticatedClient.get<RawLeaderboardDetailsResponse>(
     `/leaderboard/${month}`,
     {
       params: { page: 1, take },

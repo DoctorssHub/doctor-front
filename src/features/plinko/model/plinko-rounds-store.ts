@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { Bet } from "@/entities/bet/model/types";
 import type { GameMode, Risk } from "@/entities/game/model/types";
-import type { ActiveRound } from "@/widgets/plinko-board/model/active-round";
+import type { ActiveRound } from "@/features/plinko/model/active-round";
 import { useLiveBetRevealStore } from "@/shared/model/live-bet-reveal-store";
 
 const MAX_RECENT_MULTIPLIERS = 20;
