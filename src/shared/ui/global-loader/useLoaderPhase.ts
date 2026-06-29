@@ -118,7 +118,7 @@ export function useLoaderPhase(): LoaderPhase {
       seenFetchRef.current = true;
       clearReadinessTimer();
 
-      if (hideTimerRef.current !== null) {
+      if (pendingRef.current && hideTimerRef.current !== null) {
         window.clearTimeout(hideTimerRef.current);
         hideTimerRef.current = null;
         setPhase("visible");
