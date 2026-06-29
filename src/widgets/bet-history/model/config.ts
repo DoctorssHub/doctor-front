@@ -1,18 +1,5 @@
 import type { GameType } from "@/entities/bet/model/types";
-import type {
-  BetHistoryLiveCategory,
-  BetHistorySort,
-} from "@/features/bet-history/model/types";
-
-export type SortOption = {
-  label: string;
-  value: BetHistorySort;
-};
-
-export const BET_HISTORY_SORT_OPTIONS: SortOption[] = [
-  { label: "Date", value: "date" },
-  { label: "Win", value: "win" },
-];
+import type { BetHistoryLiveCategory } from "@/features/bet-history/model/types";
 
 export type GameTab = {
   label: string;
@@ -38,7 +25,13 @@ export const BET_HISTORY_LIVE_TABS: LiveTab[] = [
   { label: "Lucky Bets", value: "lucky-bets" },
 ];
 
+export const GAME_SLUG_MAP: Record<GameType, string> = {
+  roulette: "thedoctor_roulette",
+  keno: "thedoctor_keno",
+  plinko: "thedoctor_plinko",
+  dice: "thedoctor_dice",
+};
+
 export const BET_HISTORY_DEFAULT_LIMIT = 8;
 
-// Profile history is fetched in full and paginated on the client.
 export const BET_HISTORY_PROFILE_PAGE_SIZE = 10;
