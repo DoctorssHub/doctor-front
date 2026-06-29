@@ -1,6 +1,6 @@
 import { memo } from "react";
 import Image from "next/image";
-import coinIcon from "@/assets/BetCointIcon.svg";
+import coinIcon from "@/assets/shared/red-coin.svg";
 import kenoDiamondIcon from "@/assets/games/keno/diamond.svg";
 import gobletIcon from "@/assets/games/roulette/whiteGoblet.svg";
 import type { KenoBetResponse } from "../../api/keno-types";

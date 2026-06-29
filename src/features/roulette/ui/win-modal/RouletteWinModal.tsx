@@ -1,5 +1,5 @@
 import Image from "next/image";
-import coinIcon from "@/assets/BetCointIcon.svg";
+import coinIcon from "@/assets/shared/red-coin.svg";
 import gobletIcon from "@/assets/games/roulette/whiteGoblet.svg";
 import { ROULETTE_RED_NUMBERS } from "../../model/roulette-constants";
 import type { RouletteResult } from "../../model/use-roulette-store";
