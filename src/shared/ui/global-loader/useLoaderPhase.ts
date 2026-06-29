@@ -84,6 +84,14 @@ export function useLoaderPhase(): LoaderPhase {
     }, delayMs);
   }, [clearReadinessTimer, hideLoader]);
 
+  // Initial page load: watchdog to force-hide if queries never settle
+  useEffect(() => {
+    watchdogTimerRef.current = window.setTimeout(() => {
+      hideLoader();
+    }, NAVIGATION_TIMEOUT_MS);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Navigation: show loader when pathname changes
   useEffect(() => {
     if (prevPathnameRef.current === pathname) {
