@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { StaticImageData } from "next/image";
-import coinIcon from "@/assets/BetCointIcon.svg";
+import coinIcon from "@/assets/shared/red-coin.svg";
 import coinBagImage from "@/assets/profile/coin-bag.png";
 import coinsImage from "@/assets/profile/coins.png";
 
