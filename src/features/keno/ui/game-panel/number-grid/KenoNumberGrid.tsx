@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import { useShallow } from "zustand/react/shallow";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { KENO_NUMBERS } from "../../../model/keno-constants";
 import { useKenoControlsStore } from "../../../model/keno-controls-store";
 import { KENO_MULTIPLIERS } from "../../../model/keno-multipliers";
@@ -57,6 +58,11 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
     revealedMissNumbers,
     revealedResultNumbers,
   });
+  function handleSelectNumber(number: number) {
+    gameSounds.playSelection();
+    toggleNumber(number);
+  }
+
   const selectedNumbersCount = selectedNumbers.length;
   const hasSettledResults = resultNumbers.length > 0 && !isRevealingResults;
   const multipliers =
@@ -102,7 +108,7 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
               disabled={isInteractionLocked}
               key={number}
               number={number}
-              onSelect={toggleNumber}
+              onSelect={handleSelectNumber}
               setTileRef={setTileRef}
               state={state}
             />

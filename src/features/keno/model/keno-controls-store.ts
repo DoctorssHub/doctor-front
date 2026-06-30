@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { GameMode } from "@/entities/game/model/types";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import { delay } from "../lib/keno-delay";
 import { pickRandomKenoNumbers } from "../lib/keno-random-selection";
@@ -58,18 +59,17 @@ export const useKenoControlsStore = create<KenoControlsStore>((set, get) => ({
         set({ autoPickingNumber: number });
         await delay(AUTO_PICK_DELAY_MS);
 
-        set((state) => {
-          if (
-            state.selectedNumbers.includes(number) ||
-            state.selectedNumbers.length >= KENO_MAX_SELECTION
-          ) {
-            return state;
-          }
+        const { selectedNumbers: currentSelectedNumbers } = get();
 
-          return {
-            selectedNumbers: [...state.selectedNumbers, number],
-          };
-        });
+        if (
+          currentSelectedNumbers.includes(number) ||
+          currentSelectedNumbers.length >= KENO_MAX_SELECTION
+        ) {
+          continue;
+        }
+
+        gameSounds.playSelection();
+        set({ selectedNumbers: [...currentSelectedNumbers, number] });
       }
     } finally {
       set({ autoPickingNumber: null, isAutoPicking: false });

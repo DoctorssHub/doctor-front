@@ -1,6 +1,7 @@
 "use client";
 
-import { memo, useCallback, useRef } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { useDevicePixelRatio } from "@/shared/lib/useDevicePixelRatio";
 import type { ActiveRound } from "@/features/plinko/model/active-round";
 import {
@@ -33,6 +34,7 @@ export const PlinkoCanvas = memo(function PlinkoCanvas({
   const staticCanvasRef = useRef<HTMLCanvasElement>(null);
   const ballCanvasRef = useRef<HTMLCanvasElement>(null);
   const ballContextRef = useRef<CanvasRenderingContext2D | null>(null);
+  const playedImpactIndexByRoundRef = useRef(new Map<string, number>());
   const boardHeight = getBoardHeight(rows, layout);
   const boardWidth = getBoardWidth(layout);
   const pixelRatio = useDevicePixelRatio();
@@ -49,6 +51,47 @@ export const PlinkoCanvas = memo(function PlinkoCanvas({
     rows,
   });
 
+  useEffect(() => {
+    const activeRoundIds = new Set(activeRounds.map((round) => round.id));
+
+    playedImpactIndexByRoundRef.current.forEach((_, roundId) => {
+      if (!activeRoundIds.has(roundId)) {
+        playedImpactIndexByRoundRef.current.delete(roundId);
+      }
+    });
+  }, [activeRounds]);
+
+  const playPendingPegImpactSounds = useCallback(
+    (timestamp: number) => {
+      activeRoundsRef.current.forEach((round) => {
+        if (isRoundCompleted(round.id)) {
+          return;
+        }
+
+        const ballMotion = getRoundMotion(round.id);
+        const startedAt = getRoundStartedAt(round.id);
+
+        if (!ballMotion || startedAt === undefined) {
+          return;
+        }
+
+        const elapsedMs = timestamp - startedAt;
+        let nextImpactIndex = playedImpactIndexByRoundRef.current.get(round.id) ?? 0;
+
+        while (
+          nextImpactIndex < ballMotion.impactEvents.length &&
+          ballMotion.impactEvents[nextImpactIndex].timeMs <= elapsedMs
+        ) {
+          gameSounds.playImpact();
+          nextImpactIndex += 1;
+        }
+
+        playedImpactIndexByRoundRef.current.set(round.id, nextImpactIndex);
+      });
+    },
+    [activeRoundsRef, getRoundMotion, getRoundStartedAt, isRoundCompleted],
+  );
+
   const drawFrame = useCallback(
     (timestamp: number) => {
       const ballContext = ballContextRef.current;
@@ -56,6 +99,8 @@ export const PlinkoCanvas = memo(function PlinkoCanvas({
       if (!ballContext) {
         return "stop";
       }
+
+      playPendingPegImpactSounds(timestamp);
 
       const { ballFrames, shouldContinue } = collectBallFrames({
         activeRounds: activeRoundsRef.current,
@@ -88,6 +133,7 @@ export const PlinkoCanvas = memo(function PlinkoCanvas({
       layout,
       markRoundCompleted,
       onAnimationComplete,
+      playPendingPegImpactSounds,
       pixelRatio,
       rows,
     ],

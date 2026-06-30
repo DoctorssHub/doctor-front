@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import { getRouletteConfig, placeRouletteBet } from "../api/roulette-api";
 import type {
@@ -76,9 +77,15 @@ export function useRouletteGame() {
   });
 
   const handleLandingComplete = useCallback(() => {
+    const didWin = result !== null && Number(result.payout) > 0;
+
+    gameSounds.stop("roulette");
+
+    gameSounds.playResult({ didWin, lossSound: "pocket" });
+
     addResultToHistory();
     setIsResultAnimating(false);
-    setIsWinModalVisible(result !== null && Number(result.payout) > 0);
+    setIsWinModalVisible(didWin);
   }, [addResultToHistory, result]);
 
   useEffect(() => {
@@ -111,11 +118,13 @@ export function useRouletteGame() {
       return (await placeRouletteBet(payload)).data;
     },
     onMutate: () => {
+      gameSounds.playBetStart("roulette");
       setIsWinModalVisible(false);
       startSpin();
     },
     onError: () => {
       autoBetting.stopAutoBetting();
+      gameSounds.stop("roulette");
       setIsResultAnimating(false);
       stopSpin();
     },
@@ -141,6 +150,29 @@ export function useRouletteGame() {
     : configQuery.error || meQuery.error
       ? "Unable to load game data"
       : null;
+
+  function handleSelectChip(chip: number) {
+    gameSounds.playSelection();
+    selectChip(chip);
+  }
+
+  function handlePlaceBet(bet: Parameters<typeof placeBet>[0]) {
+    gameSounds.playChipPlacement(
+      bet.kind === "straight" ? "straight" : "group",
+    );
+
+    placeBet(bet);
+  }
+
+  function handleClearBets() {
+    gameSounds.playClear();
+    clearBets();
+  }
+
+  function handleUndoBet() {
+    gameSounds.playChipPlacement("straight");
+    undoBet();
+  }
 
   function handleBetSubmit() {
     if (autoBetting.isAutoRunning) {
@@ -175,12 +207,12 @@ export function useRouletteGame() {
       minBet,
       mode: betMode,
       onAutoBetCountChange: autoBetting.handleAutoBetCountChange,
-      onClear: clearBets,
+      onClear: handleClearBets,
       onModeChange: setBetMode,
-      onSelectChip: selectChip,
+      onSelectChip: handleSelectChip,
       onSubmit: handleBetSubmit,
       onToggleAutoInfinite: autoBetting.handleToggleAutoInfinite,
-      onUndo: undoBet,
+      onUndo: handleUndoBet,
       selectedChip,
       totalBetAmount,
     },
@@ -198,10 +230,10 @@ export function useRouletteGame() {
       result,
       resultHistory,
       onLandingComplete: handleLandingComplete,
-      onClear: clearBets,
-      onPlaceBet: placeBet,
+      onClear: handleClearBets,
+      onPlaceBet: handlePlaceBet,
       onSettleResultHistory: settleResultHistory,
-      onUndo: undoBet,
+      onUndo: handleUndoBet,
     },
   };
 }

@@ -10,6 +10,7 @@ import {
 import { usePlinkoBettingStore } from "@/features/plinko/model/plinko-betting-store";
 import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
 import type { usePlinkoRoundsStore } from "@/features/plinko/model/plinko-rounds-store";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { readBetAmount } from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
 import { validateFiniteAutoBetBudget } from "../lib/plinko-controls";
 import { validatePlinkoBetAmount } from "./usePlinkoBetAmount";
@@ -67,6 +68,8 @@ export function usePlinkoBetting({
 
   const runPlinkoBet = useCallback(
     async (request: BetRequest) => {
+      gameSounds.playBetStart("plinko");
+
       const bet = readPlinkoBet(await placePlinkoBet(request), request);
 
       addRound({ bet, request });

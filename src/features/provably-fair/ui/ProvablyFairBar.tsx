@@ -3,8 +3,10 @@
 import Image from "next/image";
 import { useState } from "react";
 import fullScreenIcon from "@/assets/games/provably-fair/fullScreen.svg";
+import muteIcon from "@/assets/games/provably-fair/muteIcon.svg";
 import settingIcon from "@/assets/games/provably-fair/settingIcon.svg";
 import volumeIcon from "@/assets/games/provably-fair/volumeIcon.svg";
+import { useGameSoundStore } from "@/shared/model/game-sound-store";
 import type { StaticImageData } from "next/image";
 import type { ProvablyFairGame } from "../model/provably-fair-games";
 import { ProvablyFairButton } from "./ProvablyFairButton";
@@ -83,7 +85,9 @@ function FairnessIconButton({
 function GameSettingsPopover() {
   const [isTurboMode, setIsTurboMode] = useState(true);
   const [isMaxBet, setIsMaxBet] = useState(false);
-  const [volume, setVolume] = useState(54);
+  const volume = useGameSoundStore((state) => state.volume);
+  const setVolume = useGameSoundStore((state) => state.setVolume);
+  const soundIcon = volume === 0 ? muteIcon : volumeIcon;
 
   return (
     <div className="absolute bottom-[calc(100%+28px)] left-0 z-20 flex h-[164px] w-[248px] flex-col justify-between rounded-[24px] bg-[#0a0d19] p-6 shadow-[0_18px_44px_rgb(0_0_0/28%)]">
@@ -98,7 +102,7 @@ function GameSettingsPopover() {
         onChange={() => setIsMaxBet((current) => !current)}
       />
       <div className="flex items-center gap-5">
-        <Image alt="" height={20} src={volumeIcon} width={20} />
+        <Image alt="" height={20} src={soundIcon} width={20} />
         <input
           aria-label="Game volume"
           className="h-2 flex-1 cursor-pointer appearance-none rounded-full bg-[#1c212c] [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-2.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"

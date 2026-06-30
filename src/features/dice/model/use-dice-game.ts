@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import {
@@ -111,6 +112,11 @@ export function useDiceGame() {
       return (await placeDiceBet(payload)).data;
     },
     onSuccess: (response) => {
+      gameSounds.playResult({
+        didWin: response.didWin,
+        lossSound: "revealed",
+      });
+
       setResult(response);
       setResultHistory((history) => [...history, response].slice(-6));
       queryClient.setQueryData<MeResponse>(["me"], (user) =>
@@ -235,6 +241,7 @@ export function useDiceGame() {
 
     try {
       while (!shouldStopAutoRef.current && remainingBets > 0) {
+        gameSounds.playBetStart("dice");
         await betMutation.mutateAsync(payload);
 
         if (!isAutoInfinite) {
@@ -279,6 +286,7 @@ export function useDiceGame() {
       return;
     }
 
+    gameSounds.playBetStart("dice");
     betMutation.mutate(payload);
   }
 

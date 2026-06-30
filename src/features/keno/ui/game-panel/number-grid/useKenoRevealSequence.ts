@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { KENO_NUMBERS } from "../../../model/keno-constants";
 
 const RESULT_REVEAL_DELAY_MS = 120;
@@ -37,6 +38,15 @@ export function useKenoRevealSequence({
     function revealNextNumber() {
       const nextNumber = revealNumbers[revealIndex];
       const isResultNumber = resultNumbers.includes(nextNumber);
+      const isMatchNumber = isResultNumber && roundSelectedNumbers.includes(nextNumber);
+
+      if (isMatchNumber) {
+        gameSounds.playMatch();
+      } else if (isResultNumber) {
+        gameSounds.playReveal();
+      } else {
+        gameSounds.playImpact();
+      }
 
       if (isResultNumber) {
         setRevealedResultNumbers((currentNumbers) => [

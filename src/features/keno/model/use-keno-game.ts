@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import {
   formatBetAmount,
   readBetAmount,
@@ -98,6 +99,7 @@ export function useKenoGame() {
 
   const runKenoBet = useCallback(
     async ({ betSize, risk: roundRisk, selectedNumbers }: KenoBetRound) => {
+      gameSounds.playBetStart("keno");
       hideResultModal();
       beginRound(selectedNumbers);
 
@@ -205,12 +207,21 @@ export function useKenoGame() {
   ]);
 
   const handleRevealComplete = useCallback(() => {
+    const didWin = lastBetResult !== null && Number(lastBetResult.payout) > 0;
+
+    gameSounds.playResult({ didWin, lossSound: "revealed" });
+
     completeReveal();
 
     showResultModal();
 
     resolvePendingReveal();
-  }, [completeReveal, resolvePendingReveal, showResultModal]);
+  }, [
+    completeReveal,
+    lastBetResult,
+    resolvePendingReveal,
+    showResultModal,
+  ]);
 
   const handleResultsReset = useCallback(() => {
     hideResultModal();
