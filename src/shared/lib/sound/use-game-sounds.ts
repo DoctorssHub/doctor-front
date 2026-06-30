@@ -21,7 +21,9 @@ const GAME_SOUND_PATHS = {
 const MAX_AUDIO_POOL_SIZE = 4;
 
 type GameSoundKey = keyof typeof GAME_SOUND_PATHS;
-type GameSounds = Record<`play${Capitalize<GameSoundKey>}`, () => void>;
+type GameSounds = Record<`play${Capitalize<GameSoundKey>}`, () => void> & {
+  stopRoulette: () => void;
+};
 
 const audioPools = new Map<GameSoundKey, HTMLAudioElement[]>();
 
@@ -60,6 +62,15 @@ function getAudio(sound: GameSoundKey) {
   return audioPool[0] ?? null;
 }
 
+function stopGameSound(sound: GameSoundKey) {
+  const audioPool = audioPools.get(sound) ?? [];
+
+  for (const audio of audioPool) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+}
+
 function playGameSound(sound: GameSoundKey) {
   const { volume } = useGameSoundStore.getState();
 
@@ -86,13 +97,17 @@ const gameSounds: GameSounds = {
   playPocket: () => playGameSound("pocket"),
   playRevealed: () => playGameSound("revealed"),
   playRolling: () => playGameSound("rolling"),
-  playRoulette: () => playGameSound("roulette"),
+  playRoulette: () => {
+    stopGameSound("roulette");
+    playGameSound("roulette");
+  },
   playScore: () => playGameSound("score"),
   playSelected: () => playGameSound("selected"),
   playStarShine: () => playGameSound("starShine"),
   playThrow: () => playGameSound("throw"),
   playTick: () => playGameSound("tick"),
   playWin: () => playGameSound("win"),
+  stopRoulette: () => stopGameSound("roulette"),
 };
 
 export function useGameSounds() {

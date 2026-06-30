@@ -80,6 +80,7 @@ export function useRouletteGame() {
   const handleLandingComplete = useCallback(() => {
     const didWin = result !== null && Number(result.payout) > 0;
 
+    sounds.stopRoulette();
     sounds.playPocket();
 
     if (didWin) {
@@ -127,6 +128,7 @@ export function useRouletteGame() {
     },
     onError: () => {
       autoBetting.stopAutoBetting();
+      sounds.stopRoulette();
       setIsResultAnimating(false);
       stopSpin();
     },
@@ -159,7 +161,12 @@ export function useRouletteGame() {
   }
 
   function handlePlaceBet(bet: Parameters<typeof placeBet>[0]) {
-    sounds.playBet();
+    if (bet.kind === "straight") {
+      sounds.playTick();
+    } else {
+      sounds.playBet();
+    }
+
     placeBet(bet);
   }
 
