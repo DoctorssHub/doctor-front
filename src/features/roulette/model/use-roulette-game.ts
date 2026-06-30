@@ -81,10 +81,11 @@ export function useRouletteGame() {
     const didWin = result !== null && Number(result.payout) > 0;
 
     sounds.stopRoulette();
-    sounds.playPocket();
 
     if (didWin) {
       sounds.playWin();
+    } else {
+      sounds.playPocket();
     }
 
     addResultToHistory();
