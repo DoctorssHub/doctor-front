@@ -5,6 +5,7 @@ import { useState } from "react";
 import fullScreenIcon from "@/assets/games/provably-fair/fullScreen.svg";
 import settingIcon from "@/assets/games/provably-fair/settingIcon.svg";
 import volumeIcon from "@/assets/games/provably-fair/volumeIcon.svg";
+import { useGameSoundStore } from "@/shared/model/game-sound-store";
 import type { StaticImageData } from "next/image";
 import type { ProvablyFairGame } from "../model/provably-fair-games";
 import { ProvablyFairButton } from "./ProvablyFairButton";
@@ -83,7 +84,10 @@ function FairnessIconButton({
 function GameSettingsPopover() {
   const [isTurboMode, setIsTurboMode] = useState(true);
   const [isMaxBet, setIsMaxBet] = useState(false);
-  const [volume, setVolume] = useState(54);
+  const { setVolume, volume } = useGameSoundStore((state) => ({
+    setVolume: state.setVolume,
+    volume: state.volume,
+  }));
 
   return (
     <div className="absolute bottom-[calc(100%+28px)] left-0 z-20 flex h-[164px] w-[248px] flex-col justify-between rounded-[24px] bg-[#0a0d19] p-6 shadow-[0_18px_44px_rgb(0_0_0/28%)]">

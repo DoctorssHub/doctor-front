@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
+import { useGameSounds } from "@/shared/lib/sound/use-game-sounds";
 import {
   formatBetAmount,
   readBetAmount,
@@ -23,6 +24,7 @@ const KENO_DEFAULT_MAX_BET = 100000;
 
 export function useKenoGame() {
   const queryClient = useQueryClient();
+  const sounds = useGameSounds();
   const isMountedRef = useRef(true);
   const revealCompleteResolverRef = useRef<(() => void) | null>(null);
   const [localErrorMessage, setLocalErrorMessage] = useState<string | null>(
@@ -98,6 +100,7 @@ export function useKenoGame() {
 
   const runKenoBet = useCallback(
     async ({ betSize, risk: roundRisk, selectedNumbers }: KenoBetRound) => {
+      sounds.playBet();
       hideResultModal();
       beginRound(selectedNumbers);
 
@@ -107,7 +110,7 @@ export function useKenoGame() {
         selected: selectedNumbers.map((number) => number - 1),
       });
     },
-    [beginRound, hideResultModal, placeBet],
+    [beginRound, hideResultModal, placeBet, sounds],
   );
 
   const { requestStop, runAutoBet } = useKenoAutoBet({
@@ -205,12 +208,24 @@ export function useKenoGame() {
   ]);
 
   const handleRevealComplete = useCallback(() => {
+    const didWin = lastBetResult !== null && Number(lastBetResult.payout) > 0;
+
+    if (didWin) {
+      sounds.playWin();
+    }
+
     completeReveal();
 
     showResultModal();
 
     resolvePendingReveal();
-  }, [completeReveal, resolvePendingReveal, showResultModal]);
+  }, [
+    completeReveal,
+    lastBetResult,
+    resolvePendingReveal,
+    showResultModal,
+    sounds,
+  ]);
 
   const handleResultsReset = useCallback(() => {
     hideResultModal();
