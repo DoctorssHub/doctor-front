@@ -72,7 +72,7 @@ export function usePlinkoBetting({
       const bet = readPlinkoBet(await placePlinkoBet(request), request);
 
       addRound({ bet, request });
-      sounds.playRolling();
+      sounds.playBet();
     },
     [addRound, sounds],
   );
