@@ -4,16 +4,12 @@ export type BetHistoryVariant = "profile" | "games-live" | "game-live";
 
 export type BetHistoryLiveCategory = "all" | "high-rollers" | "lucky-bets";
 
-export type BetHistorySort = "date" | "win";
-
 export type BetHistoryQueryParams =
   | {
       variant: "profile";
-      game?: GameType;
+      gameSlug?: string;
       page: number;
       take: number;
-      search: string;
-      sort: BetHistorySort;
       userId?: string;
     }
   | {

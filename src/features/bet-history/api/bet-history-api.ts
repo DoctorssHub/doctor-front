@@ -74,41 +74,6 @@ export async function getBetHistory(
   return mapLiveBetHistoryResponse(response.data);
 }
 
-// Backend has no per-game filtering on `/bets/my`, so the whole history is
-// fetched (max `take`) and then filtered/paginated on the client.
-const PROFILE_FETCH_PAGE_SIZE = 40;
-
-export async function getAllUserBetHistory(): Promise<BetHistoryItem[]> {
-  const firstPage = await fetchUserBetHistoryPage(1);
-
-  if (firstPage.totalPages <= 1) {
-    return firstPage.items;
-  }
-
-  const remainingPages = await Promise.all(
-    Array.from({ length: firstPage.totalPages - 1 }, (_, index) =>
-      fetchUserBetHistoryPage(index + 2),
-    ),
-  );
-
-  return remainingPages.reduce(
-    (items, response) => items.concat(response.items),
-    firstPage.items,
-  );
-}
-
-async function fetchUserBetHistoryPage(
-  page: number,
-): Promise<BetHistoryResponse> {
-  const response = await requestWithAuthRetry(() =>
-    authenticatedClient.get<RawProfileBetResponse>("/bets/my", {
-      params: { page, take: PROFILE_FETCH_PAGE_SIZE },
-    }),
-  );
-
-  return mapProfileBetHistoryResponse(response.data);
-}
-
 function mapProfileBetHistoryResponse(
   data: RawProfileBetResponse,
 ): BetHistoryResponse {
@@ -186,6 +151,7 @@ function createBetHistoryRequest(
         params: {
           page: params.page,
           take: params.take,
+          gameSlug: params.gameSlug,
         },
       };
     case "games-live":
