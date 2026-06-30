@@ -8,24 +8,45 @@ const GAME_SOUND_PATHS = {
   match: "/sounds/match.mp3",
   pocket: "/sounds/pocket.mp3",
   revealed: "/sounds/revealed.mp3",
-  rolling: "/sounds/rolling.mp3",
   roulette: "/sounds/roulette.mp3",
-  score: "/sounds/score.mp3",
   selected: "/sounds/selected.mp3",
-  starShine: "/sounds/star-shine.mp3",
   throw: "/sounds/throw.mp3",
   tick: "/sounds/tick.mp3",
   win: "/sounds/win.mp3",
 } as const;
 
 const MAX_AUDIO_POOL_SIZE = 4;
+const MIN_IMPACT_SOUND_INTERVAL_MS = 50;
 
 type GameSoundKey = keyof typeof GAME_SOUND_PATHS;
-type GameSounds = Record<`play${Capitalize<GameSoundKey>}`, () => void> & {
-  stopRoulette: () => void;
+type BetStartGame = "dice" | "keno" | "plinko" | "roulette";
+type ResultLossSound = "pocket" | "revealed";
+
+type PlayGameSoundOptions = {
+  interrupt?: boolean;
+};
+
+type GameSounds = {
+  playBetStart: (game: BetStartGame) => void;
+  playChipPlacement: (kind: "straight" | "group") => void;
+  playClear: () => void;
+  playImpact: () => void;
+  playMatch: () => void;
+  playResult: (options: { didWin: boolean; lossSound: ResultLossSound }) => void;
+  playReveal: () => void;
+  playSelection: () => void;
+  stop: (sound: GameSoundKey) => void;
+};
+
+const BET_START_SOUNDS: Record<BetStartGame, GameSoundKey> = {
+  dice: "throw",
+  keno: "bet",
+  plinko: "bet",
+  roulette: "roulette",
 };
 
 const audioPools = new Map<GameSoundKey, HTMLAudioElement[]>();
+let lastImpactSoundAt = 0;
 
 function createAudio(sound: GameSoundKey) {
   if (typeof Audio === "undefined") {
@@ -38,7 +59,8 @@ function createAudio(sound: GameSoundKey) {
   return audio;
 }
 
-function getAudio(sound: GameSoundKey) {
+function getAudio(sound: GameSoundKey, options: PlayGameSoundOptions = {}) {
+  const { interrupt = true } = options;
   const audioPool = audioPools.get(sound) ?? [];
   const availableAudio = audioPool.find((audio) => audio.paused || audio.ended);
 
@@ -59,7 +81,7 @@ function getAudio(sound: GameSoundKey) {
     return audio;
   }
 
-  return audioPool[0] ?? null;
+  return interrupt ? audioPool[0] ?? null : null;
 }
 
 function stopGameSound(sound: GameSoundKey) {
@@ -71,14 +93,14 @@ function stopGameSound(sound: GameSoundKey) {
   }
 }
 
-function playGameSound(sound: GameSoundKey) {
+function playGameSound(sound: GameSoundKey, options?: PlayGameSoundOptions) {
   const { volume } = useGameSoundStore.getState();
 
   if (volume <= 0) {
     return;
   }
 
-  const audio = getAudio(sound);
+  const audio = getAudio(sound, options);
 
   if (!audio) {
     return;
@@ -91,25 +113,33 @@ function playGameSound(sound: GameSoundKey) {
 }
 
 export const gameSounds: GameSounds = {
-  playBet: () => playGameSound("bet"),
-  playGeneric: () => playGameSound("generic"),
-  playMatch: () => playGameSound("match"),
-  playPocket: () => playGameSound("pocket"),
-  playRevealed: () => playGameSound("revealed"),
-  playRolling: () => playGameSound("rolling"),
-  playRoulette: () => {
-    stopGameSound("roulette");
-    playGameSound("roulette");
-  },
-  playScore: () => playGameSound("score"),
-  playSelected: () => playGameSound("selected"),
-  playStarShine: () => playGameSound("starShine"),
-  playThrow: () => playGameSound("throw"),
-  playTick: () => playGameSound("tick"),
-  playWin: () => playGameSound("win"),
-  stopRoulette: () => stopGameSound("roulette"),
-};
+  playBetStart: (game) => {
+    const sound = BET_START_SOUNDS[game];
 
-export function useGameSounds() {
-  return gameSounds;
-}
+    if (sound === "roulette") {
+      stopGameSound(sound);
+    }
+
+    playGameSound(sound);
+  },
+  playChipPlacement: (kind) =>
+    playGameSound(kind === "straight" ? "tick" : "bet"),
+  playClear: () => playGameSound("generic"),
+  playImpact: () => {
+    const now = performance.now();
+
+    if (now - lastImpactSoundAt < MIN_IMPACT_SOUND_INTERVAL_MS) {
+      return;
+    }
+
+    lastImpactSoundAt = now;
+    playGameSound("tick", { interrupt: false });
+  },
+  playMatch: () => playGameSound("match"),
+  playResult: ({ didWin, lossSound }) => {
+    playGameSound(didWin ? "win" : lossSound);
+  },
+  playReveal: () => playGameSound("revealed"),
+  playSelection: () => playGameSound("selected"),
+  stop: stopGameSound,
+};

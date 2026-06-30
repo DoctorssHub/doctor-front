@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
-import { useGameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import { getRouletteConfig, placeRouletteBet } from "../api/roulette-api";
 import type {
@@ -65,7 +65,6 @@ export function useRouletteGame() {
     })),
   );
   const autoBetting = useAutoRouletteBetting();
-  const sounds = useGameSounds();
 
   const configQuery = useQuery({
     queryKey: ["roulette", "config"],
@@ -80,18 +79,14 @@ export function useRouletteGame() {
   const handleLandingComplete = useCallback(() => {
     const didWin = result !== null && Number(result.payout) > 0;
 
-    sounds.stopRoulette();
+    gameSounds.stop("roulette");
 
-    if (didWin) {
-      sounds.playWin();
-    } else {
-      sounds.playPocket();
-    }
+    gameSounds.playResult({ didWin, lossSound: "pocket" });
 
     addResultToHistory();
     setIsResultAnimating(false);
     setIsWinModalVisible(didWin);
-  }, [addResultToHistory, result, sounds]);
+  }, [addResultToHistory, result]);
 
   useEffect(() => {
     if (!isWinModalVisible) {
@@ -123,13 +118,13 @@ export function useRouletteGame() {
       return (await placeRouletteBet(payload)).data;
     },
     onMutate: () => {
-      sounds.playRoulette();
+      gameSounds.playBetStart("roulette");
       setIsWinModalVisible(false);
       startSpin();
     },
     onError: () => {
       autoBetting.stopAutoBetting();
-      sounds.stopRoulette();
+      gameSounds.stop("roulette");
       setIsResultAnimating(false);
       stopSpin();
     },
@@ -157,27 +152,25 @@ export function useRouletteGame() {
       : null;
 
   function handleSelectChip(chip: number) {
-    sounds.playSelected();
+    gameSounds.playSelection();
     selectChip(chip);
   }
 
   function handlePlaceBet(bet: Parameters<typeof placeBet>[0]) {
-    if (bet.kind === "straight") {
-      sounds.playTick();
-    } else {
-      sounds.playBet();
-    }
+    gameSounds.playChipPlacement(
+      bet.kind === "straight" ? "straight" : "group",
+    );
 
     placeBet(bet);
   }
 
   function handleClearBets() {
-    sounds.playGeneric();
+    gameSounds.playClear();
     clearBets();
   }
 
   function handleUndoBet() {
-    sounds.playTick();
+    gameSounds.playChipPlacement("straight");
     undoBet();
   }
 

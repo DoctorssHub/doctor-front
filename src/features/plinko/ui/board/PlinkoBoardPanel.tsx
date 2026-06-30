@@ -6,7 +6,7 @@ import type { GameConfig } from "@/entities/game/model/types";
 import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
 import { usePlinkoRoundsStore } from "@/features/plinko/model/plinko-rounds-store";
 import { PlinkoBoard } from "@/features/plinko/ui/board/PlinkoBoard";
-import { useGameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 
 type PlinkoBoardPanelProps = {
   config: GameConfig;
@@ -17,7 +17,6 @@ export function PlinkoBoardPanel({
   config,
   isFullscreen = false,
 }: PlinkoBoardPanelProps) {
-  const sounds = useGameSounds();
   const {
     activeRounds,
     handleRoundAnimationComplete,
@@ -41,15 +40,11 @@ export function PlinkoBoardPanel({
       const didWin =
         completedRound !== undefined && Number(completedRound.bet.payout) > 0;
 
-      if (didWin) {
-        sounds.playWin();
-      } else {
-        sounds.playPocket();
-      }
+      gameSounds.playResult({ didWin, lossSound: "pocket" });
 
       handleRoundAnimationComplete(roundId);
     },
-    [activeRounds, handleRoundAnimationComplete, sounds],
+    [activeRounds, handleRoundAnimationComplete],
   );
 
   return (

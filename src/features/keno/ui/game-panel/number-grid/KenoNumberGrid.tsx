@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useGameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { KENO_NUMBERS } from "../../../model/keno-constants";
 import { useKenoControlsStore } from "../../../model/keno-controls-store";
 import { KENO_MULTIPLIERS } from "../../../model/keno-multipliers";
@@ -33,7 +33,6 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
   resultNumbers,
   roundSelectedNumbers,
 }: KenoNumberGridProps) {
-  const sounds = useGameSounds();
   const {
     autoPickingNumber,
     isAutoPicking,
@@ -60,7 +59,7 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
     revealedResultNumbers,
   });
   function handleSelectNumber(number: number) {
-    sounds.playSelected();
+    gameSounds.playSelection();
     toggleNumber(number);
   }
 

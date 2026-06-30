@@ -68,7 +68,7 @@ export const useKenoControlsStore = create<KenoControlsStore>((set, get) => ({
           continue;
         }
 
-        gameSounds.playSelected();
+        gameSounds.playSelection();
         set({ selectedNumbers: [...currentSelectedNumbers, number] });
       }
     } finally {

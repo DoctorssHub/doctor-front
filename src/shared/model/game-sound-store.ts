@@ -22,6 +22,7 @@ export const useGameSoundStore = create<GameSoundStore>()(
     }),
     {
       name: "game-sound-settings",
+      partialize: (state) => ({ volume: state.volume }),
     },
   ),
 );

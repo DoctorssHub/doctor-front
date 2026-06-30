@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
-import { useGameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import {
@@ -61,7 +61,6 @@ function waitForNextAutoBet() {
 
 export function useDiceGame() {
   const queryClient = useQueryClient();
-  const sounds = useGameSounds();
   const shouldStopAutoRef = useRef(false);
   const [mode, setMode] = useState<DiceMode>("manual");
   const [betAmount, setBetAmount] = useState("10.00");
@@ -113,11 +112,10 @@ export function useDiceGame() {
       return (await placeDiceBet(payload)).data;
     },
     onSuccess: (response) => {
-      if (response.didWin) {
-        sounds.playWin();
-      } else {
-        sounds.playRevealed();
-      }
+      gameSounds.playResult({
+        didWin: response.didWin,
+        lossSound: "revealed",
+      });
 
       setResult(response);
       setResultHistory((history) => [...history, response].slice(-6));
@@ -243,7 +241,7 @@ export function useDiceGame() {
 
     try {
       while (!shouldStopAutoRef.current && remainingBets > 0) {
-        sounds.playThrow();
+        gameSounds.playBetStart("dice");
         await betMutation.mutateAsync(payload);
 
         if (!isAutoInfinite) {
@@ -288,7 +286,7 @@ export function useDiceGame() {
       return;
     }
 
-    sounds.playThrow();
+    gameSounds.playBetStart("dice");
     betMutation.mutate(payload);
   }
 

@@ -82,7 +82,7 @@ export const PlinkoCanvas = memo(function PlinkoCanvas({
           nextImpactIndex < ballMotion.impactEvents.length &&
           ballMotion.impactEvents[nextImpactIndex].timeMs <= elapsedMs
         ) {
-          gameSounds.playTick();
+          gameSounds.playImpact();
           nextImpactIndex += 1;
         }
 

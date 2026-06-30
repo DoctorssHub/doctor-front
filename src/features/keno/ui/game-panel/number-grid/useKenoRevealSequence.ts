@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { KENO_NUMBERS } from "../../../model/keno-constants";
 
 const RESULT_REVEAL_DELAY_MS = 120;
@@ -16,7 +16,6 @@ export function useKenoRevealSequence({
   resultNumbers,
   roundSelectedNumbers,
 }: UseKenoRevealSequenceParams) {
-  const sounds = useGameSounds();
   const [revealedResultNumbers, setRevealedResultNumbers] = useState<number[]>(
     [],
   );
@@ -42,11 +41,11 @@ export function useKenoRevealSequence({
       const isMatchNumber = isResultNumber && roundSelectedNumbers.includes(nextNumber);
 
       if (isMatchNumber) {
-        sounds.playMatch();
+        gameSounds.playMatch();
       } else if (isResultNumber) {
-        sounds.playRevealed();
+        gameSounds.playReveal();
       } else {
-        sounds.playTick();
+        gameSounds.playImpact();
       }
 
       if (isResultNumber) {
@@ -74,7 +73,7 @@ export function useKenoRevealSequence({
     timeoutId = setTimeout(revealNextNumber, RESULT_REVEAL_DELAY_MS);
 
     return () => clearTimeout(timeoutId);
-  }, [onRevealComplete, resultNumbers, roundSelectedNumbers, sounds]);
+  }, [onRevealComplete, resultNumbers, roundSelectedNumbers]);
 
   return {
     revealedMissNumbers,
