@@ -29,3 +29,50 @@ export type RewardsResponse = {
   total: number;
   totalPages: number;
 };
+
+export type RewardContentAlignment = "center" | "left" | "right";
+
+type RewardContentTune = {
+  alignmentTune?: {
+    alignment?: RewardContentAlignment;
+  };
+};
+
+export type RewardInlineNode =
+  | {
+      text: string;
+      type: "text";
+    }
+  | {
+      type: "lineBreak";
+    }
+  | {
+      children: RewardInlineNode[];
+      type: "strong";
+    }
+  | {
+      children: RewardInlineNode[];
+      href: string;
+      type: "link";
+    };
+
+export type RewardParagraphBlock = {
+  data: {
+    nodes: RewardInlineNode[];
+  };
+  id: string;
+  tunes?: RewardContentTune;
+  type: "paragraph";
+};
+
+export type RewardContentBlock = RewardParagraphBlock;
+
+export type RewardContent = {
+  blocks: RewardContentBlock[];
+  time: number;
+  version: string;
+};
+
+export type RewardDetails = Reward & {
+  content: RewardContent;
+};

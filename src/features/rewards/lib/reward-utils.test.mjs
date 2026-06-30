@@ -5,6 +5,10 @@ import {
   buildRewardsQueryParams,
   REWARDS_DEFAULT_QUERY,
 } from "./reward-query.ts";
+import {
+  mapRewardDetailsResponse,
+  parseRewardInlineContent,
+} from "./reward-mappers.ts";
 import { getRewardsPaginationItems } from "./reward-pagination.ts";
 import { formatRewardCountdown } from "./reward-countdown.ts";
 
@@ -57,4 +61,81 @@ test("getRewardsPaginationItems shows ellipses around a middle page", () => {
     "ellipsis",
     34,
   ]);
+});
+
+test("parseRewardInlineContent returns safe structured inline nodes", () => {
+  assert.deepEqual(
+    parseRewardInlineContent(
+      'Use <strong>THE DOCTOR</strong><br><a href="/rewards">register here</a><script>alert(1)</script><img src=x onerror="bad">',
+    ),
+    [
+      { text: "Use ", type: "text" },
+      {
+        children: [{ text: "THE DOCTOR", type: "text" }],
+        type: "strong",
+      },
+      { type: "lineBreak" },
+      {
+        children: [{ text: "register here", type: "text" }],
+        href: "/rewards",
+        type: "link",
+      },
+    ],
+  );
+});
+
+test("mapRewardDetailsResponse keeps only paragraph content blocks", () => {
+  assert.deepEqual(
+    mapRewardDetailsResponse({
+      content: {
+        blocks: [
+          {
+            data: { text: "Visible<br>" },
+            id: "paragraph-1",
+            type: "paragraph",
+          },
+          {
+            data: { text: "Hidden", level: 4 },
+            id: "header-1",
+            type: "header",
+          },
+          {
+            data: { items: [{ content: "Hidden list" }], style: "unordered" },
+            id: "list-1",
+            type: "list",
+          },
+        ],
+        time: 1779877516495,
+        version: "2.31.6",
+      },
+      endDate: "2026-07-06T21:00:00.000Z",
+      id: "64658e51-27d1-43f6-8753-b4a993d9067a",
+      photoUrl: "https://storage.googleapis.com/reward.png",
+      shortDescription: "Short",
+      title: "Example reward",
+    }),
+    {
+      content: {
+        blocks: [
+          {
+            data: {
+              nodes: [
+                { text: "Visible", type: "text" },
+                { type: "lineBreak" },
+              ],
+            },
+            id: "paragraph-1",
+            type: "paragraph",
+          },
+        ],
+        time: 1779877516495,
+        version: "2.31.6",
+      },
+      endDate: "2026-07-06T21:00:00.000Z",
+      id: "64658e51-27d1-43f6-8753-b4a993d9067a",
+      photoUrl: "https://storage.googleapis.com/reward.png",
+      shortDescription: "Short",
+      title: "Example reward",
+    },
+  );
 });

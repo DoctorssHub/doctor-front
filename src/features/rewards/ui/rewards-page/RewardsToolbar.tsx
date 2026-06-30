@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import searchIcon from "@/assets/shared/searchIcon.svg";
 
-import type { RewardSort } from "../model/types";
+import type { RewardSort } from "../../model/types";
 
 const REWARD_SORT_OPTIONS: { label: string; value: RewardSort }[] = [
   {
@@ -42,7 +42,7 @@ export function RewardsToolbar({
       <label className="flex h-12 min-w-0 flex-1 items-center gap-3 rounded-lg border border-(--color-border-strong) bg-(--color-surface-control)/65 px-3 max-mobile:basis-full">
         <Image alt="" aria-hidden="true" height={16} src={searchIcon} width={16} />
         <input
-          className="min-w-0 flex-1 bg-transparent text-[14px] font-normal text-[#fdfdfd] outline-none placeholder:text-[#6b7280]"
+          className="min-w-0 flex-1 bg-transparent text-[14px] font-normal text-(--color-text-primary) outline-none placeholder:text-[#6b7280]"
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="Search rewards"
           type="search"

@@ -1,4 +1,4 @@
-import { getRewardsPaginationItems } from "../lib/reward-pagination";
+import { getRewardsPaginationItems } from "../../lib/reward-pagination";
 
 type RewardsPaginationProps = {
   currentPage: number;
@@ -34,7 +34,7 @@ export function RewardsPagination({
         item === "ellipsis" ? (
           <span
             aria-hidden="true"
-            className="flex size-10 items-center justify-center text-[20px] font-semibold text-[#c7cbd4]"
+            className="flex size-10 items-center justify-center text-[20px] font-semibold text-(--color-text-muted)"
             key={`ellipsis-${index}`}
           >
             ...
@@ -44,8 +44,8 @@ export function RewardsPagination({
             aria-current={item === currentPage ? "page" : undefined}
             className={`flex size-10 items-center justify-center rounded-[6px] text-[20px] font-semibold transition ${
               item === currentPage
-                ? "bg-[#1b1f26] text-[#fdfdfd]"
-                : "text-[#c7cbd4] hover:bg-[#1b1f26]/70 hover:text-[#fdfdfd]"
+                ? "bg-(--color-surface-icon) text-(--color-text-primary)"
+                : "text-(--color-text-muted) hover:bg-(--color-surface-icon)/70 hover:text-(--color-text-primary)"
             }`}
             key={item}
             onClick={() => onPageChange(item)}
@@ -78,7 +78,7 @@ function PaginationArrow({
   return (
     <button
       aria-label={direction === "previous" ? "Previous page" : "Next page"}
-      className="flex size-10 items-center justify-center rounded-[6px] text-[#64748b] transition hover:bg-[#1b1f26]/70 hover:text-[#c7cbd4] disabled:pointer-events-none disabled:opacity-45"
+      className="flex size-10 items-center justify-center rounded-[6px] text-[#64748b] transition hover:bg-(--color-surface-icon)/70 hover:text-(--color-text-muted) disabled:pointer-events-none disabled:opacity-45"
       disabled={disabled}
       onClick={onClick}
       type="button"

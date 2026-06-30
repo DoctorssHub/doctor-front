@@ -1,5 +1,5 @@
-import type { RewardsResponse } from "../model/types";
-import { RewardCard } from "./RewardCard";
+import type { RewardsResponse } from "../../model/types";
+import { RewardCard } from "../reward-card";
 
 type RewardsGridProps = {
   isFetching: boolean;
@@ -39,7 +39,7 @@ function RewardsGridSkeleton() {
     <div className="grid grid-cols-[repeat(auto-fill,303px)] gap-4 max-mobile:grid-cols-1">
       {Array.from({ length: 4 }).map((_, index) => (
         <div
-          className="h-[374px] w-[303px] overflow-hidden rounded-[12px] border border-[#1b1f26] bg-(--color-surface-elevated) max-mobile:w-full"
+          className="h-[374px] w-[303px] overflow-hidden rounded-[12px] border border-(--color-border-strong) bg-(--color-surface-elevated) max-mobile:w-full"
           key={index}
         >
           <div className="h-[200px] animate-pulse bg-(--color-surface-hover)" />

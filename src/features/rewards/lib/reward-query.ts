@@ -25,7 +25,7 @@ export function buildRewardsQueryParams(
 }
 
 function normalizePositiveInteger(value: number | undefined, fallback: number) {
-  if (!Number.isFinite(value)) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
     return fallback;
   }
 

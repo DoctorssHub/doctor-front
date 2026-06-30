@@ -6,9 +6,10 @@ import { useEffect, useMemo, useState } from "react";
 import rewardsIcon from "@/assets/aside/rewards.svg";
 import { Button } from "@/shared";
 
-import { REWARDS_DEFAULT_QUERY } from "../lib/reward-query";
-import { useRewards } from "../model/use-rewards";
-import type { RewardSort } from "../model/types";
+import { REWARDS_DEFAULT_QUERY } from "../../lib/reward-query";
+import { useRewardClock } from "../../model/use-reward-clock";
+import { useRewards } from "../../model/use-rewards";
+import type { RewardSort } from "../../model/types";
 import { RewardsGrid } from "./RewardsGrid";
 import { RewardsPagination } from "./RewardsPagination";
 import { RewardsToolbar } from "./RewardsToolbar";
@@ -18,7 +19,7 @@ export function RewardsPageView() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sort, setSort] = useState<RewardSort>(REWARDS_DEFAULT_QUERY.sort);
-  const [nowMs, setNowMs] = useState(() => Date.now());
+  const nowMs = useRewardClock();
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -28,14 +29,6 @@ export function RewardsPageView() {
 
     return () => window.clearTimeout(timeoutId);
   }, [search]);
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setNowMs(Date.now());
-    }, 60 * 1000);
-
-    return () => window.clearInterval(intervalId);
-  }, []);
 
   const query = useMemo(
     () => ({
@@ -61,11 +54,11 @@ export function RewardsPageView() {
         <header className="flex max-w-3xl flex-col gap-2">
           <div className="flex items-center gap-3">
             <Image alt="" height={28} src={rewardsIcon} width={28} />
-            <h1 className="text-[32px] leading-tight font-semibold text-[#fdfdfd] max-tablet:text-2xl">
+            <h1 className="text-[32px] leading-tight font-semibold text-(--color-text-primary) max-tablet:text-2xl">
               Rewards
             </h1>
           </div>
-          <p className="text-[16px] font-normal text-[#c7cbd4]">
+          <p className="text-[16px] font-normal text-(--color-text-muted)">
             Explore current reward campaigns, community activations and timed
             offers.
           </p>

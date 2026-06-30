@@ -1,42 +1,38 @@
 import { buildRewardsQueryParams } from "../lib/reward-query";
-import type { Reward, RewardQuery, RewardsResponse } from "../model/types";
-
-type RawReward = {
-  endDate: string;
-  id: string;
-  photoUrl: string;
-  shortDescription: string;
-  title: string;
-};
-
-type RawRewardsResponse = {
-  data: RawReward[];
-  page: number;
-  take: number;
-  total: number;
-  totalPages: number;
-};
+import { mapRewardDetailsResponse, mapRewardsResponse } from "../lib/reward-mappers";
+import type {
+  RewardDetails,
+  RewardQuery,
+  RewardsResponse,
+} from "../model/types";
 
 export async function getRewards(
   query: RewardQuery = {},
 ): Promise<RewardsResponse> {
-  const response = await fetch(`/api/reward/query?${createRewardsSearch(query)}`, {
-    credentials: "include",
-  });
+  const response = await fetch(
+    `/api/reward/query?${createRewardsSearch(query)}`,
+    {
+      credentials: "include",
+    },
+  );
 
   if (!response.ok) {
     throw new Error("Failed to load rewards.");
   }
 
-  const data = (await response.json()) as RawRewardsResponse;
+  return mapRewardsResponse(await response.json());
+}
 
-  return {
-    items: data.data.map(mapReward),
-    page: data.page,
-    take: data.take,
-    total: data.total,
-    totalPages: data.totalPages,
-  };
+export async function getRewardDetails(id: string): Promise<RewardDetails> {
+  const response = await fetch(`/api/reward/query/${id}`, {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to load reward details.");
+  }
+
+  return mapRewardDetailsResponse(await response.json());
 }
 
 function createRewardsSearch(query: RewardQuery) {
@@ -52,14 +48,4 @@ function createRewardsSearch(query: RewardQuery) {
   }
 
   return params.toString();
-}
-
-function mapReward(reward: RawReward): Reward {
-  return {
-    endDate: reward.endDate,
-    id: reward.id,
-    photoUrl: reward.photoUrl,
-    shortDescription: reward.shortDescription,
-    title: reward.title,
-  };
 }
