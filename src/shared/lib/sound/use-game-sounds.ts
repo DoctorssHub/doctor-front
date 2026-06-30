@@ -90,7 +90,7 @@ function playGameSound(sound: GameSoundKey) {
   void audio.play().catch(() => undefined);
 }
 
-const gameSounds: GameSounds = {
+export const gameSounds: GameSounds = {
   playBet: () => playGameSound("bet"),
   playGeneric: () => playGameSound("generic"),
   playMatch: () => playGameSound("match"),
