@@ -84,10 +84,8 @@ function FairnessIconButton({
 function GameSettingsPopover() {
   const [isTurboMode, setIsTurboMode] = useState(true);
   const [isMaxBet, setIsMaxBet] = useState(false);
-  const { setVolume, volume } = useGameSoundStore((state) => ({
-    setVolume: state.setVolume,
-    volume: state.volume,
-  }));
+  const volume = useGameSoundStore((state) => state.volume);
+  const setVolume = useGameSoundStore((state) => state.setVolume);
 
   return (
     <div className="absolute bottom-[calc(100%+28px)] left-0 z-20 flex h-[164px] w-[248px] flex-col justify-between rounded-[24px] bg-[#0a0d19] p-6 shadow-[0_18px_44px_rgb(0_0_0/28%)]">
