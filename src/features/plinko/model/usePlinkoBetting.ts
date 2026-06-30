@@ -69,10 +69,11 @@ export function usePlinkoBetting({
 
   const runPlinkoBet = useCallback(
     async (request: BetRequest) => {
+      sounds.playBet();
+
       const bet = readPlinkoBet(await placePlinkoBet(request), request);
 
       addRound({ bet, request });
-      sounds.playBet();
     },
     [addRound, sounds],
   );
