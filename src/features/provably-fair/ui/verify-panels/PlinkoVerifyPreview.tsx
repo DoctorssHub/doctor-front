@@ -1,4 +1,4 @@
-import { getMultiplierTone } from "@/widgets/plinko-board/lib/multiplier";
+import { getMultiplierTone } from "@/features/plinko/lib/board/multiplier";
 
 type PlinkoVerifyPreviewProps = {
   bucketIndex: number | null;

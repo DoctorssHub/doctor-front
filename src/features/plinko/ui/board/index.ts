@@ -1,0 +1,1 @@
+export { PlinkoBoardPanel } from "./PlinkoBoardPanel";

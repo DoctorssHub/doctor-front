@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { sanitizeIntegerInput } from "@/widgets/game-sidebar/lib/numeric-input";
+import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import type { RouletteBetRequest } from "../api/roulette-types";
 
 const AUTO_NEXT_SPIN_DELAY_MS = 6200;

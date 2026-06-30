@@ -1,4 +1,4 @@
-import { AutoBetControls, ModeTabs } from "@/widgets/game-sidebar";
+import { AutoBetControls, ModeTabs } from "@/shared/ui/game-sidebar";
 import { BetSubmitPanel } from "./BetSubmitPanel";
 import { ChipPicker } from "./ChipPicker";
 import { ManualBetActions } from "./ManualBetActions";

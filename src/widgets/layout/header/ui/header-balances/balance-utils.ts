@@ -2,6 +2,10 @@ import type { UserBalance } from "@/features/auth/lib/read-auth-response";
 
 export function getBalanceIconType(balanceType: string) {
   if (isGamePointsBalanceType(balanceType)) {
+    return "red-coin";
+  }
+
+  if (isWatchPointsBalanceType(balanceType)) {
     return "yellow-coin";
   }
 

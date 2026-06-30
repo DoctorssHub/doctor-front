@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { Risk } from "@/entities/game/model/types";
-import { mockGameConfig } from "@/widgets/plinko-board/model/mock-config";
+import { mockGameConfig } from "@/features/plinko/model/mock-config";
 import {
   verifyDice,
   verifyKeno,

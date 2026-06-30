@@ -317,6 +317,86 @@ button:disabled {
   will-change: opacity, transform;
 }
 
+@keyframes global-loader-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes global-loader-shadow {
+  0%, 100% {
+    opacity: 0.52;
+    transform: scaleX(0.78);
+  }
+
+  50% {
+    opacity: 0.24;
+    transform: scaleX(1.12);
+  }
+}
+
+@keyframes global-loader-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes global-loader-logo-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.94);
+  }
+}
+
+@keyframes global-loader-shadow-exit {
+  from {
+    opacity: 0.52;
+    transform: scaleX(0.78);
+  }
+
+  to {
+    opacity: 0;
+    transform: scaleX(1.35);
+  }
+}
+
+.global-loader-logo-wrap {
+  animation: global-loader-float 1800ms ease-in-out infinite;
+  will-change: transform;
+}
+
+.global-loader-shadow {
+  animation: global-loader-shadow 1800ms ease-in-out infinite;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+.global-loader-exit {
+  animation: global-loader-exit 480ms ease-in forwards;
+  pointer-events: none;
+}
+
+.global-loader-exit .global-loader-logo-wrap {
+  animation: global-loader-logo-exit 480ms ease-in forwards;
+}
+
+.global-loader-exit .global-loader-shadow {
+  animation: global-loader-shadow-exit 480ms ease-in forwards;
+}
+
 .game-page-shell-in {
   animation: game-page-shell-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: opacity, transform, filter;
@@ -365,6 +445,8 @@ button:disabled {
   .dice-history-chip-in,
   .dice-history-chip-out,
   .dice-mode-panel,
+  .global-loader-logo-wrap,
+  .global-loader-shadow,
   .game-page-shell-in,
   .game-page-table-in {
     animation: none;

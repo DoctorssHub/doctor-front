@@ -3,14 +3,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
-import { sanitizeIntegerInput } from "@/widgets/game-sidebar/lib/numeric-input";
+import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import {
   formatBetAmountInput,
   getNextBetAmount,
   readBetAmount,
   type BetAmountControl,
-} from "@/widgets/game-sidebar/lib/bet-amount-controls";
+} from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
 import { getDiceConfig, placeDiceBet } from "../api/dice-api";
 import type { DiceBetRequest, DiceBetResponse } from "../api/dice-types";
 import {

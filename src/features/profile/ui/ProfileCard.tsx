@@ -1,5 +1,5 @@
 import Image from "next/image";
-import coinIcon from "@/assets/BetCointIcon.svg";
+import coinIcon from "@/assets/shared/red-coin.svg";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import { formatPointsValue, getUsernameInitial } from "../lib/profile-format";
 

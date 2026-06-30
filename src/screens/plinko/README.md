@@ -1,49 +1,22 @@
 # Plinko Screen
 
-The Plinko screen is a composition layer. Keep route-level layout, config
-loading, and store lifecycle here. Do not move form state back into
-`PlinkoScreen`.
+The Plinko screen is now only a route composition layer. Keep page-level layout,
+fullscreen composition, live bet history placement, and store lifecycle reset here.
+Do not move Plinko feature behavior back into this folder.
 
-## Components
+## Files
 
 `ui/PlinkoScreen.tsx`
 
-- loads Plinko config with `usePlinkoConfig`;
-- renders the sidebar and board panel;
-- resets Plinko stores on unmount.
+- loads Plinko config through `src/features/plinko/model/usePlinkoConfig`;
+- renders feature UI blocks from `src/features/plinko/ui`;
+- resets Plinko stores on unmount;
+- renders the game-level `BetHistoryTable`.
 
-`ui/PlinkoSidebar.tsx`
+## Boundaries
 
-- composes game controls inside `GameSidebar`;
-- splits controls into small selector components;
-- owns Plinko-specific sidebar wiring, labels, disabled states, submit button,
-  and errors.
+Plinko-specific state, controls, betting flow, sidebar wiring, board rendering,
+and board animation belong in `src/features/plinko`.
 
-`ui/PlinkoBoardPanel.tsx`
-
-- subscribes to `risk`, `rows`, `activeRounds`, and `recentMultipliers`;
-- passes board-only props into `PlinkoBoard`.
-
-## State Boundary
-
-Use feature stores from `src/features/plinko/model` for Plinko state.
-
-- Controls store: form/control values.
-- Betting store: submit/autobet/error runtime state.
-- Rounds store: active board rounds and recent multipliers.
-
-`PlinkoScreen` should not own `mode`, `risk`, `rows`, `betAmount`,
-`autoBetsAmount`, or round arrays with local `useState`.
-
-## Render Boundary
-
-Keep subscriptions close to the UI that renders them. For example, rows should
-be read in `PlinkoRowsControl` and `PlinkoBoardPanel`, not in `PlinkoScreen`.
-
-This keeps changing the stake input from re-rendering unrelated board or rows
-controls.
-
-## Config
-
-`usePlinkoConfig` memoizes parsed config so board props stay referentially
-stable when unrelated controls change.
+`src/screens/plinko` should not own `mode`, `risk`, `rows`, `betAmount`,
+`autoBetsAmount`, active rounds, or board physics.

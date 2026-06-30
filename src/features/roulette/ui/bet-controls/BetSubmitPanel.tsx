@@ -1,4 +1,4 @@
-import { GameBetButton } from "@/widgets/game-sidebar";
+import { GameBetButton } from "@/shared/ui/game-sidebar";
 
 type BetSubmitPanelProps = {
   actionLabel: string;
