@@ -37,10 +37,19 @@ export function PlinkoBoardPanel({
   );
   const handleAnimationComplete = useCallback(
     (roundId: string) => {
-      sounds.playPocket();
+      const completedRound = activeRounds.find((round) => round.id === roundId);
+      const didWin =
+        completedRound !== undefined && Number(completedRound.bet.payout) > 0;
+
+      if (didWin) {
+        sounds.playWin();
+      } else {
+        sounds.playPocket();
+      }
+
       handleRoundAnimationComplete(roundId);
     },
-    [handleRoundAnimationComplete, sounds],
+    [activeRounds, handleRoundAnimationComplete, sounds],
   );
 
   return (

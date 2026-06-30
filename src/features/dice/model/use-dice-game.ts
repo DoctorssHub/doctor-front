@@ -113,10 +113,10 @@ export function useDiceGame() {
       return (await placeDiceBet(payload)).data;
     },
     onSuccess: (response) => {
-      sounds.playRevealed();
-
       if (response.didWin) {
         sounds.playWin();
+      } else {
+        sounds.playRevealed();
       }
 
       setResult(response);

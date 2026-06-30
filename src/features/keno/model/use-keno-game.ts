@@ -212,6 +212,8 @@ export function useKenoGame() {
 
     if (didWin) {
       sounds.playWin();
+    } else {
+      sounds.playRevealed();
     }
 
     completeReveal();
