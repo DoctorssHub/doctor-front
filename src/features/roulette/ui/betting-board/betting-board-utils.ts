@@ -19,14 +19,14 @@ export function getNumberBackgroundClass(number: number) {
 
 export function getStateClass(isHighlighted: boolean, isDimmed: boolean) {
   if (isHighlighted) {
-    return "border-[var(--color-roulette-highlight-border)] brightness-110 shadow-[var(--shadow-roulette-highlight)]";
+    return "border-[var(--color-roulette-highlight-border)] shadow-[0_0_0_1px_var(--color-roulette-highlight-border)]";
   }
 
   if (isDimmed) {
-    return "border-transparent opacity-75 brightness-[0.82]";
+    return "border-transparent opacity-75";
   }
 
-  return "hover:border-white/55 hover:brightness-110";
+  return "hover:border-white/55";
 }
 
 export function numberButtonClass(
@@ -50,7 +50,7 @@ export function controlButtonClass(
     "bg-[var(--color-surface)]",
     isHighlighted || isDimmed
       ? getStateClass(isHighlighted, isDimmed)
-      : "border-[var(--color-roulette-soft-border)] hover:border-[var(--color-roulette-highlight-border)] hover:brightness-110",
+      : "border-[var(--color-roulette-soft-border)] hover:border-[var(--color-roulette-highlight-border)]",
   ].join(" ");
 }
 
@@ -63,8 +63,8 @@ export function lowerButtonClass(
     "relative flex h-[46px] items-center justify-center rounded-[4px] border border-[var(--color-roulette-soft-border)] px-[9px] py-[14px] text-center text-[14px] font-semibold leading-[129%] text-[var(--color-text-primary)] transition duration-150 disabled:opacity-60",
     backgroundClass,
     isHighlighted
-      ? "border-[var(--color-roulette-highlight-border)] brightness-110 shadow-[var(--shadow-roulette-highlight)]"
-      : "hover:border-[var(--color-roulette-highlight-border)] hover:brightness-110",
+      ? "border-[var(--color-roulette-highlight-border)] shadow-[0_0_0_1px_var(--color-roulette-highlight-border)]"
+      : "hover:border-[var(--color-roulette-highlight-border)]",
     spanClass,
   ].join(" ");
 }

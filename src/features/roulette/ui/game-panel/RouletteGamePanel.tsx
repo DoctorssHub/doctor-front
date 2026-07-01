@@ -1,7 +1,4 @@
-import type {
-  NewRouletteBet,
-  PlacedRouletteBet,
-} from "../../model/roulette-bets";
+import { memo } from "react";
 import type { RouletteResult as RouletteResultValue } from "../../model/use-roulette-store";
 import { BettingBoard } from "../betting-board";
 import { RouletteHistory } from "../history";
@@ -9,37 +6,27 @@ import { RouletteWheel } from "../roulette-wheel";
 import { RouletteWinModal } from "../win-modal";
 
 type RouletteGamePanelProps = {
-  canUndo: boolean;
   disabled: boolean;
   isFullscreen?: boolean;
   isResultAnimating: boolean;
   isWinModalVisible: boolean;
   isWheelSpinning: boolean;
-  placedBets: PlacedRouletteBet[];
   result: RouletteResultValue | null;
   resultHistory: RouletteResultValue[];
   onLandingComplete: () => void;
-  onClear: () => void;
-  onPlaceBet: (bet: NewRouletteBet) => void;
   onSettleResultHistory: () => void;
-  onUndo: () => void;
 };
 
-export function RouletteGamePanel({
-  canUndo,
+export const RouletteGamePanel = memo(function RouletteGamePanel({
   disabled,
   isFullscreen = false,
   isResultAnimating,
   isWinModalVisible,
   isWheelSpinning,
-  placedBets,
   result,
   resultHistory,
   onLandingComplete,
-  onClear,
-  onPlaceBet,
   onSettleResultHistory,
-  onUndo,
 }: RouletteGamePanelProps) {
   const winResult =
     result && isWinModalVisible && !isResultAnimating && Number(result.payout) > 0
@@ -78,13 +65,8 @@ export function RouletteGamePanel({
 
       <div className="space-y-4">
         <BettingBoard
-          canUndo={canUndo}
           disabled={disabled}
           isFullscreen={isFullscreen}
-          placedBets={placedBets}
-          onClear={onClear}
-          onPlaceBet={onPlaceBet}
-          onUndo={onUndo}
         />
       </div>
 
@@ -96,4 +78,4 @@ export function RouletteGamePanel({
       ) : null}
     </section>
   );
-}
+});

@@ -1,22 +1,33 @@
 import Image from "next/image";
+import { memo } from "react";
 import clearIconDesk from "@/assets/games/roulette/clearIconDesk.svg";
 import undoIconDesk from "@/assets/games/roulette/undoIconDesk.svg";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { useRouletteStore } from "../../model/use-roulette-store";
 
 type ManualBetActionsProps = {
-  canUndo: boolean;
   disabled: boolean;
   isVisible: boolean;
-  onClear: () => void;
-  onUndo: () => void;
 };
 
-export function ManualBetActions({
-  canUndo,
+export const ManualBetActions = memo(function ManualBetActions({
   disabled,
   isVisible,
-  onClear,
-  onUndo,
 }: ManualBetActionsProps) {
+  const canUndo = useRouletteStore((state) => state.placedBets.length > 0);
+  const clearBets = useRouletteStore((state) => state.clearBets);
+  const undoBet = useRouletteStore((state) => state.undoBet);
+
+  function handleClear() {
+    gameSounds.playClear();
+    clearBets();
+  }
+
+  function handleUndo() {
+    gameSounds.playChipPlacement("straight");
+    undoBet();
+  }
+
   return (
     <div
       className={[
@@ -33,7 +44,7 @@ export function ManualBetActions({
         <button
           className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[image:var(--gradient-roulette-action-button)] text-[18px] font-medium leading-[133%] text-[var(--color-text-primary)] transition hover:brightness-110 disabled:opacity-45"
           disabled={!canUndo || disabled}
-          onClick={onClear}
+          onClick={handleClear}
           type="button"
         >
           <Image alt="" className="h-5 w-5" src={clearIconDesk} />
@@ -42,7 +53,7 @@ export function ManualBetActions({
         <button
           className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[image:var(--gradient-roulette-action-button)] text-[18px] font-medium leading-[133%] text-[var(--color-text-primary)] transition hover:brightness-110 disabled:opacity-45"
           disabled={!canUndo || disabled}
-          onClick={onUndo}
+          onClick={handleUndo}
           type="button"
         >
           <Image alt="" className="h-5 w-5" src={undoIconDesk} />
@@ -51,4 +62,4 @@ export function ManualBetActions({
       </div>
     </div>
   );
-}
+});

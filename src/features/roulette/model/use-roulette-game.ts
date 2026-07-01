@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
@@ -14,10 +14,7 @@ import {
   getGamePointsBalance,
 } from "../lib/roulette-balance";
 import { getRouletteErrorMessage } from "../lib/roulette-errors";
-import {
-  buildRouletteBetPayload,
-  getPlacedBetsTotal,
-} from "./roulette-bets";
+import { buildRouletteBetPayload } from "./roulette-bets";
 import { useAutoRouletteBetting } from "./use-auto-roulette-betting";
 import { useRouletteStore } from "./use-roulette-store";
 
@@ -28,43 +25,41 @@ type RouletteBetMutationVariables = {
 
 export function useRouletteGame() {
   const queryClient = useQueryClient();
-  const [betMode, setBetMode] = useState<"manual" | "auto">("manual");
+  const betModeRef = useRef<"manual" | "auto">("manual");
   const [isResultAnimating, setIsResultAnimating] = useState(false);
   const [isWinModalVisible, setIsWinModalVisible] = useState(false);
   const {
     addResultToHistory,
-    clearBets,
     finishSpin,
     isSpinning,
-    placeBet,
-    placedBets,
     result,
     resultHistory,
-    selectChip,
-    selectedChip,
     settleResultHistory,
     startSpin,
     stopSpin,
-    undoBet,
   } = useRouletteStore(
     useShallow((state) => ({
       addResultToHistory: state.addResultToHistory,
-      clearBets: state.clearBets,
       finishSpin: state.finishSpin,
       isSpinning: state.isSpinning,
-      placeBet: state.placeBet,
-      placedBets: state.placedBets,
       result: state.result,
       resultHistory: state.resultHistory,
-      selectChip: state.selectChip,
-      selectedChip: state.selectedChip,
       settleResultHistory: state.settleResultHistory,
       startSpin: state.startSpin,
       stopSpin: state.stopSpin,
-      undoBet: state.undoBet,
     })),
   );
   const autoBetting = useAutoRouletteBetting();
+  const {
+    autoBetCount,
+    handleAutoBetCountChange,
+    handleToggleAutoInfinite,
+    isAutoInfinite,
+    isAutoRunning,
+    scheduleNextAutoBet,
+    startAutoBetting,
+    stopAutoBetting,
+  } = autoBetting;
 
   const configQuery = useQuery({
     queryKey: ["roulette", "config"],
@@ -123,7 +118,7 @@ export function useRouletteGame() {
       startSpin();
     },
     onError: () => {
-      autoBetting.stopAutoBetting();
+      stopAutoBetting();
       gameSounds.stop("roulette");
       setIsResultAnimating(false);
       stopSpin();
@@ -135,13 +130,14 @@ export function useRouletteGame() {
         applyRouletteBalanceResult(user, response),
       );
 
-      autoBetting.scheduleNextAutoBet((nextVariables) => {
+      scheduleNextAutoBet((nextVariables) => {
         betMutation.mutate(nextVariables);
       });
     },
   });
 
-  const totalBetAmount = getPlacedBetsTotal(placedBets);
+  const mutateRouletteBet = betMutation.mutate;
+
   const gameBalance = getGamePointsBalance(meQuery.data);
   const minBet = configQuery.data?.minBet ?? 1;
   const maxBet = configQuery.data?.maxBet ?? 100000;
@@ -151,32 +147,18 @@ export function useRouletteGame() {
       ? "Unable to load game data"
       : null;
 
-  function handleSelectChip(chip: number) {
-    gameSounds.playSelection();
-    selectChip(chip);
-  }
 
-  function handlePlaceBet(bet: Parameters<typeof placeBet>[0]) {
-    gameSounds.playChipPlacement(
-      bet.kind === "straight" ? "straight" : "group",
-    );
+  const handleModeChange = useCallback((mode: "manual" | "auto") => {
+    betModeRef.current = mode;
+  }, []);
 
-    placeBet(bet);
-  }
+  const handleBetSubmit = useCallback(() => {
+    const betMode = betModeRef.current;
 
-  function handleClearBets() {
-    gameSounds.playClear();
-    clearBets();
-  }
+    const placedBets = useRouletteStore.getState().placedBets;
 
-  function handleUndoBet() {
-    gameSounds.playChipPlacement("straight");
-    undoBet();
-  }
-
-  function handleBetSubmit() {
-    if (autoBetting.isAutoRunning) {
-      autoBetting.stopAutoBetting();
+    if (isAutoRunning) {
+      stopAutoBetting();
 
       return;
     }
@@ -184,56 +166,49 @@ export function useRouletteGame() {
     const payload = buildRouletteBetPayload(placedBets);
 
     if (betMode === "auto") {
-      betMutation.mutate(autoBetting.startAutoBetting(payload));
+      mutateRouletteBet(startAutoBetting(payload));
 
       return;
     }
 
-    betMutation.mutate({ clearBetsOnSuccess: false, payload });
-  }
+    mutateRouletteBet({ clearBetsOnSuccess: false, payload });
+  }, [
+    isAutoRunning,
+    mutateRouletteBet,
+    startAutoBetting,
+    stopAutoBetting,
+  ]);
 
   return {
     betControlsProps: {
-      autoBetCount: autoBetting.autoBetCount,
-      canUndo: placedBets.length > 0,
+      autoBetCount,
       errorMessage,
       gameBalance,
-      isAutoInfinite: autoBetting.isAutoInfinite,
-      isAutoRunning: autoBetting.isAutoRunning,
+      isAutoInfinite,
+      isAutoRunning,
       isAnimating: isResultAnimating,
       isSpinning,
       isSubmitting: betMutation.isPending,
       maxBet,
       minBet,
-      mode: betMode,
-      onAutoBetCountChange: autoBetting.handleAutoBetCountChange,
-      onClear: handleClearBets,
-      onModeChange: setBetMode,
-      onSelectChip: handleSelectChip,
+      onAutoBetCountChange: handleAutoBetCountChange,
+      onModeChange: handleModeChange,
       onSubmit: handleBetSubmit,
-      onToggleAutoInfinite: autoBetting.handleToggleAutoInfinite,
-      onUndo: handleUndoBet,
-      selectedChip,
-      totalBetAmount,
+      onToggleAutoInfinite: handleToggleAutoInfinite,
     },
     gamePanelProps: {
-      canUndo: placedBets.length > 0,
       disabled:
-        autoBetting.isAutoRunning ||
+        isAutoRunning ||
         isSpinning ||
         betMutation.isPending ||
         isResultAnimating,
       isResultAnimating,
       isWinModalVisible,
       isWheelSpinning: isSpinning || betMutation.isPending,
-      placedBets,
       result,
       resultHistory,
       onLandingComplete: handleLandingComplete,
-      onClear: handleClearBets,
-      onPlaceBet: handlePlaceBet,
       onSettleResultHistory: settleResultHistory,
-      onUndo: handleUndoBet,
     },
   };
 }

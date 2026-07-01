@@ -35,15 +35,15 @@ export function useAutoRouletteBetting() {
     setIsAutoRunning(false);
   }, [clearAutoTimeout]);
 
-  function handleAutoBetCountChange(value: string) {
+  const handleAutoBetCountChange = useCallback((value: string) => {
     setAutoBetCount(sanitizeIntegerInput(value));
-  }
+  }, []);
 
-  function handleToggleAutoInfinite() {
+  const handleToggleAutoInfinite = useCallback(() => {
     setIsAutoInfinite((currentValue) => !currentValue);
-  }
+  }, []);
 
-  function startAutoBetting(payload: RouletteBetRequest) {
+  const startAutoBetting = useCallback((payload: RouletteBetRequest) => {
     const normalizedAutoBetCount = Number(autoBetCount);
 
     autoPayloadRef.current = payload;
@@ -55,9 +55,9 @@ export function useAutoRouletteBetting() {
       clearBetsOnSuccess: false,
       payload,
     } satisfies AutoRouletteBetVariables;
-  }
+  }, [autoBetCount, isAutoInfinite]);
 
-  function scheduleNextAutoBet(scheduleAutoBet: ScheduleAutoBet) {
+  const scheduleNextAutoBet = useCallback((scheduleAutoBet: ScheduleAutoBet) => {
     if (!isAutoRunningRef.current || !autoPayloadRef.current) {
       return;
     }
@@ -82,7 +82,7 @@ export function useAutoRouletteBetting() {
         payload: autoPayloadRef.current,
       });
     }, AUTO_NEXT_SPIN_DELAY_MS);
-  }
+  }, [isAutoInfinite, stopAutoBetting]);
 
   return {
     autoBetCount,

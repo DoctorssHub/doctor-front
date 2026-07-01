@@ -575,3 +575,70 @@ button:disabled {
       0 0 30px rgb(34 197 94 / 72%);
   }
 }
+.roulette-board-shell[data-hover-active="true"] .roulette-board-cell {
+  border-color: transparent;
+  opacity: 0.72;
+}
+
+.roulette-board-shell[data-hover-active="true"] .roulette-board-cell[data-has-bet="true"] {
+  opacity: 1;
+}
+.roulette-board-shell[data-hover-row="TOP"] .roulette-board-row[data-roulette-row="TOP"] .roulette-board-cell,
+.roulette-board-shell[data-hover-row="MIDDLE"] .roulette-board-row[data-roulette-row="MIDDLE"] .roulette-board-cell,
+.roulette-board-shell[data-hover-row="BOTTOM"] .roulette-board-row[data-roulette-row="BOTTOM"] .roulette-board-cell,
+.roulette-board-shell[data-hover-dozen="FIRST"] .roulette-board-cell[data-roulette-dozen="FIRST"],
+.roulette-board-shell[data-hover-dozen="SECOND"] .roulette-board-cell[data-roulette-dozen="SECOND"],
+.roulette-board-shell[data-hover-dozen="THIRD"] .roulette-board-cell[data-roulette-dozen="THIRD"],
+.roulette-board-shell[data-hover-half="LOW"] .roulette-board-cell[data-roulette-half="LOW"],
+.roulette-board-shell[data-hover-half="HIGH"] .roulette-board-cell[data-roulette-half="HIGH"],
+.roulette-board-shell[data-hover-parity="EVEN"] .roulette-board-cell[data-roulette-parity="EVEN"],
+.roulette-board-shell[data-hover-parity="ODD"] .roulette-board-cell[data-roulette-parity="ODD"],
+.roulette-board-shell[data-hover-color="RED"] .roulette-board-cell[data-roulette-color="RED"],
+.roulette-board-shell[data-hover-color="BLACK"] .roulette-board-cell[data-roulette-color="BLACK"],
+.roulette-board-shell[data-hover-numbers~="0"] .roulette-board-cell[data-roulette-number="0"],
+.roulette-board-shell[data-hover-numbers~="1"] .roulette-board-cell[data-roulette-number="1"],
+.roulette-board-shell[data-hover-numbers~="2"] .roulette-board-cell[data-roulette-number="2"],
+.roulette-board-shell[data-hover-numbers~="3"] .roulette-board-cell[data-roulette-number="3"],
+.roulette-board-shell[data-hover-numbers~="4"] .roulette-board-cell[data-roulette-number="4"],
+.roulette-board-shell[data-hover-numbers~="5"] .roulette-board-cell[data-roulette-number="5"],
+.roulette-board-shell[data-hover-numbers~="6"] .roulette-board-cell[data-roulette-number="6"],
+.roulette-board-shell[data-hover-numbers~="7"] .roulette-board-cell[data-roulette-number="7"],
+.roulette-board-shell[data-hover-numbers~="8"] .roulette-board-cell[data-roulette-number="8"],
+.roulette-board-shell[data-hover-numbers~="9"] .roulette-board-cell[data-roulette-number="9"],
+.roulette-board-shell[data-hover-numbers~="10"] .roulette-board-cell[data-roulette-number="10"],
+.roulette-board-shell[data-hover-numbers~="11"] .roulette-board-cell[data-roulette-number="11"],
+.roulette-board-shell[data-hover-numbers~="12"] .roulette-board-cell[data-roulette-number="12"],
+.roulette-board-shell[data-hover-numbers~="13"] .roulette-board-cell[data-roulette-number="13"],
+.roulette-board-shell[data-hover-numbers~="14"] .roulette-board-cell[data-roulette-number="14"],
+.roulette-board-shell[data-hover-numbers~="15"] .roulette-board-cell[data-roulette-number="15"],
+.roulette-board-shell[data-hover-numbers~="16"] .roulette-board-cell[data-roulette-number="16"],
+.roulette-board-shell[data-hover-numbers~="17"] .roulette-board-cell[data-roulette-number="17"],
+.roulette-board-shell[data-hover-numbers~="18"] .roulette-board-cell[data-roulette-number="18"],
+.roulette-board-shell[data-hover-numbers~="19"] .roulette-board-cell[data-roulette-number="19"],
+.roulette-board-shell[data-hover-numbers~="20"] .roulette-board-cell[data-roulette-number="20"],
+.roulette-board-shell[data-hover-numbers~="21"] .roulette-board-cell[data-roulette-number="21"],
+.roulette-board-shell[data-hover-numbers~="22"] .roulette-board-cell[data-roulette-number="22"],
+.roulette-board-shell[data-hover-numbers~="23"] .roulette-board-cell[data-roulette-number="23"],
+.roulette-board-shell[data-hover-numbers~="24"] .roulette-board-cell[data-roulette-number="24"],
+.roulette-board-shell[data-hover-numbers~="25"] .roulette-board-cell[data-roulette-number="25"],
+.roulette-board-shell[data-hover-numbers~="26"] .roulette-board-cell[data-roulette-number="26"],
+.roulette-board-shell[data-hover-numbers~="27"] .roulette-board-cell[data-roulette-number="27"],
+.roulette-board-shell[data-hover-numbers~="28"] .roulette-board-cell[data-roulette-number="28"],
+.roulette-board-shell[data-hover-numbers~="29"] .roulette-board-cell[data-roulette-number="29"],
+.roulette-board-shell[data-hover-numbers~="30"] .roulette-board-cell[data-roulette-number="30"],
+.roulette-board-shell[data-hover-numbers~="31"] .roulette-board-cell[data-roulette-number="31"],
+.roulette-board-shell[data-hover-numbers~="32"] .roulette-board-cell[data-roulette-number="32"],
+.roulette-board-shell[data-hover-numbers~="33"] .roulette-board-cell[data-roulette-number="33"],
+.roulette-board-shell[data-hover-numbers~="34"] .roulette-board-cell[data-roulette-number="34"],
+.roulette-board-shell[data-hover-numbers~="35"] .roulette-board-cell[data-roulette-number="35"],
+.roulette-board-shell[data-hover-numbers~="36"] .roulette-board-cell[data-roulette-number="36"] {
+  border-color: var(--color-roulette-highlight-border);
+  box-shadow: 0 0 0 1px var(--color-roulette-highlight-border);
+  opacity: 1;
+}
+
+.roulette-board-trigger:not(:disabled):is(:hover, :focus-visible) {
+  border-color: var(--color-roulette-highlight-border);
+  box-shadow: 0 0 0 1px var(--color-roulette-highlight-border);
+  opacity: 1;
+}

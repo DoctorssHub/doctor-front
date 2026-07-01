@@ -140,6 +140,7 @@ export function useRouletteWheelAnimation({
 
     const landingResultNumber = resultNumber;
 
+
     isLandingRef.current = true;
 
     if (landingFrameRef.current !== null) {
