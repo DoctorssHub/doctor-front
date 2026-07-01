@@ -1,7 +1,6 @@
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import type ReCAPTCHA from "react-google-recaptcha";
 import { getCurrentUser, loginUser } from "../api/auth-api";
 import { parseAuthError } from "../lib/parse-auth-error";
 import {
@@ -9,7 +8,6 @@ import {
   readUsername,
   type UserBalance,
 } from "../lib/read-auth-response";
-import { AuthRecaptcha } from "./AuthRecaptcha";
 
 type LoginFormProps = {
   onLoggedIn: (username: string, balances?: UserBalance[] | null) => void;
@@ -21,18 +19,13 @@ export function LoginForm({
   onForgotPasswordClick,
 }: LoginFormProps) {
   const [errorMessage, setErrorMessage] = useState("");
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const loginMutation = useMutation({
-    mutationFn: async (variables: {
-      email: string;
-      password: string;
-      recaptchaToken: string;
-    }) => {
-      await loginUser(
-        { email: variables.email, password: variables.password },
-        variables.recaptchaToken,
-      );
+    mutationFn: async (variables: { email: string; password: string }) => {
+      await loginUser({
+        email: variables.email,
+        password: variables.password,
+      });
       try {
         const meResponse = await getCurrentUser();
 
@@ -59,27 +52,17 @@ export function LoginForm({
           : parseAuthError(error),
       );
     },
-    onSettled: () => {
-      recaptchaRef.current?.reset();
-    },
   });
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage("");
 
-    const recaptchaToken = recaptchaRef.current?.getValue();
-    if (!recaptchaToken) {
-      setErrorMessage("Please complete the reCAPTCHA.");
-      return;
-    }
-
     const formData = new FormData(event.currentTarget);
 
     loginMutation.mutate({
       email: String(formData.get("email") || "").trim(),
       password: String(formData.get("password") || ""),
-      recaptchaToken,
     });
   }
 
@@ -120,10 +103,6 @@ export function LoginForm({
           <input className="auth-checkbox" type="checkbox" required />
           <span>I am 18 years old or older</span>
         </label>
-      </div>
-
-      <div className="mt-4">
-        <AuthRecaptcha ref={recaptchaRef} />
       </div>
 
       {errorMessage ? (
