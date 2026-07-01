@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { AuthModalBackdrop } from "./AuthModalBackdrop";
 import { AuthCloseButton } from "./AuthCloseButton";
-import { AuthSocialActions } from "./AuthSocialActions";
+import { AuthSocialActions } from "./auth-social-actions";
 import { AuthTabs } from "./AuthTabs";
 import { AuthVisualPanel } from "./AuthVisualPanel";
 import { RegisterForm } from "./RegisterForm";
