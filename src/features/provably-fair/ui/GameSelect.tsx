@@ -15,6 +15,8 @@ type GameSelectProps = {
 };
 
 export function GameSelect({ value, onChange }: GameSelectProps) {
+  console.count("[provably-fair render] GameSelect");
+
   const [isOpen, setIsOpen] = useState(false);
   const selected = getProvablyFairGameOption(value);
 
@@ -26,7 +28,10 @@ export function GameSelect({ value, onChange }: GameSelectProps) {
       <button
         aria-expanded={isOpen}
         className="flex h-11 w-full items-center gap-2 rounded-[8px] border border-[#1b1f26] bg-[#0e121c] px-3 py-3 text-left text-sm font-normal text-[#c7cbd4] transition hover:border-[var(--color-border-button)]"
-        onClick={() => setIsOpen((current) => !current)}
+        onClick={() => {
+          console.log("[provably-fair action] game select toggle");
+          setIsOpen((current) => !current);
+        }}
         type="button"
       >
         <Image alt="" height={16} src={selected.icon} width={16} />
@@ -59,6 +64,7 @@ export function GameSelect({ value, onChange }: GameSelectProps) {
             ].join(" ")}
             key={option.id}
             onClick={() => {
+              console.log("[provably-fair action] game select option", option.id);
               onChange(option.id);
               setIsOpen(false);
             }}

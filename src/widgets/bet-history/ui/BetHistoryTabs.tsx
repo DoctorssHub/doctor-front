@@ -25,6 +25,8 @@ export function BetHistoryTabs({
   onLiveCategoryChange,
   variant,
 }: BetHistoryTabsProps) {
+  console.count("[bet-history render] BetHistoryTabs");
+
   return (
     <div
       aria-label={
@@ -44,7 +46,10 @@ export function BetHistoryTabs({
                     : "text-(--color-text-muted) hover:bg-(--color-surface-hover) hover:text-white"
                 }`}
                 key={tab.label}
-                onClick={() => onGameChange(tab.value)}
+                onClick={() => {
+                  console.log("[bet-history action] game tab click", tab.value);
+                  onGameChange(tab.value);
+                }}
                 type="button"
               >
                 {tab.label}
@@ -59,7 +64,10 @@ export function BetHistoryTabs({
                     : "text-(--color-text-muted) hover:bg-(--color-surface-hover) hover:text-white"
                 }`}
                 key={tab.label}
-                onClick={() => onLiveCategoryChange(tab.value)}
+                onClick={() => {
+                  console.log("[bet-history action] live tab click", tab.value);
+                  onLiveCategoryChange(tab.value);
+                }}
                 type="button"
               >
                 {tab.label}

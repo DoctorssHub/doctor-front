@@ -1,4 +1,5 @@
 import Image, { type StaticImageData } from "next/image";
+import { useCallback, useState } from "react";
 
 type DiceNumberFieldProps = {
   className?: string;
@@ -29,12 +30,33 @@ export function DiceNumberField({
   onIconClick,
   onChange,
 }: DiceNumberFieldProps) {
-  function handleChange(value: string) {
-    const nextValue = Number(value.replace(",", "."));
+  console.count(`[dice render] DiceNumberField:${id}`);
+
+  const [draftValue, setDraftValue] = useState(value);
+
+  const commitValue = useCallback(() => {
+    console.log("[dice action] number field commit", {
+      id,
+      value: draftValue,
+    });
+
+    const nextValue = Number(draftValue.replace(",", "."));
 
     if (Number.isFinite(nextValue)) {
       onChange(nextValue);
+      return;
     }
+
+    setDraftValue(value);
+  }, [draftValue, id, onChange, value]);
+
+  function handleChange(value: string) {
+    console.log("[dice action] number field draft change", {
+      id,
+      value,
+    });
+
+    setDraftValue(value);
   }
 
   const icon = iconSrc ? (
@@ -67,10 +89,16 @@ export function DiceNumberField({
           inputMode="decimal"
           max={max}
           min={min}
+          onBlur={commitValue}
           onChange={(event) => handleChange(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.currentTarget.blur();
+            }
+          }}
           step={step}
           type="text"
-          value={value}
+          value={draftValue}
         />
         {icon ? (
           onIconClick ? (

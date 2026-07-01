@@ -1,18 +1,24 @@
 import Image from "next/image";
+import { useCallback, useState } from "react";
 import { AutoBetControls } from "@/shared/ui/game-sidebar/ui/AutoBetControls";
+import {
+  formatBetAmountInput,
+  getNextBetAmount,
+  readBetAmount,
+} from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
 import { BetAmountField } from "@/shared/ui/game-sidebar/ui/BetAmountField";
 import { GameBetButton } from "@/shared/ui/game-sidebar/ui/GameBetButton";
 import { GameSidebar } from "@/shared/ui/game-sidebar/ui/GameSidebar";
 import { ModeTabs } from "@/shared/ui/game-sidebar/ui/ModeTabs";
 import type { BetAmountControl } from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
+import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
+import { formatDiceNumber, getDiceProfitOnWin } from "../../lib/dice-calculations";
 import type { DiceAutoConfig, DiceMode } from "../../model/use-dice-game";
 import { DiceAutoConfigModal } from "./DiceAutoConfigModal";
 import redCoinIcon from "@/assets/shared/red-coin.svg";
 
 type DiceBetControlsProps = {
-  autoBetCount: string;
   autoConfig: DiceAutoConfig;
-  betAmount: string;
   gameBalance: number;
   helperMessage: string | null;
   isAutoConfigOpen: boolean;
@@ -24,26 +30,21 @@ type DiceBetControlsProps = {
   isLoading: boolean;
   maxBet: string;
   minBet: string;
-  mode: DiceMode;
-  profitOnWin: string;
+  multiplier: number;
   onAutoBetCountChange: (amount: string) => void;
   onAutoConfigApply: () => void;
   onAutoConfigChange: (config: DiceAutoConfig) => void;
   onAutoConfigClose: () => void;
   onAutoConfigOpen: () => void;
   onAutoConfigResetAll: () => void;
-  onBetAmountBlur: () => void;
   onBetAmountChange: (amount: string) => void;
-  onBetAmountControlClick: (control: BetAmountControl) => void;
   onModeChange: (mode: DiceMode) => void;
   onSubmit: () => void;
   onToggleAutoInfinite: () => void;
 };
 
 export function DiceBetControls({
-  autoBetCount,
   autoConfig,
-  betAmount,
   gameBalance,
   helperMessage,
   isAutoConfigOpen,
@@ -55,21 +56,77 @@ export function DiceBetControls({
   isLoading,
   maxBet,
   minBet,
-  mode,
-  profitOnWin,
+  multiplier,
   onAutoBetCountChange,
   onAutoConfigApply,
   onAutoConfigChange,
   onAutoConfigClose,
   onAutoConfigOpen,
   onAutoConfigResetAll,
-  onBetAmountBlur,
   onBetAmountChange,
-  onBetAmountControlClick,
   onModeChange,
   onSubmit,
   onToggleAutoInfinite,
 }: DiceBetControlsProps) {
+  console.count("[dice render] DiceBetControls");
+
+  const [autoBetCount, setAutoBetCount] = useState("10");
+  const [betAmount, setBetAmount] = useState("10.00");
+  const [mode, setMode] = useState<DiceMode>("manual");
+  const handleModeChange = useCallback((nextMode: DiceMode) => {
+    setMode(nextMode);
+    onModeChange(nextMode);
+  }, [onModeChange]);
+  const parsedBetAmount = readBetAmount(betAmount);
+  const parsedAutoBetCount = Number(autoBetCount);
+  const isBetAmountInvalid =
+    parsedBetAmount === null ||
+    parsedBetAmount < Number(minBet) ||
+    parsedBetAmount > Number(maxBet) ||
+    parsedBetAmount > gameBalance;
+  const isAutoBetCountInvalid =
+    mode === "auto" &&
+    !isAutoInfinite &&
+    (!Number.isInteger(parsedAutoBetCount) || parsedAutoBetCount < 1);
+  const profitOnWin = getDiceProfitOnWin(betAmount, multiplier);
+  const submitHelperMessage =
+    parsedBetAmount !== null && parsedBetAmount > gameBalance
+      ? "Not enough coins"
+      : parsedBetAmount !== null && parsedBetAmount < Number(minBet)
+        ? `Minimum bet is ${formatDiceNumber(Number(minBet))}`
+        : parsedBetAmount !== null && parsedBetAmount > Number(maxBet)
+          ? `Maximum bet is ${formatDiceNumber(Number(maxBet))}`
+          : isAutoBetCountInvalid
+            ? "Enter at least 1 bet"
+            : helperMessage;
+
+  const handleAutoBetCountChange = useCallback((amount: string) => {
+    const nextAutoBetCount = sanitizeIntegerInput(amount);
+
+    setAutoBetCount(nextAutoBetCount);
+    onAutoBetCountChange(nextAutoBetCount);
+  }, [onAutoBetCountChange]);
+  const handleBetAmountBlur = useCallback(() => {
+    const nextBetAmount = formatBetAmountInput(betAmount);
+
+    setBetAmount(nextBetAmount);
+    onBetAmountChange(nextBetAmount);
+  }, [betAmount, onBetAmountChange]);
+  const handleBetAmountChange = useCallback((amount: string) => {
+    setBetAmount(amount);
+    onBetAmountChange(amount);
+  }, [onBetAmountChange]);
+  const handleBetAmountControlClick = useCallback((control: BetAmountControl) => {
+    const nextBetAmount = getNextBetAmount(betAmount, control, {
+      availableBalance: gameBalance,
+      maxBet,
+      minBet,
+    });
+
+    setBetAmount(nextBetAmount);
+    onBetAmountChange(nextBetAmount);
+  }, [betAmount, gameBalance, maxBet, minBet, onBetAmountChange]);
+
   const actionLabel =
     mode === "auto"
       ? isAutoStopRequested
@@ -91,7 +148,7 @@ export function DiceBetControls({
           { label: "Manual", value: "manual" },
           { label: "Auto", value: "auto" },
         ]}
-        onModeChange={onModeChange}
+        onModeChange={handleModeChange}
       />
 
       <BetAmountField
@@ -100,9 +157,9 @@ export function DiceBetControls({
         isDisabled={isLoading}
         maxBet={maxBet}
         minBet={minBet}
-        onBetAmountBlur={onBetAmountBlur}
-        onBetAmountChange={onBetAmountChange}
-        onBetAmountControlClick={onBetAmountControlClick}
+        onBetAmountBlur={handleBetAmountBlur}
+        onBetAmountChange={handleBetAmountChange}
+        onBetAmountControlClick={handleBetAmountControlClick}
       />
 
       {mode === "auto" ? (
@@ -115,7 +172,7 @@ export function DiceBetControls({
             isAutoBetsInfinite={isAutoInfinite}
             isDisabled={isLoading}
             isInputDisabled={isLoading}
-            onAutoBetsAmountChange={onAutoBetCountChange}
+            onAutoBetsAmountChange={handleAutoBetCountChange}
             onAutoBetsInfinityToggle={onToggleAutoInfinite}
           />
 
@@ -195,15 +252,15 @@ export function DiceBetControls({
 
       <GameBetButton
         className={mode === "auto" ? "mt-2" : "mt-6"}
-        disabled={isBetDisabled}
+        disabled={isBetDisabled || isBetAmountInvalid || isAutoBetCountInvalid}
         isLoading={isLoading}
         label={actionLabel}
         onClick={onSubmit}
       />
 
-      {helperMessage ? (
+      {submitHelperMessage ? (
         <p className="mt-3 min-h-5 text-center text-xs font-medium text-[var(--color-text-subtle)]">
-          {helperMessage}
+          {submitHelperMessage}
         </p>
       ) : (
         <p className="mt-3 min-h-5" />
@@ -226,6 +283,8 @@ type AutoSummaryCardProps = {
 };
 
 function AutoSummaryCard({ coin = false, label, value }: AutoSummaryCardProps) {
+  console.count(`[dice render] AutoSummaryCard:${label}`);
+
   return (
     <div className="h-[60px] w-[150px] rounded-lg border border-[#1b1f26] bg-[#0e121c] p-3 backdrop-blur-[4.8px]">
       <p className="text-xs font-semibold text-[#6b7280]">{label}</p>

@@ -33,6 +33,8 @@ export function DiceAutoConfigModal({
   onClose,
   onResetAll,
 }: DiceAutoConfigModalProps) {
+  console.count("[dice render] DiceAutoConfigModal");
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     const previousPaddingRight = document.body.style.paddingRight;
@@ -52,6 +54,7 @@ export function DiceAutoConfigModal({
   }, []);
 
   function updateConfig(nextConfig: Partial<DiceAutoConfig>) {
+    console.log("[dice action] modal config update", nextConfig);
     onChange({ ...config, ...nextConfig });
   }
 
@@ -151,6 +154,8 @@ function AutoModeControl({
   onIncreaseChange,
   onModeChange,
 }: AutoModeControlProps) {
+  console.count(`[dice render] AutoModeControl:${label}`);
+
   return (
     <div>
       <p className="mb-2 text-xs font-bold text-white">{label}</p>
@@ -202,6 +207,8 @@ type CurrencyFieldProps = {
 };
 
 function CurrencyField({ id, label, value, onChange }: CurrencyFieldProps) {
+  console.count(`[dice render] CurrencyField:${id}`);
+
   return (
     <label className="block" htmlFor={id}>
       <span className="mb-2 block text-xs font-bold text-white">{label}</span>

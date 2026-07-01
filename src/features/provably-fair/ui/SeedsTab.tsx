@@ -9,12 +9,15 @@ import {
 import { SeedField } from "./SeedField";
 
 export function SeedsTab() {
+  console.count("[provably-fair render] SeedsTab");
+
   const queryClient = useQueryClient();
   const [clientSeed, setClientSeed] = useState<string | null>(null);
 
   const seedQuery = useQuery({
     queryKey: ["fairness", "seed"],
     queryFn: async () => {
+      console.log("[provably-fair action] seed query");
       const response = await getFairnessSeed();
 
       return response.data;
@@ -24,12 +27,14 @@ export function SeedsTab() {
   const seedMutation = useMutation({
     mutationFn: updateFairnessSeed,
     onSuccess: (response) => {
+      console.log("[provably-fair action] seed mutation success");
       setClientSeed(response.data.clientSeed);
       queryClient.setQueryData(["fairness", "seed"], response.data);
     },
   });
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    console.log("[provably-fair action] seed submit");
     event.preventDefault();
     const nextClientSeed = (clientSeed ?? seedQuery.data?.clientSeed ?? "").trim();
 
@@ -81,7 +86,10 @@ export function SeedsTab() {
             <input
               className="h-11 min-w-0 flex-1 rounded-[8px] border border-[#1b1f26] bg-[#0e121c] px-3 py-3 text-sm font-normal text-[#c7cbd4] outline-none transition placeholder:text-[#c7cbd4]/45 focus:border-[var(--color-brand)]"
               maxLength={128}
-              onChange={(event) => setClientSeed(event.target.value)}
+              onChange={(event) => {
+                console.log("[provably-fair action] client seed input");
+                setClientSeed(event.target.value);
+              }}
               placeholder="Enter new client seed"
               value={editableClientSeed}
             />

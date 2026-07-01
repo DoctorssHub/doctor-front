@@ -4,14 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
-import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import type { MeResponse } from "@/features/auth/api/auth-types";
-import {
-  formatBetAmountInput,
-  getNextBetAmount,
-  readBetAmount,
-  type BetAmountControl,
-} from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
+import { readBetAmount } from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
 import { getDiceConfig, placeDiceBet } from "../api/dice-api";
 import type { DiceBetRequest, DiceBetResponse } from "../api/dice-types";
 import {
@@ -22,7 +16,6 @@ import {
   getDiceChance,
   getDiceChanceFromMultiplier,
   getDiceMultiplier,
-  getDiceProfitOnWin,
   getDiceThresholdFromChance,
 } from "../lib/dice-calculations";
 import {
@@ -51,7 +44,9 @@ const DEFAULT_AUTO_CONFIG: DiceAutoConfig = {
   stopOnLoss: "1.00",
 };
 
+const AUTO_BET_COUNT_DEFAULT = "10";
 const AUTO_BET_DELAY_MS = 550;
+const BET_AMOUNT_DEFAULT = "10.00";
 
 function waitForNextAutoBet() {
   return new Promise<void>((resolve) => {
@@ -60,11 +55,13 @@ function waitForNextAutoBet() {
 }
 
 export function useDiceGame() {
+  console.count("[dice render] useDiceGame");
+
   const queryClient = useQueryClient();
   const shouldStopAutoRef = useRef(false);
-  const [mode, setMode] = useState<DiceMode>("manual");
-  const [betAmount, setBetAmount] = useState("10.00");
-  const [autoBetCount, setAutoBetCount] = useState("10");
+  const autoBetCountRef = useRef(AUTO_BET_COUNT_DEFAULT);
+  const betAmountRef = useRef(BET_AMOUNT_DEFAULT);
+  const modeRef = useRef<DiceMode>("manual");
   const [isAutoInfinite, setIsAutoInfinite] = useState(false);
   const [isAutoRunning, setIsAutoRunning] = useState(false);
   const [isAutoStopRequested, setIsAutoStopRequested] = useState(false);
@@ -94,24 +91,14 @@ export function useDiceGame() {
   const gameBalance = getDiceGamePointsBalance(meQuery.data);
   const chance = getDiceChance(threshold, above);
   const multiplier = getDiceMultiplier(chance, rtp, maxMultiplier);
-  const profitOnWin = getDiceProfitOnWin(betAmount, multiplier);
-  const parsedBetAmount = readBetAmount(betAmount);
-  const isBetAmountInvalid =
-    parsedBetAmount === null ||
-    parsedBetAmount < minBet ||
-    parsedBetAmount > maxBet ||
-    parsedBetAmount > gameBalance;
-  const parsedAutoBetCount = Number(autoBetCount);
-  const isAutoBetCountInvalid =
-    mode === "auto" &&
-    !isAutoInfinite &&
-    (!Number.isInteger(parsedAutoBetCount) || parsedAutoBetCount < 1);
 
   const betMutation = useMutation<DiceBetResponse, Error, DiceBetRequest>({
     mutationFn: async (payload) => {
       return (await placeDiceBet(payload)).data;
     },
     onSuccess: (response) => {
+      console.log("[dice action] mutation success", response);
+
       gameSounds.playResult({
         didWin: response.didWin,
         lossSound: "revealed",
@@ -132,24 +119,8 @@ export function useDiceGame() {
   }, []);
 
   const helperMessage = useMemo(() => {
-    if (parsedBetAmount !== null && parsedBetAmount > gameBalance) {
-      return "Not enough coins";
-    }
-
-    if (parsedBetAmount !== null && parsedBetAmount < minBet) {
-      return `Minimum bet is ${formatDiceNumber(minBet)}`;
-    }
-
-    if (parsedBetAmount !== null && parsedBetAmount > maxBet) {
-      return `Maximum bet is ${formatDiceNumber(maxBet)}`;
-    }
-
     if (betMutation.error) {
       return getDiceErrorMessage(betMutation.error);
-    }
-
-    if (isAutoBetCountInvalid) {
-      return "Enter at least 1 bet";
     }
 
     if (configQuery.error || meQuery.error) {
@@ -160,41 +131,27 @@ export function useDiceGame() {
   }, [
     betMutation.error,
     configQuery.error,
-    gameBalance,
-    maxBet,
     meQuery.error,
-    minBet,
-    parsedBetAmount,
-    isAutoBetCountInvalid,
   ]);
 
   function handleBetAmountChange(amount: string) {
-    setBetAmount(amount);
-  }
-
-  function handleBetAmountBlur() {
-    setBetAmount((amount) => formatBetAmountInput(amount));
-  }
-
-  function handleBetAmountControlClick(control: BetAmountControl) {
-    setBetAmount((amount) =>
-      getNextBetAmount(amount, control, {
-        availableBalance: gameBalance,
-        maxBet: String(maxBet),
-        minBet: String(minBet),
-      }),
-    );
+    console.log("[dice action] bet amount change", amount);
+    betAmountRef.current = amount;
   }
 
   function handleAutoBetCountChange(amount: string) {
-    setAutoBetCount(sanitizeIntegerInput(amount));
+    console.log("[dice action] auto bet count change", amount);
+    autoBetCountRef.current = amount;
   }
 
   function handleThresholdChange(nextThreshold: number) {
+    console.log("[dice action] threshold change", nextThreshold);
     setThreshold(clampDiceThreshold(nextThreshold));
   }
 
   function handleAboveChange(nextAbove: boolean) {
+    console.log("[dice action] above change", nextAbove);
+
     if (nextAbove !== above) {
       setThreshold((currentThreshold) =>
         clampDiceThreshold(100 - currentThreshold),
@@ -205,6 +162,8 @@ export function useDiceGame() {
   }
 
   function handleMultiplierChange(nextMultiplier: number) {
+    console.log("[dice action] multiplier change", nextMultiplier);
+
     const nextChance = getDiceChanceFromMultiplier(
       nextMultiplier,
       rtp,
@@ -215,11 +174,12 @@ export function useDiceGame() {
   }
 
   function handleChanceChange(nextChance: number) {
+    console.log("[dice action] chance change", nextChance);
     setThreshold(getDiceThresholdFromChance(nextChance, above));
   }
 
   function getBetPayload() {
-    const betSize = readBetAmount(betAmount);
+    const betSize = readBetAmount(betAmountRef.current);
 
     if (betSize === null) {
       return null;
@@ -233,6 +193,11 @@ export function useDiceGame() {
   }
 
   async function runAutoBets(payload: DiceBetRequest, plannedBets: number) {
+    console.log("[dice action] auto run start", {
+      payload,
+      plannedBets,
+    });
+
     let remainingBets = plannedBets;
 
     shouldStopAutoRef.current = false;
@@ -241,6 +206,10 @@ export function useDiceGame() {
 
     try {
       while (!shouldStopAutoRef.current && remainingBets > 0) {
+        console.log("[dice action] auto bet iteration", {
+          remainingBets,
+        });
+
         gameSounds.playBetStart("dice");
         await betMutation.mutateAsync(payload);
 
@@ -255,6 +224,7 @@ export function useDiceGame() {
         await waitForNextAutoBet();
       }
     } finally {
+      console.log("[dice action] auto run finish");
       shouldStopAutoRef.current = false;
       setIsAutoRunning(false);
       setIsAutoStopRequested(false);
@@ -262,20 +232,49 @@ export function useDiceGame() {
   }
 
   function handleSubmit() {
+    const mode = modeRef.current;
+
+    console.log("[dice action] submit", {
+      isAutoRunning,
+      mode,
+    });
+
     if (mode === "auto" && isAutoRunning) {
+      console.log("[dice action] request auto stop");
       shouldStopAutoRef.current = true;
       setIsAutoStopRequested(true);
       return;
     }
 
     const payload = getBetPayload();
+    const betSize = readBetAmount(betAmountRef.current);
+    const isBetAmountInvalid =
+      betSize === null ||
+      betSize < minBet ||
+      betSize > maxBet ||
+      betSize > gameBalance;
 
     if (!payload || isBetAmountInvalid || betMutation.isPending) {
+      console.log("[dice action] submit blocked", {
+        hasPayload: Boolean(payload),
+        isBetAmountInvalid,
+        isPending: betMutation.isPending,
+      });
+
       return;
     }
 
     if (mode === "auto") {
+      const parsedAutoBetCount = Number(autoBetCountRef.current);
+      const isAutoBetCountInvalid =
+        !isAutoInfinite &&
+        (!Number.isInteger(parsedAutoBetCount) || parsedAutoBetCount < 1);
+
       if (isAutoBetCountInvalid) {
+        console.log("[dice action] auto submit blocked", {
+          isAutoBetCountInvalid,
+        });
+
         return;
       }
 
@@ -287,13 +286,12 @@ export function useDiceGame() {
     }
 
     gameSounds.playBetStart("dice");
+    console.log("[dice action] manual bet mutate", payload);
     betMutation.mutate(payload);
   }
 
   return {
     betControlsProps: {
-      betAmount,
-      autoBetCount,
       autoConfig,
       gameBalance,
       helperMessage,
@@ -303,27 +301,42 @@ export function useDiceGame() {
       isAutoStopRequested,
       isBetDisabled: isAutoRunning
         ? isAutoStopRequested
-        : isBetAmountInvalid ||
-          isAutoBetCountInvalid ||
-          betMutation.isPending ||
-          configQuery.isLoading,
+        : betMutation.isPending || configQuery.isLoading,
       isLoading: betMutation.isPending || isAutoRunning,
       maxBet: String(maxBet),
       minBet: String(minBet),
-      mode,
-      profitOnWin,
+      multiplier,
       onAutoBetCountChange: handleAutoBetCountChange,
-      onAutoConfigApply: () => setIsAutoConfigOpen(false),
-      onAutoConfigChange: setAutoConfig,
-      onAutoConfigClose: () => setIsAutoConfigOpen(false),
-      onAutoConfigOpen: () => setIsAutoConfigOpen(true),
-      onAutoConfigResetAll: () => setAutoConfig(DEFAULT_AUTO_CONFIG),
-      onBetAmountBlur: handleBetAmountBlur,
+      onAutoConfigApply: () => {
+        console.log("[dice action] auto config apply");
+        setIsAutoConfigOpen(false);
+      },
+      onAutoConfigChange: (config) => {
+        console.log("[dice action] auto config change", config);
+        setAutoConfig(config);
+      },
+      onAutoConfigClose: () => {
+        console.log("[dice action] auto config close");
+        setIsAutoConfigOpen(false);
+      },
+      onAutoConfigOpen: () => {
+        console.log("[dice action] auto config open");
+        setIsAutoConfigOpen(true);
+      },
+      onAutoConfigResetAll: () => {
+        console.log("[dice action] auto config reset all");
+        setAutoConfig(DEFAULT_AUTO_CONFIG);
+      },
       onBetAmountChange: handleBetAmountChange,
-      onBetAmountControlClick: handleBetAmountControlClick,
-      onModeChange: setMode,
+      onModeChange: (nextMode) => {
+        console.log("[dice action] mode change", nextMode);
+        modeRef.current = nextMode;
+      },
       onSubmit: handleSubmit,
-      onToggleAutoInfinite: () => setIsAutoInfinite((current) => !current),
+      onToggleAutoInfinite: () => {
+        console.log("[dice action] toggle auto infinite");
+        setIsAutoInfinite((current) => !current);
+      },
     },
     gamePanelProps: {
       above,

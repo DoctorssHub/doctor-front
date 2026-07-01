@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { memo, useState } from "react";
 import fullScreenIcon from "@/assets/games/provably-fair/fullScreen.svg";
 import muteIcon from "@/assets/games/provably-fair/muteIcon.svg";
 import settingIcon from "@/assets/games/provably-fair/settingIcon.svg";
@@ -18,12 +18,14 @@ type ProvablyFairBarProps = {
   onToggleFullscreen?: () => void;
 };
 
-export function ProvablyFairBar({
+export const ProvablyFairBar = memo(function ProvablyFairBar({
   className = "",
   game,
   isFullscreen = false,
   onToggleFullscreen,
 }: ProvablyFairBarProps) {
+  console.count("[provably-fair render] ProvablyFairBar");
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
@@ -43,7 +45,10 @@ export function ProvablyFairBar({
             icon={settingIcon}
             isPressed={isSettingsOpen}
             label="Game settings"
-            onClick={() => setIsSettingsOpen((current) => !current)}
+            onClick={() => {
+              console.log("[provably-fair action] settings toggle");
+              setIsSettingsOpen((current) => !current);
+            }}
           />
           {isSettingsOpen ? <GameSettingsPopover /> : null}
         </div>
@@ -52,7 +57,7 @@ export function ProvablyFairBar({
       <ProvablyFairButton game={game} />
     </section>
   );
-}
+});
 
 type FairnessIconButtonProps = {
   className?: string;
@@ -69,6 +74,8 @@ function FairnessIconButton({
   label,
   onClick,
 }: FairnessIconButtonProps) {
+  console.count(`[provably-fair render] FairnessIconButton:${label}`);
+
   return (
     <button
       aria-label={label}
@@ -83,6 +90,8 @@ function FairnessIconButton({
 }
 
 function GameSettingsPopover() {
+  console.count("[provably-fair render] GameSettingsPopover");
+
   const [isTurboMode, setIsTurboMode] = useState(true);
   const [isMaxBet, setIsMaxBet] = useState(false);
   const volume = useGameSoundStore((state) => state.volume);
@@ -108,7 +117,10 @@ function GameSettingsPopover() {
           className="h-2 flex-1 cursor-pointer appearance-none rounded-full bg-[#1c212c] [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-2.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
           max={100}
           min={0}
-          onChange={(event) => setVolume(Number(event.target.value))}
+          onChange={(event) => {
+            console.log("[provably-fair action] volume change", event.target.value);
+            setVolume(Number(event.target.value));
+          }}
           style={{
             background: `linear-gradient(to right, var(--color-brand) 0%, var(--color-brand) ${volume}%, #1c212c ${volume}%, #1c212c 100%)`,
           }}
@@ -127,6 +139,8 @@ type SettingsSwitchProps = {
 };
 
 function SettingsSwitch({ checked, label, onChange }: SettingsSwitchProps) {
+  console.count(`[provably-fair render] SettingsSwitch:${label}`);
+
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="text-base leading-none font-normal text-[#c7cbd4]">
@@ -138,7 +152,10 @@ function SettingsSwitch({ checked, label, onChange }: SettingsSwitchProps) {
         className={`flex h-5 w-8 shrink-0 items-center rounded-full p-0.5 transition-colors ${
           checked ? "bg-(--color-brand)" : "bg-[#29303c]"
         }`}
-        onClick={onChange}
+        onClick={() => {
+          console.log("[provably-fair action] settings switch", label);
+          onChange();
+        }}
         role="switch"
         type="button"
       >

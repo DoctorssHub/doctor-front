@@ -11,6 +11,8 @@ export function ProvablyFairTabs({
   activeTab,
   onChange,
 }: ProvablyFairTabsProps) {
+  console.count("[provably-fair render] ProvablyFairTabs");
+
   return (
     <div className="relative grid h-[60px] grid-cols-2 gap-2 overflow-hidden rounded-[12px] bg-[#0e121c] p-2">
       <div
@@ -31,7 +33,10 @@ export function ProvablyFairTabs({
               : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-soft)]",
           ].join(" ")}
           key={tab}
-          onClick={() => onChange(tab)}
+          onClick={() => {
+            console.log("[provably-fair action] tab click", tab);
+            onChange(tab);
+          }}
           type="button"
         >
           {tab}

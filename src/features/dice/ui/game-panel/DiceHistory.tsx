@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import type { DiceBetResponse } from "../../api/dice-types";
 
 type DiceHistoryProps = {
@@ -17,7 +17,21 @@ function getDiceHistoryKey(result: DiceBetResponse) {
   return `${result.betId}-${result.createdAt}`;
 }
 
-export function DiceHistory({ results }: DiceHistoryProps) {
+function areVisibleResultsEqual(
+  currentResults: VisibleDiceHistoryResult[],
+  nextResults: VisibleDiceHistoryResult[],
+) {
+  return (
+    currentResults.length === nextResults.length &&
+    currentResults.every((item, index) => item === nextResults[index])
+  );
+}
+
+export const DiceHistory = memo(function DiceHistory({
+  results,
+}: DiceHistoryProps) {
+  console.count("[dice render] DiceHistory");
+
   const [visibleResults, setVisibleResults] = useState<
     VisibleDiceHistoryResult[]
   >([]);
@@ -36,11 +50,18 @@ export function DiceHistory({ results }: DiceHistoryProps) {
             const key = getDiceHistoryKey(result);
             const currentResult = currentByKey.get(key);
 
-            if (currentResult) {
-              return { ...currentResult, result, status: "visible" as const };
+            if (!currentResult) {
+              return { key, result, status: "entering" as const };
             }
 
-            return { key, result, status: "entering" as const };
+            if (
+              currentResult.result === result &&
+              currentResult.status !== "exiting"
+            ) {
+              return currentResult;
+            }
+
+            return { ...currentResult, result, status: "visible" as const };
           })
           .slice(-6);
         const exitingResults = currentResults
@@ -48,8 +69,13 @@ export function DiceHistory({ results }: DiceHistoryProps) {
             (item) => !nextKeys.has(item.key) && item.status !== "exiting",
           )
           .map((item) => ({ ...item, status: "exiting" as const }));
+        const nextVisibleResults = [...exitingResults, ...enteringResults].slice(
+          -7,
+        );
 
-        return [...exitingResults, ...enteringResults].slice(-7);
+        return areVisibleResultsEqual(currentResults, nextVisibleResults)
+          ? currentResults
+          : nextVisibleResults;
       });
     }, 0);
 
@@ -66,11 +92,19 @@ export function DiceHistory({ results }: DiceHistoryProps) {
     }
 
     const timeoutId = window.setTimeout(() => {
-      setVisibleResults((currentResults) =>
-        currentResults
+      setVisibleResults((currentResults) => {
+        const nextVisibleResults = currentResults
           .filter((item) => item.status !== "exiting")
-          .map((item) => ({ ...item, status: "visible" as const })),
-      );
+          .map((item) =>
+            item.status === "visible"
+              ? item
+              : { ...item, status: "visible" as const },
+          );
+
+        return areVisibleResultsEqual(currentResults, nextVisibleResults)
+          ? currentResults
+          : nextVisibleResults;
+      });
     }, 240);
 
     return () => window.clearTimeout(timeoutId);
@@ -86,21 +120,40 @@ export function DiceHistory({ results }: DiceHistoryProps) {
       className="absolute right-7 top-7 z-10 flex flex-wrap justify-end gap-2 max-laptop:right-4 max-laptop:top-4 max-tablet:left-4"
     >
       {visibleResults.map(({ key, result, status }) => (
-        <div
-          className={`grid h-8 w-12 place-items-center rounded-[6px] px-1 py-2 text-center text-xs font-semibold leading-[1.33] ${
-            status === "exiting"
-              ? "dice-history-chip-out"
-              : "dice-history-chip-in"
-          } ${
-            result.didWin
-              ? "bg-[#22c55e] text-[#0a0d19]"
-              : "bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)] text-white"
-          }`}
+        <DiceHistoryChip
           key={key}
-        >
-          {result.randomValue.toFixed(2)}
-        </div>
+          result={result}
+          status={status}
+        />
       ))}
     </div>
   );
-}
+});
+
+type DiceHistoryChipProps = {
+  result: DiceBetResponse;
+  status: VisibleDiceHistoryResult["status"];
+};
+
+const DiceHistoryChip = memo(function DiceHistoryChip({
+  result,
+  status,
+}: DiceHistoryChipProps) {
+  console.count(`[dice render] DiceHistoryChip:${result.betId}`);
+
+  return (
+    <div
+      className={`grid h-8 w-12 place-items-center rounded-[6px] px-1 py-2 text-center text-xs font-semibold leading-[1.33] ${
+        status === "exiting"
+          ? "dice-history-chip-out"
+          : "dice-history-chip-in"
+      } ${
+        result.didWin
+          ? "bg-[#22c55e] text-[#0a0d19]"
+          : "bg-[linear-gradient(180deg,#1b1f26_0%,#2b303b_100%)] text-white"
+      }`}
+    >
+      {result.randomValue.toFixed(2)}
+    </div>
+  );
+});

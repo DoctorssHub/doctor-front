@@ -23,6 +23,8 @@ type VerifyTabProps = {
 };
 
 export function VerifyTab({ initialGame }: VerifyTabProps) {
+  console.count("[provably-fair render] VerifyTab");
+
   const [game, setGame] = useState<ProvablyFairGame>(initialGame);
   const [clientSeed, setClientSeed] = useState("");
   const [serverSeed, setServerSeed] = useState("");
@@ -42,6 +44,7 @@ export function VerifyTab({ initialGame }: VerifyTabProps) {
     let isCurrent = true;
 
     async function verifyCurrentInput() {
+      console.log("[provably-fair action] verify effect", game);
       const parsedNonce = Number(nonce);
       const trimmedServerSeed = serverSeed.trim();
       const trimmedClientSeed = clientSeed.trim();
@@ -133,6 +136,7 @@ export function VerifyTab({ initialGame }: VerifyTabProps) {
   }, [clientSeed, game, nonce, plinkoMultipliers, risk, rows, serverSeed]);
 
   function handleGameChange(nextGame: ProvablyFairGame) {
+    console.log("[provably-fair action] verify game change", nextGame);
     setGame(nextGame);
     setError("");
   }
@@ -191,7 +195,10 @@ export function VerifyTab({ initialGame }: VerifyTabProps) {
                 className="h-1.5 flex-1 accent-[var(--color-brand)]"
                 max={16}
                 min={8}
-                onChange={(event) => setRows(Number(event.target.value))}
+                onChange={(event) => {
+                  console.log("[provably-fair action] plinko rows change", event.target.value);
+                  setRows(Number(event.target.value));
+                }}
                 type="range"
                 value={rows}
               />
@@ -219,12 +226,17 @@ type VerifyInputProps = {
 };
 
 function VerifyInput({ label, onChange, placeholder, value }: VerifyInputProps) {
+  console.count(`[provably-fair render] VerifyInput:${label}`);
+
   return (
     <label className="block text-sm font-light text-[#c7cbd4]">
       {label}
       <input
         className="mt-2 h-11 w-full rounded-[8px] border border-[#1b1f26] bg-[#0e121c] px-3 py-3 text-sm font-normal text-[#c7cbd4] outline-none transition placeholder:text-[#c7cbd4]/45 focus:border-[var(--color-brand)]"
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => {
+          console.log("[provably-fair action] verify input", label);
+          onChange(event.target.value);
+        }}
         placeholder={placeholder}
         value={value}
       />
@@ -248,6 +260,8 @@ const RISK_OPTIONS: Array<{
 ];
 
 function RiskSelector({ risk, onChange }: RiskSelectorProps) {
+  console.count("[provably-fair render] RiskSelector");
+
   return (
     <div className="grid grid-cols-3 rounded-lg bg-[var(--color-surface)] p-1">
       {RISK_OPTIONS.map((option) => (
@@ -258,7 +272,10 @@ function RiskSelector({ risk, onChange }: RiskSelectorProps) {
             risk === option.value ? "bg-[var(--color-surface-elevated)]" : "",
           ].join(" ")}
           key={option.value}
-          onClick={() => onChange(option.value)}
+          onClick={() => {
+            console.log("[provably-fair action] risk change", option.value);
+            onChange(option.value);
+          }}
           type="button"
         >
           {option.label}

@@ -36,6 +36,8 @@ export function DiceGamePanel({
   onMultiplierChange,
   onThresholdChange,
 }: DiceGamePanelProps) {
+  console.count("[dice render] DiceGamePanel");
+
   return (
     <section
       className={[
@@ -49,6 +51,7 @@ export function DiceGamePanel({
 
       <div className="flex flex-1 items-center">
         <DiceRange
+          key={`dice-range-${formatDiceNumber(threshold)}`}
           isFullscreen={isFullscreen}
           isLoading={isLoading}
           result={result}
@@ -64,6 +67,7 @@ export function DiceGamePanel({
         ].join(" ")}
       >
         <DiceNumberField
+          key={`dice-multiplier-${formatDiceNumber(multiplier)}`}
           className={isFullscreen ? "min-[768px]:w-full" : undefined}
           iconSrc={closeRangeIcon}
           id="dice-multiplier"
@@ -74,6 +78,7 @@ export function DiceGamePanel({
           onChange={onMultiplierChange}
         />
         <DiceNumberField
+          key={`dice-rollover-${formatDiceNumber(threshold)}`}
           className={isFullscreen ? "min-[768px]:w-full" : undefined}
           iconAlt={above ? "Switch to roll under" : "Switch to roll over"}
           iconSrc={relloverIcon}
@@ -87,6 +92,7 @@ export function DiceGamePanel({
           onIconClick={() => onAboveChange(!above)}
         />
         <DiceNumberField
+          key={`dice-chance-${chance.toFixed(4)}`}
           className={isFullscreen ? "min-[768px]:w-full" : undefined}
           iconSrc={percentIcon}
           id="dice-chance"

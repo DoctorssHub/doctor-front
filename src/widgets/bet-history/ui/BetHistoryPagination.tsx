@@ -40,6 +40,8 @@ export function BetHistoryPagination({
   page,
   totalPages,
 }: BetHistoryPaginationProps) {
+  console.count("[bet-history render] BetHistoryPagination");
+
   if (totalPages <= 1) {
     return null;
   }
@@ -55,7 +57,10 @@ export function BetHistoryPagination({
         aria-label="Previous page"
         className="flex size-9 items-center justify-center rounded-lg border border-(--color-border-strong) bg-(--color-surface-icon)/40 text-sm font-semibold text-(--color-text-muted) transition hover:bg-(--color-surface-hover) hover:text-white disabled:opacity-40"
         disabled={page <= 1}
-        onClick={() => onPageChange(page - 1)}
+        onClick={() => {
+          console.log("[bet-history action] previous page", page - 1);
+          onPageChange(page - 1);
+        }}
         type="button"
       >
         &lt;
@@ -67,7 +72,7 @@ export function BetHistoryPagination({
             className="flex size-9 items-center justify-center text-sm font-semibold text-(--color-text-subtle)"
             key={`ellipsis-${index}`}
           >
-            …
+            ...
           </span>
         ) : (
           <button
@@ -79,7 +84,10 @@ export function BetHistoryPagination({
                 : "border border-(--color-border-strong) bg-(--color-surface-icon)/40 text-(--color-text-muted) hover:bg-(--color-surface-hover) hover:text-white"
             }`}
             key={item}
-            onClick={() => onPageChange(item)}
+            onClick={() => {
+              console.log("[bet-history action] page click", item);
+              onPageChange(item);
+            }}
             type="button"
           >
             {item}
@@ -90,7 +98,10 @@ export function BetHistoryPagination({
         aria-label="Next page"
         className="flex size-9 items-center justify-center rounded-lg border border-(--color-border-strong) bg-(--color-surface-icon)/40 text-sm font-semibold text-(--color-text-muted) transition hover:bg-(--color-surface-hover) hover:text-white disabled:opacity-40"
         disabled={page >= totalPages}
-        onClick={() => onPageChange(page + 1)}
+        onClick={() => {
+          console.log("[bet-history action] next page", page + 1);
+          onPageChange(page + 1);
+        }}
         type="button"
       >
         &gt;
