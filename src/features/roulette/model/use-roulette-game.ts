@@ -51,7 +51,6 @@ export function useRouletteGame() {
   );
   const autoBetting = useAutoRouletteBetting();
   const {
-    autoBetCount,
     handleAutoBetCountChange,
     handleToggleAutoInfinite,
     isAutoInfinite,
@@ -181,7 +180,6 @@ export function useRouletteGame() {
 
   return {
     betControlsProps: {
-      autoBetCount,
       errorMessage,
       gameBalance,
       isAutoInfinite,

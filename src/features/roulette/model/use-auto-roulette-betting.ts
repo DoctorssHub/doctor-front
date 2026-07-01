@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import type { RouletteBetRequest } from "../api/roulette-types";
 
+const AUTO_BET_COUNT_DEFAULT = "10";
 const AUTO_NEXT_SPIN_DELAY_MS = 6200;
 
 type AutoRouletteBetVariables = {
@@ -15,8 +16,8 @@ export function useAutoRouletteBetting() {
   const autoPayloadRef = useRef<RouletteBetRequest | null>(null);
   const autoRemainingRef = useRef(0);
   const autoTimeoutRef = useRef<number | null>(null);
+  const autoBetCountRef = useRef(AUTO_BET_COUNT_DEFAULT);
   const isAutoRunningRef = useRef(false);
-  const [autoBetCount, setAutoBetCount] = useState("10");
   const [isAutoInfinite, setIsAutoInfinite] = useState(false);
   const [isAutoRunning, setIsAutoRunning] = useState(false);
 
@@ -36,7 +37,7 @@ export function useAutoRouletteBetting() {
   }, [clearAutoTimeout]);
 
   const handleAutoBetCountChange = useCallback((value: string) => {
-    setAutoBetCount(sanitizeIntegerInput(value));
+    autoBetCountRef.current = sanitizeIntegerInput(value);
   }, []);
 
   const handleToggleAutoInfinite = useCallback(() => {
@@ -44,7 +45,7 @@ export function useAutoRouletteBetting() {
   }, []);
 
   const startAutoBetting = useCallback((payload: RouletteBetRequest) => {
-    const normalizedAutoBetCount = Number(autoBetCount);
+    const normalizedAutoBetCount = Number(autoBetCountRef.current);
 
     autoPayloadRef.current = payload;
     autoRemainingRef.current = isAutoInfinite ? Infinity : normalizedAutoBetCount;
@@ -55,7 +56,7 @@ export function useAutoRouletteBetting() {
       clearBetsOnSuccess: false,
       payload,
     } satisfies AutoRouletteBetVariables;
-  }, [autoBetCount, isAutoInfinite]);
+  }, [isAutoInfinite]);
 
   const scheduleNextAutoBet = useCallback((scheduleAutoBet: ScheduleAutoBet) => {
     if (!isAutoRunningRef.current || !autoPayloadRef.current) {
@@ -85,7 +86,6 @@ export function useAutoRouletteBetting() {
   }, [isAutoInfinite, stopAutoBetting]);
 
   return {
-    autoBetCount,
     handleAutoBetCountChange,
     handleToggleAutoInfinite,
     isAutoInfinite,

@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { AutoBetControls, ModeTabs } from "@/shared/ui/game-sidebar";
+import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import { BetSubmitPanel } from "./BetSubmitPanel";
 import { ChipPicker } from "./ChipPicker";
 import { ManualBetActions } from "./ManualBetActions";
@@ -13,7 +14,6 @@ type BetControlsProps = {
   isSubmitting: boolean;
   isAnimating: boolean;
   isFullscreen?: boolean;
-  autoBetCount: string;
   isAutoInfinite: boolean;
   errorMessage: string | null;
   onModeChange: (mode: "manual" | "auto") => void;
@@ -31,7 +31,6 @@ export function BetControls({
   isSubmitting,
   isAnimating,
   isFullscreen = false,
-  autoBetCount,
   isAutoInfinite,
   errorMessage,
   onModeChange,
@@ -40,10 +39,17 @@ export function BetControls({
   onToggleAutoInfinite,
 }: BetControlsProps) {
   const [mode, setMode] = useState<"manual" | "auto">("manual");
+  const [autoBetCount, setAutoBetCount] = useState("10");
   const handleModeChange = useCallback((nextMode: "manual" | "auto") => {
     setMode(nextMode);
     onModeChange(nextMode);
   }, [onModeChange]);
+  const handleAutoBetCountChange = useCallback((value: string) => {
+    const nextAutoBetCount = sanitizeIntegerInput(value);
+
+    setAutoBetCount(nextAutoBetCount);
+    onAutoBetCountChange(nextAutoBetCount);
+  }, [onAutoBetCountChange]);
 
   const isLoading = isSpinning || isSubmitting || isAnimating;
   const controlsDisabled = isAutoRunning || isLoading;
@@ -92,7 +98,7 @@ export function BetControls({
             isAutoBetsInfinite={isAutoInfinite}
             isDisabled={isAutoRunning}
             isInputDisabled={isAutoRunning}
-            onAutoBetsAmountChange={onAutoBetCountChange}
+            onAutoBetsAmountChange={handleAutoBetCountChange}
             onAutoBetsInfinityToggle={onToggleAutoInfinite}
           />
         </div>
