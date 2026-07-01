@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { memo } from "react";
 import ArrowIcon from "@/assets/aside/arrow.svg";
 
 import type { NavDropdownItem } from "../model/types";
@@ -11,7 +12,10 @@ type NavDropdownProps = {
   item: NavDropdownItem;
 };
 
-export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
+export const NavDropdown = memo(function NavDropdown({
+  isCollapsed = false,
+  item,
+}: NavDropdownProps) {
   return (
     <details
       className="group w-full"
@@ -77,4 +81,4 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
       </div>
     </details>
   );
-}
+});

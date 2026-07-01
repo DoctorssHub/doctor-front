@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { memo } from "react";
 
 import type { NavLinkItem } from "../model/types";
 
@@ -8,7 +9,11 @@ type NavLinkProps = {
   item: NavLinkItem;
 };
 
-export function NavLink({ iconSize, isCollapsed = false, item }: NavLinkProps) {
+export const NavLink = memo(function NavLink({
+  iconSize,
+  isCollapsed = false,
+  item,
+}: NavLinkProps) {
   return (
     <a
       aria-label={isCollapsed ? item.title : undefined}
@@ -22,4 +27,4 @@ export function NavLink({ iconSize, isCollapsed = false, item }: NavLinkProps) {
       <span className={isCollapsed ? "sr-only" : ""}>{item.title}</span>
     </a>
   );
-}
+});
