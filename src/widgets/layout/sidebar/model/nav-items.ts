@@ -52,7 +52,7 @@ export const navItems: NavItem[] = [
     type: "dropdown",
   },
   {
-    href: "#",
+    href: "/rewards",
     icon: rewardsIcon,
     title: "Rewards",
     type: "link",
