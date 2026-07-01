@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { memo } from "react";
 
 import { navItems } from "../model/nav-items";
 import { ClaimCard } from "./claim-card";
@@ -14,6 +15,10 @@ type SidebarProps = {
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
   onToggleCollapse?: () => void;
+};
+
+type SidebarNavProps = {
+  isCollapsed: boolean;
 };
 
 export function Sidebar({
@@ -54,24 +59,7 @@ export function Sidebar({
         </button>
         <div className="flex h-full w-full flex-col items-center justify-start gap-3 pt-3">
           <ClaimCard isCollapsed={isCollapsed} />
-          <nav className="flex w-full flex-col gap-1">
-            {navItems.map((item) =>
-              item.type === "dropdown" ? (
-                <NavDropdown
-                  isCollapsed={isCollapsed}
-                  item={item}
-                  key={item.title}
-                />
-              ) : (
-                <NavLink
-                  iconSize={20}
-                  isCollapsed={isCollapsed}
-                  item={item}
-                  key={item.title}
-                />
-              ),
-            )}
-          </nav>
+          <SidebarNav isCollapsed={isCollapsed} />
           <a
             aria-label={isCollapsed ? "Help & Support" : undefined}
             className={`-mx-4 mt-auto flex h-20 w-[calc(100%+32px)] items-center border-t border-[#1b1f26] p-4 text-[18px] font-semibold text-(--color-text-primary) transition hover:bg-(--color-surface-hover) ${
@@ -94,3 +82,26 @@ export function Sidebar({
     </>
   );
 }
+
+const SidebarNav = memo(function SidebarNav({ isCollapsed }: SidebarNavProps) {
+  return (
+    <nav className="flex w-full flex-col gap-1">
+      {navItems.map((item) =>
+        item.type === "dropdown" ? (
+          <NavDropdown
+            isCollapsed={isCollapsed}
+            item={item}
+            key={item.title}
+          />
+        ) : (
+          <NavLink
+            iconSize={20}
+            isCollapsed={isCollapsed}
+            item={item}
+            key={item.title}
+          />
+        ),
+      )}
+    </nav>
+  );
+});
