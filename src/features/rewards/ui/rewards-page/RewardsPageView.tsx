@@ -49,61 +49,59 @@ export function RewardsPageView() {
   };
 
   return (
-    <main className="min-h-screen bg-(--color-page) text-(--color-text-primary)">
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6 px-6 py-9 max-tablet:px-4 max-tablet:py-7">
-        <header className="flex max-w-3xl flex-col gap-2">
-          <div className="flex items-center gap-3">
-            <Image alt="" height={28} src={rewardsIcon} width={28} />
-            <h1 className="text-[32px] leading-tight font-semibold text-(--color-text-primary) max-tablet:text-2xl">
-              Rewards
-            </h1>
-          </div>
-          <p className="text-[16px] font-normal text-(--color-text-muted)">
-            Explore current reward campaigns, community activations and timed
-            offers.
+    <div className="flex w-full flex-col gap-6">
+      <header className="flex max-w-3xl flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <Image alt="" height={28} src={rewardsIcon} width={28} />
+          <h1 className="text-[32px] leading-tight font-semibold text-(--color-text-primary) max-tablet:text-2xl">
+            Rewards
+          </h1>
+        </div>
+        <p className="text-[16px] font-normal text-(--color-text-muted)">
+          Explore current reward campaigns, community activations and timed
+          offers.
+        </p>
+      </header>
+
+      <RewardsToolbar
+        onSearchChange={setSearch}
+        onSortChange={handleSortChange}
+        search={search}
+        sort={sort}
+      />
+
+      {rewardsQuery.isError ? (
+        <div className="rounded-lg border border-(--color-border-strong) bg-(--color-surface-control)/65 px-5 py-8 text-center">
+          <p className="text-base font-bold text-(--color-text-primary)">
+            Rewards could not be loaded
           </p>
-        </header>
-
-        <RewardsToolbar
-          onSearchChange={setSearch}
-          onSortChange={handleSortChange}
-          search={search}
-          sort={sort}
+          <p className="mt-1 text-sm text-(--color-text-subtle)">
+            Please try again in a moment.
+          </p>
+          <Button
+            className="mt-5"
+            onClick={() => rewardsQuery.refetch()}
+            type="button"
+            variant="ghost"
+          >
+            Retry
+          </Button>
+        </div>
+      ) : (
+        <RewardsGrid
+          isFetching={rewardsQuery.isFetching}
+          nowMs={nowMs}
+          rewards={rewards}
         />
+      )}
 
-        {rewardsQuery.isError ? (
-          <div className="rounded-lg border border-(--color-border-strong) bg-(--color-surface-control)/65 px-5 py-8 text-center">
-            <p className="text-base font-bold text-(--color-text-primary)">
-              Rewards could not be loaded
-            </p>
-            <p className="mt-1 text-sm text-(--color-text-subtle)">
-              Please try again in a moment.
-            </p>
-            <Button
-              className="mt-5"
-              onClick={() => rewardsQuery.refetch()}
-              type="button"
-              variant="ghost"
-            >
-              Retry
-            </Button>
-          </div>
-        ) : (
-          <RewardsGrid
-            isFetching={rewardsQuery.isFetching}
-            nowMs={nowMs}
-            rewards={rewards}
-          />
-        )}
-
-        {rewards ? (
-          <RewardsPagination
-            currentPage={rewards.page}
-            onPageChange={setPage}
-            totalPages={rewards.totalPages}
-          />
-        ) : null}
-      </div>
-    </main>
+      {rewards ? (
+        <RewardsPagination
+          currentPage={rewards.page}
+          onPageChange={setPage}
+          totalPages={rewards.totalPages}
+        />
+      ) : null}
+    </div>
   );
 }
