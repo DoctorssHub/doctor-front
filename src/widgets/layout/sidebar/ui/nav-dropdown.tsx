@@ -5,6 +5,12 @@ import Link from "next/link";
 import ArrowIcon from "@/assets/aside/arrow.svg";
 
 import type { NavDropdownItem } from "../model/types";
+import {
+  sidebarGameNavHoverClass,
+  sidebarGameNavIconHoverClass,
+  sidebarNavHoverClass,
+  sidebarNavIconHoverClass,
+} from "./nav-hover";
 
 type NavDropdownProps = {
   isCollapsed?: boolean;
@@ -19,7 +25,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
     >
       <summary
         aria-label={isCollapsed ? item.title : undefined}
-        className={`flex h-11 cursor-pointer list-none items-center rounded-xl border border-(--color-surface-icon) text-[16px] font-semibold text-(--color-text-primary) transition hover:text-white [&::-webkit-details-marker]:hidden ${
+        className={`flex h-11 cursor-pointer list-none items-center rounded-xl text-[16px] font-semibold text-(--color-text-primary) ${sidebarNavHoverClass} [&::-webkit-details-marker]:hidden ${
           isCollapsed ? "justify-center px-0" : "justify-between px-4"
         }`}
         style={{
@@ -29,6 +35,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
         <span className={`flex items-center ${isCollapsed ? "" : "gap-3"}`}>
           <Image
             alt={`${item.title} menu`}
+            className={sidebarNavIconHoverClass}
             height={20}
             src={item.icon}
             width={20}
@@ -37,7 +44,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
             <span className="sr-only">{item.title}</span>
           ) : (
             <Link
-              className="transition hover:text-(--color-brand)"
+              className="transition duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/sidebar-nav:text-white"
               href={item.href}
               onClick={(event) => event.stopPropagation()}
             >
@@ -48,10 +55,10 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
         {!isCollapsed ? (
           <Image
             alt={`${item.title} dropdown arrow`}
+            className="rotate-0 transition duration-300 group-open:rotate-180 group-hover/sidebar-nav:brightness-125"
             height={20}
             src={ArrowIcon}
             width={20}
-            className="rotate-0 transition group-open:rotate-180"
           />
         ) : null}
       </summary>
@@ -59,7 +66,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
         {item.children.map((child) => (
           <a
             aria-label={isCollapsed ? child.title : undefined}
-            className={`flex h-11 items-center rounded-lg text-[16px] font-medium text-(--color-text-primary) transition hover:bg-(--color-surface-nav-hover) hover:text-white ${
+            className={`flex h-11 items-center rounded-lg text-[16px] font-medium text-(--color-text-primary) ${sidebarGameNavHoverClass} ${
               isCollapsed ? "justify-center px-0" : "gap-4 px-8"
             }`}
             href={child.href}
@@ -67,6 +74,7 @@ export function NavDropdown({ isCollapsed = false, item }: NavDropdownProps) {
           >
             <Image
               alt={child.title}
+              className={sidebarGameNavIconHoverClass}
               height={20}
               src={child.icon}
               width={20}
