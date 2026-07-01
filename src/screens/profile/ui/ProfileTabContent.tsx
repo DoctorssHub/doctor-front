@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import {
   ProfilePreferences,
+  ProfileConnections,
   ProfileSectionHeading,
   ProfileStatistics,
   ProfileTabs,
@@ -46,6 +47,8 @@ export function ProfileTabContent({ user }: ProfileTabContentProps) {
             <ProfileWallets addresses={user.userCryptoAddresses} />
           </section>
         </div>
+      ) : activeTab === "connections" ? (
+        <ProfileConnections user={user} />
       ) : (
         <BetHistoryTable variant="profile" />
       )}

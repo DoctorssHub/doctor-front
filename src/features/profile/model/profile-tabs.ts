@@ -1,4 +1,4 @@
-export type ProfileTab = "profile" | "bets";
+export type ProfileTab = "profile" | "bets" | "connections";
 
 export type ProfileTabOption = {
   label: string;
@@ -8,4 +8,5 @@ export type ProfileTabOption = {
 export const PROFILE_TABS: ProfileTabOption[] = [
   { label: "Profile", value: "profile" },
   { label: "Bets history", value: "bets" },
+  { label: "Connections", value: "connections" },
 ];
