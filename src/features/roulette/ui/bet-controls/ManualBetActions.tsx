@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { memo } from "react";
+import { useShallow } from "zustand/react/shallow";
 import clearIconDesk from "@/assets/games/roulette/clearIconDesk.svg";
 import undoIconDesk from "@/assets/games/roulette/undoIconDesk.svg";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
@@ -14,9 +15,13 @@ export const ManualBetActions = memo(function ManualBetActions({
   disabled,
   isVisible,
 }: ManualBetActionsProps) {
-  const canUndo = useRouletteStore((state) => state.placedBets.length > 0);
-  const clearBets = useRouletteStore((state) => state.clearBets);
-  const undoBet = useRouletteStore((state) => state.undoBet);
+  const { canUndo, clearBets, undoBet } = useRouletteStore(
+    useShallow((state) => ({
+      canUndo: state.placedBets.length > 0,
+      clearBets: state.clearBets,
+      undoBet: state.undoBet,
+    })),
+  );
 
   function handleClear() {
     gameSounds.playClear();
