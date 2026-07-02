@@ -1,5 +1,6 @@
 import { memo } from "react";
 
+import type { RouletteColumn } from "../../api/roulette-types";
 import type { NewRouletteBet } from "../../model/roulette-bets";
 import {
   ROULETTE_BOARD_ROWS,
@@ -28,7 +29,7 @@ type StraightNumberButtonProps = {
 
 type ColumnBetButtonProps = {
   amount?: number;
-  column: string;
+  column: RouletteColumn;
   disabled: boolean;
   hasCoveredBet: boolean;
   isFullscreen: boolean;
