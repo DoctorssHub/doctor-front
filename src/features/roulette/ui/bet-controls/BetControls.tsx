@@ -1,87 +1,58 @@
+import { useCallback, useState } from "react";
 import { AutoBetControls, ModeTabs } from "@/shared/ui/game-sidebar";
+import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import { BetSubmitPanel } from "./BetSubmitPanel";
 import { ChipPicker } from "./ChipPicker";
 import { ManualBetActions } from "./ManualBetActions";
-import { formatCoinAmount } from "../../lib/roulette-formatters";
 
 type BetControlsProps = {
-  mode: "manual" | "auto";
-  selectedChip: number;
-  totalBetAmount: number;
   gameBalance: number;
   minBet: number;
   maxBet: number;
   isSpinning: boolean;
   isAutoRunning: boolean;
-  canUndo: boolean;
   isSubmitting: boolean;
   isAnimating: boolean;
   isFullscreen?: boolean;
-  autoBetCount: string;
   isAutoInfinite: boolean;
   errorMessage: string | null;
   onModeChange: (mode: "manual" | "auto") => void;
-  onSelectChip: (chip: number) => void;
-  onClear: () => void;
-  onUndo: () => void;
   onSubmit: () => void;
   onAutoBetCountChange: (value: string) => void;
   onToggleAutoInfinite: () => void;
 };
 
 export function BetControls({
-  mode,
-  selectedChip,
-  totalBetAmount,
   gameBalance,
   minBet,
   maxBet,
   isSpinning,
   isAutoRunning,
-  canUndo,
   isSubmitting,
   isAnimating,
   isFullscreen = false,
-  autoBetCount,
   isAutoInfinite,
   errorMessage,
   onModeChange,
-  onSelectChip,
-  onClear,
-  onUndo,
   onSubmit,
   onAutoBetCountChange,
   onToggleAutoInfinite,
 }: BetControlsProps) {
+  const [mode, setMode] = useState<"manual" | "auto">("manual");
+  const [autoBetCount, setAutoBetCount] = useState("10");
+  const handleModeChange = useCallback((nextMode: "manual" | "auto") => {
+    setMode(nextMode);
+    onModeChange(nextMode);
+  }, [onModeChange]);
+  const handleAutoBetCountChange = useCallback((value: string) => {
+    const nextAutoBetCount = sanitizeIntegerInput(value);
+
+    setAutoBetCount(nextAutoBetCount);
+    onAutoBetCountChange(nextAutoBetCount);
+  }, [onAutoBetCountChange]);
+
   const isLoading = isSpinning || isSubmitting || isAnimating;
   const controlsDisabled = isAutoRunning || isLoading;
-  const isBetInvalid =
-    totalBetAmount < minBet ||
-    totalBetAmount > maxBet ||
-    totalBetAmount > gameBalance;
-  const normalizedAutoBetCount = Number(autoBetCount);
-  const isAutoBetCountInvalid =
-    mode === "auto" &&
-    !isAutoInfinite &&
-    (!Number.isInteger(normalizedAutoBetCount) || normalizedAutoBetCount < 1);
-  const isBetDisabled =
-    isLoading ||
-    (!isAutoRunning && (isBetInvalid || isAutoBetCountInvalid));
-  const helperMessage =
-    totalBetAmount > gameBalance
-      ? "Not enough coins"
-      : totalBetAmount > 0 && totalBetAmount < minBet
-        ? `Minimum bet is ${formatCoinAmount(minBet)}`
-        : totalBetAmount > maxBet
-          ? `Maximum bet is ${formatCoinAmount(maxBet)}`
-          : isAutoBetCountInvalid
-            ? "Enter at least 1 bet"
-            : errorMessage;
-  const actionLabel = isLoading
-    ? "Betting..."
-    : isAutoRunning
-      ? "Stop Auto"
-      : "Bet";
 
   return (
     <aside
@@ -99,25 +70,17 @@ export function BetControls({
             { label: "Manual", value: "manual" },
             { label: "Auto", value: "auto" },
           ]}
-          onModeChange={onModeChange}
+          onModeChange={handleModeChange}
         />
       </div>
       <div className="max-laptop:order-2 laptop:order-2">
-        <ChipPicker
-          disabled={controlsDisabled}
-          selectedChip={selectedChip}
-          totalBetAmount={totalBetAmount}
-          onSelectChip={onSelectChip}
-        />
+        <ChipPicker disabled={controlsDisabled} />
       </div>
 
       <div className="max-laptop:order-3 laptop:order-3">
         <ManualBetActions
-          canUndo={canUndo}
           disabled={controlsDisabled}
           isVisible={mode === "manual"}
-          onClear={onClear}
-          onUndo={onUndo}
         />
         <div
           className={[
@@ -135,7 +98,7 @@ export function BetControls({
             isAutoBetsInfinite={isAutoInfinite}
             isDisabled={isAutoRunning}
             isInputDisabled={isAutoRunning}
-            onAutoBetsAmountChange={onAutoBetCountChange}
+            onAutoBetsAmountChange={handleAutoBetCountChange}
             onAutoBetsInfinityToggle={onToggleAutoInfinite}
           />
         </div>
@@ -143,10 +106,15 @@ export function BetControls({
 
       <div className="max-laptop:order-1 laptop:order-4">
         <BetSubmitPanel
-          actionLabel={actionLabel}
-          helperMessage={helperMessage}
-          isBetDisabled={isBetDisabled}
+          autoBetCount={autoBetCount}
+          errorMessage={errorMessage}
+          gameBalance={gameBalance}
+          isAutoInfinite={isAutoInfinite}
+          isAutoRunning={isAutoRunning}
           isLoading={isLoading}
+          maxBet={maxBet}
+          minBet={minBet}
+          mode={mode}
           onSubmit={onSubmit}
         />
       </div>

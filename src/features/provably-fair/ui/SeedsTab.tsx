@@ -9,6 +9,7 @@ import {
 import { SeedField } from "./SeedField";
 
 export function SeedsTab() {
+
   const queryClient = useQueryClient();
   const [clientSeed, setClientSeed] = useState<string | null>(null);
 
@@ -81,7 +82,9 @@ export function SeedsTab() {
             <input
               className="h-11 min-w-0 flex-1 rounded-[8px] border border-[#1b1f26] bg-[#0e121c] px-3 py-3 text-sm font-normal text-[#c7cbd4] outline-none transition placeholder:text-[#c7cbd4]/45 focus:border-[var(--color-brand)]"
               maxLength={128}
-              onChange={(event) => setClientSeed(event.target.value)}
+              onChange={(event) => {
+                setClientSeed(event.target.value);
+              }}
               placeholder="Enter new client seed"
               value={editableClientSeed}
             />

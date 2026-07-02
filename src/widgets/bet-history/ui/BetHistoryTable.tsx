@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useAuthSessionStore } from "@/features/auth/model/auth-session-store";
 import type { BetHistoryItem, GameType } from "@/entities/bet/model/types";
 import type {
@@ -80,7 +80,10 @@ function createQueryParams({
   }
 }
 
-export function BetHistoryTable(props: BetHistoryTableProps) {
+export const BetHistoryTable = memo(function BetHistoryTable(
+  props: BetHistoryTableProps,
+) {
+
   const { className, title, variant } = props;
   const [activeGame, setActiveGame] = useState<GameType | undefined>();
   const [activeLiveCategory, setActiveLiveCategory] =
@@ -156,11 +159,13 @@ export function BetHistoryTable(props: BetHistoryTableProps) {
 
       {isProfile ? (
         <BetHistoryPagination
-          onPageChange={setPage}
+          onPageChange={(nextPage) => {
+            setPage(nextPage);
+          }}
           page={page}
           totalPages={totalPages}
         />
       ) : null}
     </section>
   );
-}
+});

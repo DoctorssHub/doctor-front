@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useCallback, useState } from "react";
 import rangeLineIcon from "@/assets/games/dice/rangeLineIcon.svg";
 import resultPolygonIcon from "@/assets/games/dice/resultPolygonIcon.svg";
 import type { DiceBetResponse } from "../../api/dice-types";
@@ -20,7 +21,9 @@ export function DiceRange({
   threshold,
   onThresholdChange,
 }: DiceRangeProps) {
-  const markerLeft = `clamp(18px, ${threshold}%, calc(100% - 18px))`;
+
+  const [draftThreshold, setDraftThreshold] = useState(threshold);
+  const markerLeft = `clamp(18px, ${draftThreshold}%, calc(100% - 18px))`;
   const visibleResult = result;
   const resultPosition = visibleResult
     ? `clamp(30px, ${visibleResult.randomValue}%, calc(100% - 30px))`
@@ -28,6 +31,14 @@ export function DiceRange({
   const resultGradient = visibleResult?.didWin
     ? "linear-gradient(90deg, rgba(43, 48, 59, 0.4) 0%, rgba(74, 222, 128, 0.4) 54.81%, rgba(43, 48, 59, 0.4) 100%)"
     : "linear-gradient(90deg, rgba(43, 48, 59, 0.4) 0%, rgba(239, 68, 68, 0.4) 54.81%, rgba(43, 48, 59, 0.4) 100%)";
+
+  const commitThreshold = useCallback(() => {
+    onThresholdChange(draftThreshold);
+  }, [draftThreshold, onThresholdChange]);
+
+  function handleDraftChange(value: string) {
+    setDraftThreshold(Number(value));
+  }
 
   return (
     <div
@@ -95,7 +106,7 @@ export function DiceRange({
           <div className="absolute inset-x-0 top-1/2 h-3 -translate-y-1/2 overflow-hidden rounded-full bg-[#22c55e]">
             <div
               className="absolute top-0 h-full bg-[var(--color-accent-red)]"
-              style={{ left: 0, width: `${threshold}%` }}
+              style={{ left: 0, width: `${draftThreshold}%` }}
             />
           </div>
           <div
@@ -110,10 +121,13 @@ export function DiceRange({
             disabled={isLoading}
             max={99.99}
             min={0.01}
-            onChange={(event) => onThresholdChange(Number(event.target.value))}
+            onBlur={commitThreshold}
+            onChange={(event) => handleDraftChange(event.target.value)}
+            onKeyUp={commitThreshold}
+            onPointerUp={commitThreshold}
             step={0.01}
             type="range"
-            value={threshold}
+            value={draftThreshold}
           />
         </div>
       </div>

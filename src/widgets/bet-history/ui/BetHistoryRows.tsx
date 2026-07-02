@@ -53,6 +53,7 @@ function renderHeader() {
 }
 
 function renderLoadingRows() {
+
   return (
     <tbody>
       {Array.from({ length: 8 }, (_, rowIndex) => (
@@ -102,6 +103,7 @@ function renderMessageRow(children: ReactNode) {
 }
 
 function renderItems(items: BetHistoryItem[]) {
+
   return (
     <tbody>
       {items.map((item) => (
@@ -145,6 +147,7 @@ export function BetHistoryRows({
   items,
   onRetry,
 }: BetHistoryRowsProps) {
+
   if (error) {
     return renderTableFrame(
       renderMessageRow(
@@ -157,7 +160,9 @@ export function BetHistoryRows({
           </p>
           <button
             className="h-9 rounded-lg bg-(--color-accent-red) px-4 text-sm font-semibold text-white transition hover:opacity-90"
-            onClick={onRetry}
+            onClick={() => {
+              onRetry();
+            }}
             type="button"
           >
             Retry

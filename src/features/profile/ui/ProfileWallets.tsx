@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import { getApiErrorMessage } from "../lib/profile-error";
 import {
@@ -51,36 +51,62 @@ const WalletEditor = memo(function WalletEditor({
   initialValues,
   wallet,
 }: WalletEditorProps) {
-  const [value, setValue] = useState(initialValue);
-  const [seed, setSeed] = useState(serializeWalletValues(initialValues));
+  const currentSeed = serializeWalletValues(initialValues);
+  const [seed, setSeed] = useState(currentSeed);
   const [isEditing, setIsEditing] = useState(false);
+  const [isUnchanged, setIsUnchanged] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const draftValueRef = useRef(initialValue);
   const mutation = useUpdateCryptoAddresses();
 
-  const currentSeed = serializeWalletValues(initialValues);
-  if (!isEditing && seed !== currentSeed) {
+  useEffect(() => {
+    if (isEditing || seed === currentSeed) {
+      return;
+    }
+
     setSeed(currentSeed);
-    setValue(initialValue);
-  }
+    draftValueRef.current = initialValue;
+    setIsUnchanged(true);
 
-  const startEditing = () => {
+    if (inputRef.current) {
+      inputRef.current.value = initialValue;
+    }
+  }, [currentSeed, initialValue, isEditing, seed]);
+
+  const startEditing = useCallback(() => {
     mutation.reset();
     setErrorMessage(null);
+    draftValueRef.current = inputRef.current?.value ?? initialValue;
+    setIsUnchanged(draftValueRef.current === initialValue);
     setIsEditing(true);
-  };
+  }, [initialValue, mutation]);
 
-  const cancelEditing = () => {
+  const cancelEditing = useCallback(() => {
     mutation.reset();
     setErrorMessage(null);
-    setValue(initialValue);
+    draftValueRef.current = initialValue;
+    setIsUnchanged(true);
+    if (inputRef.current) {
+      inputRef.current.value = initialValue;
+    }
     setIsEditing(false);
-  };
+  }, [initialValue, mutation]);
 
-  const save = () => {
+  const save = useCallback(() => {
+    const nextValue = draftValueRef.current;
+
+    if (nextValue === initialValue) {
+      return;
+    }
+
     setErrorMessage(null);
 
-    mutation.mutate(buildPayload(initialValues, wallet.key, value), {
-      onSuccess: () => setIsEditing(false),
+    mutation.mutate(buildPayload(initialValues, wallet.key, nextValue), {
+      onSuccess: () => {
+        setIsUnchanged(true);
+        setIsEditing(false);
+      },
       onError: (error) => {
         setErrorMessage(
           getApiErrorMessage(
@@ -90,25 +116,35 @@ const WalletEditor = memo(function WalletEditor({
         );
       },
     });
-  };
+  }, [initialValue, initialValues, mutation, wallet.key]);
+
+  const handleChange = useCallback((nextValue: string) => {
+    const nextIsUnchanged = nextValue === initialValue;
+
+    draftValueRef.current = nextValue;
+    setErrorMessage(null);
+    setIsUnchanged((currentIsUnchanged) =>
+      currentIsUnchanged === nextIsUnchanged
+        ? currentIsUnchanged
+        : nextIsUnchanged,
+    );
+  }, [initialValue]);
 
   return (
     <WalletField
+      defaultValue={initialValue}
       error={errorMessage}
       icon={wallet.icon}
+      inputRef={inputRef}
       isBusy={mutation.isPending}
       isEditing={isEditing}
       isPending={mutation.isPending}
-      isUnchanged={value === initialValue}
+      isUnchanged={isUnchanged}
       label={wallet.label}
       onCancel={cancelEditing}
-      onChange={(next) => {
-        setErrorMessage(null);
-        setValue(next);
-      }}
+      onChange={handleChange}
       onEdit={startEditing}
       onSave={save}
-      value={value}
     />
   );
 });

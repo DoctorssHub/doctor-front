@@ -3,13 +3,15 @@
 import Image from "next/image";
 import type { StaticImageData } from "next/image";
 import { memo } from "react";
+import type { RefObject } from "react";
 import pencilIcon from "@/assets/profile/pencil.svg";
 
 type WalletFieldProps = {
   label: string;
   icon: StaticImageData;
-  value: string;
+  defaultValue: string;
   error: string | null;
+  inputRef: RefObject<HTMLInputElement | null>;
   isBusy: boolean;
   isEditing: boolean;
   isPending: boolean;
@@ -23,8 +25,9 @@ type WalletFieldProps = {
 export const WalletField = memo(function WalletField({
   label,
   icon,
-  value,
+  defaultValue,
   error,
+  inputRef,
   isBusy,
   isEditing,
   isPending,
@@ -51,6 +54,7 @@ export const WalletField = memo(function WalletField({
         />
         <input
           className="min-w-0 flex-1 bg-transparent text-sm text-(--color-text-primary) placeholder:text-(--color-text-subtle) focus:outline-none disabled:cursor-not-allowed"
+          defaultValue={defaultValue}
           disabled={!isEditing || isPending}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={(event) => {
@@ -62,8 +66,8 @@ export const WalletField = memo(function WalletField({
             }
           }}
           placeholder="Enter address"
+          ref={inputRef}
           type="text"
-          value={value}
         />
 
         {isEditing ? (

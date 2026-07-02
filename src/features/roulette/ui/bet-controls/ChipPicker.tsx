@@ -1,23 +1,44 @@
 import Image from "next/image";
+import { memo } from "react";
+import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { ROULETTE_CHIP_VALUES } from "../../model/roulette-constants";
+import { getPlacedBetsTotal } from "../../model/roulette-bets";
+import { useRouletteStore } from "../../model/use-roulette-store";
 import { formatCoinAmount } from "../../lib/roulette-formatters";
 import { CHIP_IMAGES, formatChipLabel } from "./chip-assets";
 import redCoinIcon from "@/assets/shared/red-coin.svg";
 
 type ChipPickerProps = {
   disabled: boolean;
-  selectedChip: number;
-  totalBetAmount: number;
-  onSelectChip: (chip: number) => void;
 };
 
-export function ChipPicker({
+const BetAmountDisplay = memo(function BetAmountDisplay() {
+  const totalBetAmount = useRouletteStore((state) =>
+    getPlacedBetsTotal(state.placedBets),
+  );
+
+  return (
+    <div className="flex items-center justify-between gap-3 text-sm">
+      <span className="font-medium">Bet Amount</span>
+      <span className="flex items-center gap-2 font-semibold">
+        <Image alt="" className="h-4 w-4 object-contain" src={redCoinIcon} />
+        {formatCoinAmount(totalBetAmount)} COINS
+      </span>
+    </div>
+  );
+});
+
+export const ChipPicker = memo(function ChipPicker({
   disabled,
-  selectedChip,
-  totalBetAmount,
-  onSelectChip,
 }: ChipPickerProps) {
+  const selectedChip = useRouletteStore((state) => state.selectedChip);
+  const selectChip = useRouletteStore((state) => state.selectChip);
   const selectedChipImage = CHIP_IMAGES.get(selectedChip);
+
+  function handleSelectChip(chip: number) {
+    gameSounds.playSelection();
+    selectChip(chip);
+  }
 
   return (
     <div className="space-y-4">
@@ -37,13 +58,7 @@ export function ChipPicker({
         </span>
       </div>
 
-      <div className="flex items-center justify-between gap-3 text-sm">
-        <span className="font-medium">Bet Amount</span>
-        <span className="flex items-center gap-2 font-semibold">
-          <Image alt="" className="h-4 w-4 object-contain" src={redCoinIcon} />
-          {formatCoinAmount(totalBetAmount)} COINS
-        </span>
-      </div>
+      <BetAmountDisplay />
 
       <div className="grid grid-cols-5 gap-3 pt-2 max-laptop:flex max-laptop:overflow-x-auto tablet:max-laptop:justify-between tablet:max-laptop:overflow-visible max-tablet:grid max-tablet:overflow-visible max-tablet:gap-x-2 max-tablet:gap-y-4">
         {ROULETTE_CHIP_VALUES.map((chip) => {
@@ -60,7 +75,7 @@ export function ChipPicker({
               ].join(" ")}
               disabled={disabled}
               key={chip}
-              onClick={() => onSelectChip(chip)}
+              onClick={() => handleSelectChip(chip)}
               type="button"
             >
               {chipImage ? (
@@ -81,4 +96,4 @@ export function ChipPicker({
       </div>
     </div>
   );
-}
+});

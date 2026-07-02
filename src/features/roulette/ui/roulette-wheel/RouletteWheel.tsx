@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { RouletteBall } from "./RouletteBall";
 import { RouletteWheelCenter } from "./RouletteWheelCenter";
 import { RouletteWheelImageLayer } from "./RouletteWheelImageLayer";
@@ -12,7 +13,7 @@ type RouletteWheelProps = {
   resultNumber: number | null;
 };
 
-export function RouletteWheel({
+export const RouletteWheel = memo(function RouletteWheel({
   isSpinning,
   onLandingComplete,
   resultNumber,
@@ -34,4 +35,4 @@ export function RouletteWheel({
       />
     </RouletteWheelShell>
   );
-}
+});

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { ROULETTE_RED_NUMBERS } from "../../model/roulette-constants";
 import type { RouletteResult } from "../../model/use-roulette-store";
 
@@ -21,7 +21,7 @@ function getResultColorClass(number: number) {
   return "bg-[var(--color-roulette-history-dark)] shadow-[var(--shadow-roulette-history-dark)]";
 }
 
-export function RouletteHistory({
+export const RouletteHistory = memo(function RouletteHistory({
   results,
   onExitComplete,
 }: RouletteHistoryProps) {
@@ -66,4 +66,4 @@ export function RouletteHistory({
       })}
     </div>
   );
-}
+});
