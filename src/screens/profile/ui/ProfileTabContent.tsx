@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import {
   ProfilePreferences,
@@ -24,8 +24,7 @@ const profileTabParams: Record<ProfileTab, string | null> = {
   connections: "connections",
 };
 
-function getProfileTabFromSearch(search: string): ProfileTab {
-  const tabParam = new URLSearchParams(search).get("tab");
+function getProfileTabFromParam(tabParam: string | null): ProfileTab {
   const match = Object.entries(profileTabParams).find(
     ([, param]) => param === tabParam,
   );
@@ -33,40 +32,43 @@ function getProfileTabFromSearch(search: string): ProfileTab {
   return match ? (match[0] as ProfileTab) : "profile";
 }
 
-function getProfileTabUrl(tab: ProfileTab) {
-  const params = new URLSearchParams(window.location.search);
+function getProfileTabUrl({
+  pathname,
+  searchParams,
+  tab,
+}: {
+  pathname: string;
+  searchParams: URLSearchParams;
+  tab: ProfileTab;
+}) {
   const tabParam = profileTabParams[tab];
 
   if (tabParam) {
-    params.set("tab", tabParam);
+    searchParams.set("tab", tabParam);
   } else {
-    params.delete("tab");
+    searchParams.delete("tab");
   }
 
-  const query = params.toString();
+  const query = searchParams.toString();
 
-  return query ? `${window.location.pathname}?${query}` : window.location.pathname;
+  return query ? `${pathname}?${query}` : pathname;
 }
 
 export function ProfileTabContent({ user }: ProfileTabContentProps) {
-  const [activeTab, setActiveTab] = useState<ProfileTab>("profile");
-
-  useEffect(() => {
-    function syncTabWithSearch() {
-      setActiveTab(getProfileTabFromSearch(window.location.search));
-    }
-
-    syncTabWithSearch();
-    window.addEventListener("popstate", syncTabWithSearch);
-
-    return () => {
-      window.removeEventListener("popstate", syncTabWithSearch);
-    };
-  }, []);
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = getProfileTabFromParam(searchParams.get("tab"));
 
   function handleTabChange(tab: ProfileTab) {
-    setActiveTab(tab);
-    window.history.pushState(null, "", getProfileTabUrl(tab));
+    router.push(
+      getProfileTabUrl({
+        pathname,
+        searchParams: new URLSearchParams(searchParams.toString()),
+        tab,
+      }),
+      { scroll: false },
+    );
   }
 
   return (

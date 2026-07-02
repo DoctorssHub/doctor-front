@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useAuthSessionStore } from "@/features/auth/model/auth-session-store";
 import {
   ProfileCard,
@@ -40,7 +40,9 @@ export function ProfileScreen() {
         {profileQuery.isSuccess && profileQuery.data ? (
           <>
             <ProfileCard user={profileQuery.data} />
-            <ProfileTabContent user={profileQuery.data} />
+            <Suspense fallback={null}>
+              <ProfileTabContent user={profileQuery.data} />
+            </Suspense>
           </>
         ) : profileQuery.isError && !isAuthError ? (
           <ProfileErrorState onRetry={() => profileQuery.refetch()} />
