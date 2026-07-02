@@ -17,142 +17,19 @@ import { BettingNumberGrid } from "./BettingNumberGrid";
 import { BettingOutsideBets } from "./BettingOutsideBets";
 import { MobileBettingBoard } from "./mobile-betting-board";
 import type { HoverArea } from "./betting-board-types";
-import { buildBetAmountMap } from "./betting-board-utils";
+import {
+  areHoverAreasEqual,
+  buildBetAmountMap,
+} from "./betting-board-utils";
+import {
+  clearDesktopHoverAttributes,
+  syncDesktopHoverTargetAttributes,
+} from "./desktop-hover";
 
 type BettingBoardProps = {
   disabled: boolean;
   isFullscreen?: boolean;
 };
-
-const DESKTOP_HOVER_TARGET_DATASET_KEYS = [
-  "hoverColor",
-  "hoverDozen",
-  "hoverHalf",
-  "hoverNumbers",
-  "hoverParity",
-  "hoverRow",
-] as const;
-
-function clearDesktopHoverTargetAttributes(shell: HTMLElement) {
-  for (const key of DESKTOP_HOVER_TARGET_DATASET_KEYS) {
-    delete shell.dataset[key];
-  }
-}
-
-function clearDesktopHoverAttributes(shell: HTMLElement) {
-  delete shell.dataset.hoverActive;
-  clearDesktopHoverTargetAttributes(shell);
-}
-
-function getDesktopHoverTrigger(target: EventTarget | null, shell: HTMLElement) {
-  if (!(target instanceof Element)) {
-    return null;
-  }
-
-  const trigger = target.closest<HTMLElement>(".roulette-board-trigger");
-
-  if (!trigger || !shell.contains(trigger)) {
-    return null;
-  }
-
-  if (trigger instanceof HTMLButtonElement && trigger.disabled) {
-    return null;
-  }
-
-  return trigger;
-}
-
-function syncDesktopHoverTargetAttributes(
-  shell: HTMLElement,
-  target: EventTarget | null,
-) {
-  const trigger = getDesktopHoverTrigger(target, shell);
-
-  if (!trigger) {
-    clearDesktopHoverTargetAttributes(shell);
-    return;
-  }
-
-  const nextHoverColor = trigger.dataset.hoverColor;
-  const nextHoverDozen = trigger.dataset.hoverDozen;
-  const nextHoverHalf = trigger.dataset.hoverHalf;
-  const nextHoverNumbers = trigger.dataset.hoverNumbers;
-  const nextHoverParity = trigger.dataset.hoverParity;
-  const nextHoverRow = trigger.dataset.hoverRow;
-
-  if (
-    shell.dataset.hoverColor === nextHoverColor &&
-    shell.dataset.hoverDozen === nextHoverDozen &&
-    shell.dataset.hoverHalf === nextHoverHalf &&
-    shell.dataset.hoverNumbers === nextHoverNumbers &&
-    shell.dataset.hoverParity === nextHoverParity &&
-    shell.dataset.hoverRow === nextHoverRow
-  ) {
-    return;
-  }
-
-  clearDesktopHoverTargetAttributes(shell);
-
-  if (nextHoverColor) {
-    shell.dataset.hoverColor = nextHoverColor;
-  }
-
-  if (nextHoverDozen) {
-    shell.dataset.hoverDozen = nextHoverDozen;
-  }
-
-  if (nextHoverHalf) {
-    shell.dataset.hoverHalf = nextHoverHalf;
-  }
-
-  if (nextHoverNumbers) {
-    shell.dataset.hoverNumbers = nextHoverNumbers;
-  }
-
-  if (nextHoverParity) {
-    shell.dataset.hoverParity = nextHoverParity;
-  }
-
-  if (nextHoverRow) {
-    shell.dataset.hoverRow = nextHoverRow;
-  }
-}
-
-function areHoverAreasEqual(
-  first: HoverArea | null,
-  second: HoverArea | null,
-) {
-  if (first === second) {
-    return true;
-  }
-
-  if (!first || !second || first.kind !== second.kind) {
-    return false;
-  }
-
-  if (first.kind === "numbers" && second.kind === "numbers") {
-    return first.numbers.length === second.numbers.length &&
-      first.numbers.every((number, index) => number === second.numbers[index]);
-  }
-
-  if (first.kind === "row" && second.kind === "row") {
-    return first.rowIndex === second.rowIndex;
-  }
-
-  if (first.kind === "range" && second.kind === "range") {
-    return first.min === second.min && first.max === second.max;
-  }
-
-  if (first.kind === "parity" && second.kind === "parity") {
-    return first.parity === second.parity;
-  }
-
-  if (first.kind === "color" && second.kind === "color") {
-    return first.color === second.color;
-  }
-
-  return false;
-}
 
 export function BettingBoard({
   disabled,

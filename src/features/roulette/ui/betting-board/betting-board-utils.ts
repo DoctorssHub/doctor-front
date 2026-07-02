@@ -142,3 +142,39 @@ export function isNumberInHoverArea(
 
   return false;
 }
+
+export function areHoverAreasEqual(
+  first: HoverArea | null,
+  second: HoverArea | null,
+) {
+  if (first === second) {
+    return true;
+  }
+
+  if (!first || !second || first.kind !== second.kind) {
+    return false;
+  }
+
+  if (first.kind === "numbers" && second.kind === "numbers") {
+    return first.numbers.length === second.numbers.length &&
+      first.numbers.every((number, index) => number === second.numbers[index]);
+  }
+
+  if (first.kind === "row" && second.kind === "row") {
+    return first.rowIndex === second.rowIndex;
+  }
+
+  if (first.kind === "range" && second.kind === "range") {
+    return first.min === second.min && first.max === second.max;
+  }
+
+  if (first.kind === "parity" && second.kind === "parity") {
+    return first.parity === second.parity;
+  }
+
+  if (first.kind === "color" && second.kind === "color") {
+    return first.color === second.color;
+  }
+
+  return false;
+}
