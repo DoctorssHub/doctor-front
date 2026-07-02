@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { memo, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import pencilIcon from "@/assets/profile/pencil.svg";
 import { getApiErrorMessage } from "../lib/profile-error";
 import { useUpdateUsername } from "../model/use-update-username";
@@ -14,39 +14,81 @@ export const ProfileUsernameField = memo(function ProfileUsernameField({
   username,
 }: ProfileUsernameFieldProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(username);
-  const [seededValue, setSeededValue] = useState(username);
+  const [canSave, setCanSave] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const draftValueRef = useRef(username);
   const updateUsername = useUpdateUsername();
 
-  if (!isEditing && seededValue !== username) {
-    setSeededValue(username);
-    setValue(username);
-  }
+  useEffect(() => {
+    if (isEditing) {
+      return;
+    }
 
-  const trimmed = value.trim();
-  const canSave =
-    trimmed.length > 0 && trimmed !== username && !updateUsername.isPending;
+    draftValueRef.current = username;
+    setCanSave(false);
 
-  const startEditing = () => {
+    if (inputRef.current) {
+      inputRef.current.value = username;
+    }
+  }, [isEditing, username]);
+
+  const startEditing = useCallback(() => {
     updateUsername.reset();
+    draftValueRef.current = inputRef.current?.value ?? username;
+    setCanSave(false);
     setIsEditing(true);
-  };
+  }, [updateUsername, username]);
 
-  const cancelEditing = () => {
+  const cancelEditing = useCallback(() => {
     updateUsername.reset();
-    setValue(username);
+    draftValueRef.current = username;
+    setCanSave(false);
+    if (inputRef.current) {
+      inputRef.current.value = username;
+    }
     setIsEditing(false);
-  };
+  }, [updateUsername, username]);
 
-  const save = () => {
-    if (!canSave) {
+  const save = useCallback(() => {
+    const trimmed = draftValueRef.current.trim();
+
+    if (
+      trimmed.length === 0 ||
+      trimmed === username ||
+      updateUsername.isPending
+    ) {
       return;
     }
 
     updateUsername.mutate(trimmed, {
-      onSuccess: () => setIsEditing(false),
+      onSuccess: () => {
+        setCanSave(false);
+        setIsEditing(false);
+      },
     });
-  };
+  }, [updateUsername, username]);
+
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value;
+    const trimmed = nextValue.trim();
+    const nextCanSave = trimmed.length > 0 && trimmed !== username;
+
+    draftValueRef.current = nextValue;
+    setCanSave((currentCanSave) =>
+      currentCanSave === nextCanSave ? currentCanSave : nextCanSave,
+    );
+  }, [username]);
+
+  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      save();
+    }
+    if (event.key === "Escape") {
+      cancelEditing();
+    }
+  }, [cancelEditing, save]);
+
+  const isSaveDisabled = !canSave || updateUsername.isPending;
 
   return (
     <div className="flex flex-col gap-1">
@@ -61,19 +103,13 @@ export const ProfileUsernameField = memo(function ProfileUsernameField({
         <div className="relative flex-1">
           <input
             className="h-11 w-full rounded-lg border border-(--color-border-strong) bg-(--color-roulette-win-number-dark)/50 px-3.5 pr-10 text-sm text-(--color-text-primary) disabled:cursor-not-allowed disabled:text-(--color-text-disabled)"
+            defaultValue={username}
             disabled={!isEditing || updateUsername.isPending}
             id="profile-username"
-            onChange={(event) => setValue(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                save();
-              }
-              if (event.key === "Escape") {
-                cancelEditing();
-              }
-            }}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            ref={inputRef}
             type="text"
-            value={value}
           />
           {!isEditing ? (
             <button
@@ -91,7 +127,7 @@ export const ProfileUsernameField = memo(function ProfileUsernameField({
           <>
             <button
               className="h-11 shrink-0 rounded-lg bg-(--color-brand-strong) px-4 text-sm font-semibold text-(--color-brand-contrast) transition hover:bg-(--color-brand-hover) disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={!canSave}
+              disabled={isSaveDisabled}
               onClick={save}
               type="button"
             >
