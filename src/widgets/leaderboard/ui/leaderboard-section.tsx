@@ -36,7 +36,7 @@ export function LeaderboardSection({
   ),
   title,
   titleClassName = "text-[40px] font-black max-tablet:text-[36px]",
-  viewAllHref = "/",
+  viewAllHref = "/leaderboard",
 }: LeaderboardSectionProps) {
   return (
     <section className="relative py-10 text-center max-large:ml-[calc(50%-50dvw)] max-large:w-[100dvw] max-large:max-w-[100dvw] max-large:overflow-hidden">

@@ -1,4 +1,3 @@
-import { Button } from "@/shared";
 import { FaqSection } from "@/widgets/faq";
 import { LeaderboardSection, LeaderboardTable } from "@/widgets";
 
@@ -22,12 +21,14 @@ const LeaderboardScreen = () => {
       />
       <div className="mx-auto flex flex-col items-center max-w-[890px] px-4">
         <LeaderboardEligibilityNotice />
-        <Button
-          className="mx-auto mt-7 block"
-          variant="primary"
+        <a
+          className="mx-auto mt-7 inline-flex h-10 items-center justify-center rounded-lg bg-(--color-brand-strong) px-6 text-sm font-bold text-(--color-brand-contrast) shadow-(--shadow-brand-glow) transition hover:bg-(--color-brand-hover)"
+          href="https://degencity.com/r/thedoctor"
+          rel="noreferrer"
+          target="_blank"
         >
           Join the leaderboard
-        </Button>
+        </a>
         <LeaderboardTable />
         <div className="mt-11 pb-12">
           <FaqSection

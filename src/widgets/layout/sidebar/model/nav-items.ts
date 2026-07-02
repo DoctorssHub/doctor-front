@@ -1,4 +1,3 @@
-import bonusesIcon from "@/assets/aside/bonuses.svg";
 import diceIcon from "@/assets/aside/dice.svg";
 import gamesIcon from "@/assets/aside/games.svg";
 import kenoIcon from "@/assets/aside/keno.svg";
@@ -6,13 +5,10 @@ import leaderboardIcon from "@/assets/aside/leaderboard.svg";
 import plinkoIcon from "@/assets/aside/plinko.svg";
 import rewardsIcon from "@/assets/aside/rewards.svg";
 import rouletteIcon from "@/assets/aside/roulette.svg";
-import wheelIcon from "@/assets/aside/wheel.svg";
-import winnersIcon from "@/assets/aside/winners.svg";
 
 import type { NavItem } from "./types";
 
 export const navItems: NavItem[] = [
- 
   {
     href: "/leaderboard",
     icon: leaderboardIcon,
@@ -57,5 +53,4 @@ export const navItems: NavItem[] = [
     title: "Rewards",
     type: "link",
   },
-  
 ];

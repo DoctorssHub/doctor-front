@@ -1,17 +1,18 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import onboardAccount from "@/assets/homePage/onboarding/onboardingBg_1.webp";
 import onboardDiscord from "@/assets/homePage/onboarding/onboardingBg_2.webp";
 import onboardConnect from "@/assets/homePage/onboarding/onboardingBg_3.webp";
 import OnboardingIcon from "@/assets/homePage/onboarding/onboardingIcon.svg";
-import { Button } from "@/shared/ui/button";
 import { SectionTitle } from "@/shared/ui/section-title";
 
 import { CopyButton } from "./copy-button";
 
 type Step = {
   action: string;
+  actionHref: string;
   imageAlt: string;
   image: typeof onboardAccount;
   text: ReactNode;
@@ -21,6 +22,7 @@ type Step = {
 const steps: Step[] = [
   {
     action: "Register",
+    actionHref: "https://degencity.com/r/thedoctor",
     imageAlt: "Create account onboarding preview",
     image: onboardAccount,
     text: (
@@ -39,11 +41,12 @@ const steps: Step[] = [
   },
   {
     action: "Join Discord",
+    actionHref: "https://discord.com/invite/thedoctor",
     imageAlt: "Discord onboarding preview",
     image: onboardDiscord,
     text: (
       <>
-        Make sure you’re Super Confirmed to be eligible. Weekly giveaways and
+        Make sure you&apos;re Super Confirmed to be eligible. Weekly giveaways and
         promotions are posted in Discord under{" "}
         <span className="font-semibold text-(--color-brand-strong)">
           Giveaways
@@ -59,6 +62,7 @@ const steps: Step[] = [
   },
   {
     action: "Connect Account",
+    actionHref: "/profile?tab=connections",
     imageAlt: "Connect account onboarding preview",
     image: onboardConnect,
     text: (
@@ -73,6 +77,8 @@ const steps: Step[] = [
     title: "Connect your account",
   },
 ];
+
+const actionClassName = "inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-lg bg-(--color-brand-strong) px-6 text-[18px] font-medium text-(--color-brand-contrast) shadow-(--shadow-brand-glow) transition hover:bg-(--color-brand-hover) tablet:max-laptop:h-10 tablet:max-laptop:text-[16px]";
 
 export function OnboardingSection() {
   return (
@@ -104,9 +110,20 @@ export function OnboardingSection() {
                   {step.text}
                 </p>
               </div>
-              <Button className="h-12 w-full cursor-pointer text-[18px] font-medium tablet:max-laptop:h-10 tablet:max-laptop:text-[16px]">
-                {step.action}
-              </Button>
+              {step.actionHref.startsWith("/") ? (
+                <Link className={actionClassName} href={step.actionHref}>
+                  {step.action}
+                </Link>
+              ) : (
+                <a
+                  className={actionClassName}
+                  href={step.actionHref}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {step.action}
+                </a>
+              )}
             </div>
           </article>
         ))}

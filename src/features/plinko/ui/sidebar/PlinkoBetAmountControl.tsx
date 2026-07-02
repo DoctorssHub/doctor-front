@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { useAuthSessionStore } from "@/features/auth";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { usePlinkoBettingStore } from "@/features/plinko/model/plinko-betting-store";
 import { BetAmountField } from "@/shared/ui/game-sidebar";
 import { usePlinkoBetAmount } from "../../model/usePlinkoBetAmount";
@@ -13,6 +14,9 @@ export function PlinkoBetAmountControl({
   maxBet,
   minBet,
 }: PlinkoBetBoundsProps) {
+  const showMaxControl = useGameSettingsStore(
+    (state) => state.isMaxBetControlEnabled,
+  );
   const isAuthenticated = useAuthSessionStore(
     (state) => state.isAuthenticated,
   );
@@ -47,6 +51,7 @@ export function PlinkoBetAmountControl({
       isDisabled={isDisabled}
       maxBet={maxBet}
       minBet={minBet}
+      showMaxControl={showMaxControl}
       onBetAmountBlur={handleBetAmountBlur}
       onBetAmountChange={setBetAmount}
       onBetAmountControlClick={handleBetAmountControlClickWithErrorClear}

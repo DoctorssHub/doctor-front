@@ -7,6 +7,10 @@ export function readUsername(data: unknown) {
   return findUsername(data);
 }
 
+export function readUserProfileImage(data: unknown) {
+  return findUserProfileImage(data);
+}
+
 export function readUserBalances(data: unknown) {
   const balances = findUserBalances(data);
 
@@ -30,6 +34,32 @@ function findUsername(data: unknown): string | null {
 
   for (const value of Object.values(record)) {
     const nestedValue = findUsername(value);
+
+    if (nestedValue) {
+      return nestedValue;
+    }
+  }
+
+  return null;
+}
+
+function findUserProfileImage(data: unknown): string | null {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  const record = data as Record<string, unknown>;
+
+  for (const key of ["profileImgUrl", "profileImageUrl", "avatarUrl"]) {
+    const value = record[key];
+
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  for (const value of Object.values(record)) {
+    const nestedValue = findUserProfileImage(value);
 
     if (nestedValue) {
       return nestedValue;

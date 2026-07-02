@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useCallback } from "react";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import {
   formatBetAmountInput,
   getNextBetAmount,
@@ -75,6 +76,9 @@ export const KenoSidebar = memo(function KenoSidebar({
     setRisk,
     toggleAutoBetsInfinite,
   } = useKenoSidebarControls();
+  const showMaxControl = useGameSettingsStore(
+    (state) => state.isMaxBetControlEnabled,
+  );
   const parsedBetAmount = readBetAmount(betAmount);
   const maxBetAmount = Math.min(maxBet, gameBalance);
   const isBetAmountInvalid =
@@ -135,6 +139,7 @@ export const KenoSidebar = memo(function KenoSidebar({
         maxBet={String(maxBet)}
         minBet={String(minBet)}
         showBalance={false}
+        showMaxControl={showMaxControl}
         onBetAmountBlur={handleBetAmountBlur}
         onBetAmountChange={setBetAmount}
         onBetAmountControlClick={handleBetAmountControlClick}

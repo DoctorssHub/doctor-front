@@ -3,6 +3,7 @@
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import {
   readUserBalances,
+  readUserProfileImage,
   readUsername,
 } from "@/features/auth/lib/read-auth-response";
 import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
@@ -80,11 +81,12 @@ export function useDailyClaimButton() {
         const meResponse = await getCurrentUser();
         const nextUsername = readUsername(meResponse.data) ?? username;
         const nextBalances = readUserBalances(meResponse.data);
+        const nextProfileImgUrl = readUserProfileImage(meResponse.data);
 
         queryClient.setQueryData(["me"], meResponse.data);
 
         if (nextUsername) {
-          setSession(nextUsername, nextBalances);
+          setSession(nextUsername, nextBalances, nextProfileImgUrl);
         }
       } catch {
         await queryClient.invalidateQueries({ queryKey: ["me"] });

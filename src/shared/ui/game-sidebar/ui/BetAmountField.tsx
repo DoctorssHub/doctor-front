@@ -10,6 +10,7 @@ type BetAmountFieldProps = {
   maxBet?: string;
   minBet?: string;
   showBalance?: boolean;
+  showMaxControl?: boolean;
   onBetAmountBlur: () => void;
   onBetAmountChange: (amount: string) => void;
   onBetAmountControlClick: (control: BetAmountControl) => void;
@@ -40,10 +41,15 @@ export const BetAmountField = memo(function BetAmountField({
   maxBet,
   minBet,
   showBalance = true,
+  showMaxControl = false,
   onBetAmountBlur,
   onBetAmountChange,
   onBetAmountControlClick,
 }: BetAmountFieldProps) {
+  const visibleAmountControls = showMaxControl
+    ? amountControls
+    : amountControls.filter(([control]) => control !== "max");
+
   return (
     <div className="mt-8 max-[1023px]:order-3 max-[1023px]:mt-5 max-[767px]:mt-4">
       <div className="mb-2 flex items-center justify-between gap-3">
@@ -99,7 +105,7 @@ export const BetAmountField = memo(function BetAmountField({
           value={betAmount}
         />
         <div className="ml-2 flex gap-1">
-          {amountControls.map(([control, label]) => (
+          {visibleAmountControls.map(([control, label]) => (
             <button
               className={[
                 "h-7 rounded-[6px] border-[0.8px] border-[rgba(63,74,89,0.5)] bg-[#1B1F26] p-1.5 text-[10px] font-semibold text-white/45 transition hover:text-white disabled:cursor-not-allowed disabled:hover:text-white/45",

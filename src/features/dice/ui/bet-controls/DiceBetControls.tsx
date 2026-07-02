@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useCallback, useState } from "react";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { AutoBetControls } from "@/shared/ui/game-sidebar/ui/AutoBetControls";
 import {
   formatBetAmountInput,
@@ -69,6 +70,9 @@ export function DiceBetControls({
   onToggleAutoInfinite,
 }: DiceBetControlsProps) {
 
+  const showMaxControl = useGameSettingsStore(
+    (state) => state.isMaxBetControlEnabled,
+  );
   const [autoBetCount, setAutoBetCount] = useState("10");
   const [betAmount, setBetAmount] = useState("10.00");
   const [mode, setMode] = useState<DiceMode>("manual");
@@ -156,6 +160,7 @@ export function DiceBetControls({
         isDisabled={isLoading}
         maxBet={maxBet}
         minBet={minBet}
+        showMaxControl={showMaxControl}
         onBetAmountBlur={handleBetAmountBlur}
         onBetAmountChange={handleBetAmountChange}
         onBetAmountControlClick={handleBetAmountControlClick}

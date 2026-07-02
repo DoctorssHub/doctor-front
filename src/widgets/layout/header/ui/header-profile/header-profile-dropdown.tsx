@@ -19,28 +19,17 @@ export function HeaderProfileDropdown({
     <div className="fixed top-16 right-0 z-50 w-[260px] max-mobile:w-[min(260px,calc(100vw-16px))]">
       <div className="origin-top-right rounded-bl-[14px] bg-[#0a0d19] px-4 pt-5 pb-4 shadow-[0_16px_32px_rgb(0_0_0/35%)] ring-1 ring-[#121826] [animation:dice-mode-panel-in_180ms_cubic-bezier(0.22,1,0.36,1)_both]">
         <div className="flex flex-col gap-2">
-          {headerProfileItems.map((item) =>
-            "href" in item ? (
-              <Link
-                className={profileItemClassName}
-                href={item.href}
-                key={item.label}
-                onClick={onItemSelect}
-              >
-                <ProfileItemIcon item={item} />
-                <span className="relative z-10">{item.label}</span>
-              </Link>
-            ) : (
-              <button
-                className={profileItemClassName}
-                key={item.label}
-                type="button"
-              >
-                <ProfileItemIcon item={item} />
-                <span className="relative z-10">{item.label}</span>
-              </button>
-            ),
-          )}
+          {headerProfileItems.map((item) => (
+            <Link
+              className={profileItemClassName}
+              href={item.href}
+              key={item.label}
+              onClick={onItemSelect}
+            >
+              <ProfileItemIcon item={item} />
+              <span className="relative z-10">{item.label}</span>
+            </Link>
+          ))}
         </div>
 
         <div className="my-4 h-px bg-[#3f4a59]/50" />
