@@ -16,29 +16,26 @@ const features = [
     background: featuresBackgroundOne,
     image: featureLeaderboard,
     title: "Leaderboard",
-    href: "#",
+    href: "/leaderboard",
   },
   {
     background: featuresBackgroundTwo,
     image: featureRewards,
     title: "Rewards",
-    href: "#1",
+    href: "/rewards",
   },
   {
     background: featuresBackgroundThree,
     image: featureGames,
     title: "Games",
-    href: "#2",
+    href: "/all-games",
   },
 ];
 
 export function FeaturesSection() {
   return (
     <section className="flex flex-col gap-3">
-      <SectionTitle
-        title="Features"
-        icon={FeaturesIcon}
-      />
+      <SectionTitle title="Features" icon={FeaturesIcon} />
       <div className="flex items-center gap-4 laptop:max-large:grid laptop:max-large:grid-cols-3 tablet:max-laptop:grid tablet:max-laptop:grid-cols-2 max-tablet:grid max-tablet:grid-cols-1">
         {features.map((feature) => (
           <Link

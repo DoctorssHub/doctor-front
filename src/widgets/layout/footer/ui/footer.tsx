@@ -1,7 +1,6 @@
 import DiscordIcon from "@/assets/footer/discordIcon.svg";
 import FacebookIcon from "@/assets/footer/facebookIcon.svg";
 import InstIcon from "@/assets/footer/instIcon.svg";
-import TelegramIcon from "@/assets/footer/telegramIcon.svg";
 import TviterIcon from "@/assets/footer/twiterIcon.svg";
 
 import { FooterBrand } from "./footer-brand";
@@ -9,14 +8,38 @@ import { FooterColumn } from "./footer-column";
 import { FooterLegal } from "./footer-legal";
 import { FooterSocials } from "./footer-socials";
 
-const about = ["Pointshop", "Leaderboard", "Games", "Rewards", "Bonuses"];
-const terms = ["Terms and Conditions", "Privacy Policy"];
+const about = [
+  { href: "/leaderboard", label: "Leaderboard" },
+  { href: "/all-games", label: "Games" },
+  { href: "/rewards", label: "Rewards" },
+];
+const terms = [
+  {
+    href: "mailto:support@thedoctor.net?subject=Terms%20and%20Conditions",
+    label: "Terms and Conditions",
+  },
+  {
+    href: "mailto:support@thedoctor.net?subject=Privacy%20Policy",
+    label: "Privacy Policy",
+  },
+];
 const socials = [
-  { icon: FacebookIcon, label: "Facebook" },
-  { icon: TelegramIcon, label: "Telegram" },
-  { icon: DiscordIcon, label: "Discord" },
-  { icon: TviterIcon, label: "Twitter" },
-  { icon: InstIcon, label: "Instagram" },
+  {
+    href: "https://www.facebook.com/thedoctorslots",
+    icon: FacebookIcon,
+    label: "Facebook",
+  },
+  {
+    href: "https://www.instagram.com/thedoctorsocial/",
+    icon: InstIcon,
+    label: "Instagram",
+  },
+  { href: "https://x.com/TheDoctorGamble", icon: TviterIcon, label: "X" },
+  {
+    href: "https://discord.com/invite/thedoctor",
+    icon: DiscordIcon,
+    label: "Discord",
+  },
 ];
 
 export function Footer() {
@@ -33,10 +56,7 @@ export function Footer() {
               title="About"
             />
             <div className="tablet:max-laptop:col-start-3 tablet:max-laptop:flex tablet:max-laptop:flex-col tablet:max-laptop:gap-8 lg:contents max-tablet:contents">
-              <FooterColumn
-                items={terms}
-                title="Terms"
-              />
+              <FooterColumn items={terms} title="Terms" />
               <FooterSocials
                 className="max-tablet:col-span-2"
                 socials={socials}

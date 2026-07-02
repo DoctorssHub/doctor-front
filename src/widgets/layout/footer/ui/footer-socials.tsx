@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 type SocialLink = {
+  href: string;
   icon: StaticImageData;
   label: string;
 };
@@ -23,8 +24,10 @@ export function FooterSocials({ className = "", socials }: FooterSocialsProps) {
           <Link
             aria-label={social.label}
             className="flex size-9 items-center justify-center rounded-lg bg-(--color-surface-icon) text-xs font-bold text-(--color-text-muted) transition duration-300 hover:-translate-y-0.5 hover:bg-(--color-surface-hover) hover:text-(--color-text-primary)"
-            href="#"
+            href={social.href}
             key={social.label}
+            rel="noreferrer"
+            target="_blank"
           >
             <Image
               alt={social.label}

@@ -1,8 +1,13 @@
 import Link from "next/link";
 
+type FooterColumnItem = {
+  href: string;
+  label: string;
+};
+
 type FooterColumnProps = {
   className?: string;
-  items: string[];
+  items: FooterColumnItem[];
   title: string;
 };
 
@@ -14,12 +19,12 @@ export function FooterColumn({ className = "", items, title }: FooterColumnProps
       </h3>
       <ul className="flex flex-col gap-2.5 text-[14px] leading-[18px] font-light text-(--color-text-muted)">
         {items.map((item) => (
-          <li key={item}>
+          <li key={item.label}>
             <Link
               className="transition duration-300 hover:text-(--color-text-primary)"
-              href="#"
+              href={item.href}
             >
-              {item}
+              {item.label}
             </Link>
           </li>
         ))}

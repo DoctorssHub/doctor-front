@@ -8,7 +8,7 @@ export function FooterBrand() {
       <Link
         aria-label="McQueen home"
         className="relative block w-fit"
-        href="#"
+        href="/"
       >
         <Image
           alt="McQueen 95 logo"

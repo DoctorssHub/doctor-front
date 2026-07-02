@@ -65,7 +65,9 @@ export function Sidebar({
             className={`-mx-4 mt-auto flex h-20 w-[calc(100%+32px)] items-center border-t border-[#1b1f26] p-4 text-[18px] font-semibold text-(--color-text-primary) transition hover:bg-(--color-surface-hover) ${
               isCollapsed ? "justify-center" : "justify-center gap-4"
             }`}
-            href="#"
+            href="https://discord.com/invite/thedoctor"
+            rel="noreferrer"
+            target="_blank"
           >
             <Image
               alt="Help and support"
