@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import fullScreenIcon from "@/assets/games/provably-fair/fullScreen.svg";
 import muteIcon from "@/assets/games/provably-fair/muteIcon.svg";
 import settingIcon from "@/assets/games/provably-fair/settingIcon.svg";
 import volumeIcon from "@/assets/games/provably-fair/volumeIcon.svg";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { useGameSoundStore } from "@/shared/model/game-sound-store";
 import type { StaticImageData } from "next/image";
 import type { ProvablyFairGame } from "../model/provably-fair-games";
@@ -24,8 +25,32 @@ export const ProvablyFairBar = memo(function ProvablyFairBar({
   isFullscreen = false,
   onToggleFullscreen,
 }: ProvablyFairBarProps) {
-
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const settingsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isSettingsOpen) {
+      return;
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      const settingsElement = settingsRef.current;
+
+      if (
+        settingsElement &&
+        event.target instanceof Node &&
+        !settingsElement.contains(event.target)
+      ) {
+        setIsSettingsOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, [isSettingsOpen]);
 
   return (
     <section
@@ -39,7 +64,7 @@ export const ProvablyFairBar = memo(function ProvablyFairBar({
           label="Fullscreen"
           onClick={onToggleFullscreen}
         />
-        <div className="relative">
+        <div className="relative" ref={settingsRef}>
           <FairnessIconButton
             icon={settingIcon}
             isPressed={isSettingsOpen}
@@ -72,7 +97,6 @@ function FairnessIconButton({
   label,
   onClick,
 }: FairnessIconButtonProps) {
-
   return (
     <button
       aria-label={label}
@@ -87,9 +111,13 @@ function FairnessIconButton({
 }
 
 function GameSettingsPopover() {
-
   const [isTurboMode, setIsTurboMode] = useState(true);
-  const [isMaxBet, setIsMaxBet] = useState(false);
+  const isMaxBetControlEnabled = useGameSettingsStore(
+    (state) => state.isMaxBetControlEnabled,
+  );
+  const toggleMaxBetControl = useGameSettingsStore(
+    (state) => state.toggleMaxBetControl,
+  );
   const volume = useGameSoundStore((state) => state.volume);
   const setVolume = useGameSoundStore((state) => state.setVolume);
   const soundIcon = volume === 0 ? muteIcon : volumeIcon;
@@ -102,9 +130,9 @@ function GameSettingsPopover() {
         onChange={() => setIsTurboMode((current) => !current)}
       />
       <SettingsSwitch
-        checked={isMaxBet}
+        checked={isMaxBetControlEnabled}
         label="Max Bet"
-        onChange={() => setIsMaxBet((current) => !current)}
+        onChange={toggleMaxBetControl}
       />
       <div className="flex items-center gap-5">
         <Image alt="" height={20} src={soundIcon} width={20} />
@@ -134,7 +162,6 @@ type SettingsSwitchProps = {
 };
 
 function SettingsSwitch({ checked, label, onChange }: SettingsSwitchProps) {
-
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="text-base leading-none font-normal text-[#c7cbd4]">
