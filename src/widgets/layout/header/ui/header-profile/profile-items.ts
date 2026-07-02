@@ -9,6 +9,7 @@ export const headerProfileItems = [
     type: "profile",
   },
   {
+    href: "/profile?tab=bets-history",
     icon: betHistoryIcon,
     label: "Bets History",
     type: "bets-history",
