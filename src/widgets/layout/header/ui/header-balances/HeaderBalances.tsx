@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ArrowIcon from "@/assets/aside/arrowSidebar.svg";
 import type { UserBalance } from "@/features/auth/lib/read-auth-response";
+import { usePointsExchangeModalStore } from "@/features/points-exchange";
 import { BalanceDropdown } from "./balance-dropdown";
 import { BalancePillItem } from "./balance-pill-item";
 import { getOrderedBalances } from "./balance-utils";
@@ -11,6 +12,9 @@ import { getOrderedBalances } from "./balance-utils";
 export function HeaderBalances({ balances }: { balances: UserBalance[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const openPointsExchangeModal = usePointsExchangeModalStore(
+    (state) => state.openPointsExchangeModal,
+  );
   const orderedBalances = getOrderedBalances(balances);
 
   useEffect(() => {
@@ -79,7 +83,15 @@ export function HeaderBalances({ balances }: { balances: UserBalance[] }) {
         />
       </button>
 
-      {isOpen ? <BalanceDropdown balances={orderedBalances} /> : null}
+      {isOpen ? (
+        <BalanceDropdown
+          balances={orderedBalances}
+          onExchangeClick={() => {
+            setIsOpen(false);
+            openPointsExchangeModal();
+          }}
+        />
+      ) : null}
     </div>
   );
 }
