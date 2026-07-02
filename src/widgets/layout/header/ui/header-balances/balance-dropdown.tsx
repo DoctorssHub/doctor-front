@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import exchangeIcon from "@/assets/games/dice/relloverIcon.svg";
 import type { UserBalance } from "@/features/auth/lib/read-auth-response";
 import { BalanceRow } from "./balance-row";
@@ -25,7 +24,7 @@ export function BalanceDropdown({
             />
           ))}
         </div>
-        <Link
+        <button
           className="relative mt-3 flex h-10 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-[6px] border border-transparent bg-[#252b36] text-[16px] leading-[125%] font-bold text-[#fdfdfd] transition-[border-color,box-shadow,background-color,transform] before:absolute before:inset-0 before:bg-[var(--color-brand)] before:opacity-0 before:blur-xl before:transition before:content-[''] hover:border-[var(--color-brand)] hover:bg-[#252b36] hover:shadow-[0_0_18px_rgb(200_40_49/45%)] hover:before:opacity-45 active:scale-[0.99] focus-visible:border-[var(--color-brand)] focus-visible:outline-none focus-visible:shadow-[0_0_18px_rgb(200_40_49/45%)]"
           onClick={onExchangeClick}
           type="button"
@@ -39,7 +38,7 @@ export function BalanceDropdown({
             width={20}
           />
           <span className="relative">Exchange Points</span>
-        </Link>
+        </button>
       </div>
     </div>
   );
