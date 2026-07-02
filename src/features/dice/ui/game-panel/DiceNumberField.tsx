@@ -30,15 +30,10 @@ export function DiceNumberField({
   onIconClick,
   onChange,
 }: DiceNumberFieldProps) {
-  console.count(`[dice render] DiceNumberField:${id}`);
 
   const [draftValue, setDraftValue] = useState(value);
 
   const commitValue = useCallback(() => {
-    console.log("[dice action] number field commit", {
-      id,
-      value: draftValue,
-    });
 
     const nextValue = Number(draftValue.replace(",", "."));
 
@@ -48,13 +43,9 @@ export function DiceNumberField({
     }
 
     setDraftValue(value);
-  }, [draftValue, id, onChange, value]);
+  }, [draftValue, onChange, value]);
 
   function handleChange(value: string) {
-    console.log("[dice action] number field draft change", {
-      id,
-      value,
-    });
 
     setDraftValue(value);
   }

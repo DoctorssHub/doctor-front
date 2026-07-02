@@ -13,7 +13,7 @@ import { ModeTabs } from "@/shared/ui/game-sidebar/ui/ModeTabs";
 import type { BetAmountControl } from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
 import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import { formatDiceNumber, getDiceProfitOnWin } from "../../lib/dice-calculations";
-import type { DiceAutoConfig, DiceMode } from "../../model/use-dice-game";
+import type { DiceAutoConfig, DiceMode } from "../../model/dice-game-options";
 import { DiceAutoConfigModal } from "./DiceAutoConfigModal";
 import redCoinIcon from "@/assets/shared/red-coin.svg";
 
@@ -68,7 +68,6 @@ export function DiceBetControls({
   onSubmit,
   onToggleAutoInfinite,
 }: DiceBetControlsProps) {
-  console.count("[dice render] DiceBetControls");
 
   const [autoBetCount, setAutoBetCount] = useState("10");
   const [betAmount, setBetAmount] = useState("10.00");
@@ -283,7 +282,6 @@ type AutoSummaryCardProps = {
 };
 
 function AutoSummaryCard({ coin = false, label, value }: AutoSummaryCardProps) {
-  console.count(`[dice render] AutoSummaryCard:${label}`);
 
   return (
     <div className="h-[60px] w-[150px] rounded-lg border border-[#1b1f26] bg-[#0e121c] p-3 backdrop-blur-[4.8px]">

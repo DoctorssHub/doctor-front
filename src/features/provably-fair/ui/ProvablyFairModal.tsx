@@ -12,7 +12,6 @@ import { VerifyTab } from "./VerifyTab";
 type FairnessTab = "seeds" | "verify";
 
 export function ProvablyFairModal() {
-  console.count("[provably-fair render] ProvablyFairModal");
 
   const isOpen = useProvablyFairModalStore((state) => state.isOpen);
   const openKey = useProvablyFairModalStore((state) => state.openKey);
@@ -43,7 +42,6 @@ function ProvablyFairModalContent({
   initialGame,
   onClose,
 }: ProvablyFairModalContentProps) {
-  console.count("[provably-fair render] ProvablyFairModalContent");
 
   const [activeTab, setActiveTab] = useState<FairnessTab>("seeds");
 
@@ -76,7 +74,6 @@ function ProvablyFairModalContent({
           aria-label="Close fairness"
           className="absolute right-5 top-5 grid h-8 w-8 place-items-center rounded-lg text-2xl leading-none text-[var(--color-text-primary)] transition hover:bg-[var(--color-surface-hover)]"
           onClick={() => {
-            console.log("[provably-fair action] close modal");
             onClose();
           }}
           type="button"
@@ -90,7 +87,6 @@ function ProvablyFairModalContent({
           <ProvablyFairTabs
             activeTab={activeTab}
             onChange={(tab) => {
-              console.log("[provably-fair action] tab change", tab);
               setActiveTab(tab);
             }}
           />

@@ -1,2 +1,2 @@
-export { useDiceGame } from "./model/use-dice-game";
+export { useDiceGame } from "./ui/use-dice-game";
 export { DiceBetControls, DiceGamePanel } from "./ui";

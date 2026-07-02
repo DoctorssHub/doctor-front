@@ -21,7 +21,6 @@ export function DiceRange({
   threshold,
   onThresholdChange,
 }: DiceRangeProps) {
-  console.count("[dice render] DiceRange");
 
   const [draftThreshold, setDraftThreshold] = useState(threshold);
   const markerLeft = `clamp(18px, ${draftThreshold}%, calc(100% - 18px))`;
@@ -34,12 +33,10 @@ export function DiceRange({
     : "linear-gradient(90deg, rgba(43, 48, 59, 0.4) 0%, rgba(239, 68, 68, 0.4) 54.81%, rgba(43, 48, 59, 0.4) 100%)";
 
   const commitThreshold = useCallback(() => {
-    console.log("[dice action] range commit", draftThreshold);
     onThresholdChange(draftThreshold);
   }, [draftThreshold, onThresholdChange]);
 
   function handleDraftChange(value: string) {
-    console.log("[dice action] range draft change", value);
     setDraftThreshold(Number(value));
   }
 

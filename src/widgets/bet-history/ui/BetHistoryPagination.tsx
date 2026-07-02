@@ -40,7 +40,6 @@ export function BetHistoryPagination({
   page,
   totalPages,
 }: BetHistoryPaginationProps) {
-  console.count("[bet-history render] BetHistoryPagination");
 
   if (totalPages <= 1) {
     return null;
@@ -58,7 +57,6 @@ export function BetHistoryPagination({
         className="flex size-9 items-center justify-center rounded-lg border border-(--color-border-strong) bg-(--color-surface-icon)/40 text-sm font-semibold text-(--color-text-muted) transition hover:bg-(--color-surface-hover) hover:text-white disabled:opacity-40"
         disabled={page <= 1}
         onClick={() => {
-          console.log("[bet-history action] previous page", page - 1);
           onPageChange(page - 1);
         }}
         type="button"
@@ -85,7 +83,6 @@ export function BetHistoryPagination({
             }`}
             key={item}
             onClick={() => {
-              console.log("[bet-history action] page click", item);
               onPageChange(item);
             }}
             type="button"
@@ -99,7 +96,6 @@ export function BetHistoryPagination({
         className="flex size-9 items-center justify-center rounded-lg border border-(--color-border-strong) bg-(--color-surface-icon)/40 text-sm font-semibold text-(--color-text-muted) transition hover:bg-(--color-surface-hover) hover:text-white disabled:opacity-40"
         disabled={page >= totalPages}
         onClick={() => {
-          console.log("[bet-history action] next page", page + 1);
           onPageChange(page + 1);
         }}
         type="button"

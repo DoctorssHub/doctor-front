@@ -36,7 +36,6 @@ export function DiceGamePanel({
   onMultiplierChange,
   onThresholdChange,
 }: DiceGamePanelProps) {
-  console.count("[dice render] DiceGamePanel");
 
   return (
     <section

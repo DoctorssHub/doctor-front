@@ -24,7 +24,6 @@ export const ProvablyFairBar = memo(function ProvablyFairBar({
   isFullscreen = false,
   onToggleFullscreen,
 }: ProvablyFairBarProps) {
-  console.count("[provably-fair render] ProvablyFairBar");
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -46,7 +45,6 @@ export const ProvablyFairBar = memo(function ProvablyFairBar({
             isPressed={isSettingsOpen}
             label="Game settings"
             onClick={() => {
-              console.log("[provably-fair action] settings toggle");
               setIsSettingsOpen((current) => !current);
             }}
           />
@@ -74,7 +72,6 @@ function FairnessIconButton({
   label,
   onClick,
 }: FairnessIconButtonProps) {
-  console.count(`[provably-fair render] FairnessIconButton:${label}`);
 
   return (
     <button
@@ -90,7 +87,6 @@ function FairnessIconButton({
 }
 
 function GameSettingsPopover() {
-  console.count("[provably-fair render] GameSettingsPopover");
 
   const [isTurboMode, setIsTurboMode] = useState(true);
   const [isMaxBet, setIsMaxBet] = useState(false);
@@ -118,7 +114,6 @@ function GameSettingsPopover() {
           max={100}
           min={0}
           onChange={(event) => {
-            console.log("[provably-fair action] volume change", event.target.value);
             setVolume(Number(event.target.value));
           }}
           style={{
@@ -139,7 +134,6 @@ type SettingsSwitchProps = {
 };
 
 function SettingsSwitch({ checked, label, onChange }: SettingsSwitchProps) {
-  console.count(`[provably-fair render] SettingsSwitch:${label}`);
 
   return (
     <div className="flex items-center justify-between gap-4">
@@ -153,7 +147,6 @@ function SettingsSwitch({ checked, label, onChange }: SettingsSwitchProps) {
           checked ? "bg-(--color-brand)" : "bg-[#29303c]"
         }`}
         onClick={() => {
-          console.log("[provably-fair action] settings switch", label);
           onChange();
         }}
         role="switch"

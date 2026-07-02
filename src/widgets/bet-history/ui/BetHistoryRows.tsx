@@ -53,7 +53,6 @@ function renderHeader() {
 }
 
 function renderLoadingRows() {
-  console.count("[bet-history render] BetHistoryRows:loading");
 
   return (
     <tbody>
@@ -104,7 +103,6 @@ function renderMessageRow(children: ReactNode) {
 }
 
 function renderItems(items: BetHistoryItem[]) {
-  console.count("[bet-history render] BetHistoryRows:items");
 
   return (
     <tbody>
@@ -149,7 +147,6 @@ export function BetHistoryRows({
   items,
   onRetry,
 }: BetHistoryRowsProps) {
-  console.count("[bet-history render] BetHistoryRows");
 
   if (error) {
     return renderTableFrame(
@@ -164,7 +161,6 @@ export function BetHistoryRows({
           <button
             className="h-9 rounded-lg bg-(--color-accent-red) px-4 text-sm font-semibold text-white transition hover:opacity-90"
             onClick={() => {
-              console.log("[bet-history action] retry click");
               onRetry();
             }}
             type="button"

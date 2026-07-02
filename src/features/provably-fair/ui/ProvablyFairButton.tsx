@@ -12,7 +12,6 @@ export function ProvablyFairButton({
   className = "",
   game = "roulette",
 }: ProvablyFairButtonProps) {
-  console.count("[provably-fair render] ProvablyFairButton");
 
   const openProvablyFairModal = useProvablyFairModalStore(
     (state) => state.openProvablyFairModal,
@@ -22,7 +21,6 @@ export function ProvablyFairButton({
     <button
       className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-[var(--color-brand)] transition hover:text-[var(--color-brand-hover)] ${className}`}
       onClick={() => {
-        console.log("[provably-fair action] open modal", game);
         openProvablyFairModal(game);
       }}
       type="button"

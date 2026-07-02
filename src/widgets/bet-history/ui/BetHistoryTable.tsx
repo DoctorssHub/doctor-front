@@ -83,7 +83,6 @@ function createQueryParams({
 export const BetHistoryTable = memo(function BetHistoryTable(
   props: BetHistoryTableProps,
 ) {
-  console.count("[bet-history render] BetHistoryTable");
 
   const { className, title, variant } = props;
   const [activeGame, setActiveGame] = useState<GameType | undefined>();
@@ -122,7 +121,6 @@ export const BetHistoryTable = memo(function BetHistoryTable(
   const shouldShowTitle = variant !== "game-live" || title !== undefined;
 
   const handleGameChange = (nextGame?: GameType) => {
-    console.log("[bet-history action] game tab change", nextGame);
     setActiveGame(nextGame);
     setPage(1);
   };
@@ -130,7 +128,6 @@ export const BetHistoryTable = memo(function BetHistoryTable(
   const handleLiveCategoryChange = (
     nextLiveCategory: BetHistoryLiveCategory,
   ) => {
-    console.log("[bet-history action] live category change", nextLiveCategory);
     setActiveLiveCategory(nextLiveCategory);
   };
 
@@ -156,7 +153,6 @@ export const BetHistoryTable = memo(function BetHistoryTable(
         isLoading={query.isLoading}
         items={items}
         onRetry={() => {
-          console.log("[bet-history action] retry");
           void query.refetch();
         }}
       />
@@ -164,7 +160,6 @@ export const BetHistoryTable = memo(function BetHistoryTable(
       {isProfile ? (
         <BetHistoryPagination
           onPageChange={(nextPage) => {
-            console.log("[bet-history action] page change", nextPage);
             setPage(nextPage);
           }}
           page={page}

@@ -25,7 +25,6 @@ export function BetHistoryTabs({
   onLiveCategoryChange,
   variant,
 }: BetHistoryTabsProps) {
-  console.count("[bet-history render] BetHistoryTabs");
 
   return (
     <div
@@ -47,7 +46,6 @@ export function BetHistoryTabs({
                 }`}
                 key={tab.label}
                 onClick={() => {
-                  console.log("[bet-history action] game tab click", tab.value);
                   onGameChange(tab.value);
                 }}
                 type="button"
@@ -65,7 +63,6 @@ export function BetHistoryTabs({
                 }`}
                 key={tab.label}
                 onClick={() => {
-                  console.log("[bet-history action] live tab click", tab.value);
                   onLiveCategoryChange(tab.value);
                 }}
                 type="button"

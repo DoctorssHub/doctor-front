@@ -30,7 +30,6 @@ function areVisibleResultsEqual(
 export const DiceHistory = memo(function DiceHistory({
   results,
 }: DiceHistoryProps) {
-  console.count("[dice render] DiceHistory");
 
   const [visibleResults, setVisibleResults] = useState<
     VisibleDiceHistoryResult[]
@@ -139,7 +138,6 @@ const DiceHistoryChip = memo(function DiceHistoryChip({
   result,
   status,
 }: DiceHistoryChipProps) {
-  console.count(`[dice render] DiceHistoryChip:${result.betId}`);
 
   return (
     <div

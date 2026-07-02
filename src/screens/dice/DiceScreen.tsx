@@ -7,7 +7,6 @@ import { GameFullscreenShell } from "@/shared";
 import { BetHistoryTable } from "@/widgets/bet-history";
 
 export function DiceScreen() {
-  console.count("[dice render] DiceScreen");
 
   const { betControlsProps, gamePanelProps } = useDiceGame();
 

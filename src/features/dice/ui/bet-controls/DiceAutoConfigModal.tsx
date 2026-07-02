@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import type { DiceAutoConfig } from "../../model/use-dice-game";
+import type { DiceAutoConfig } from "../../model/dice-game-options";
 import redCoinIcon from "@/assets/shared/red-coin.svg";
 
 type DiceAutoConfigModalProps = {
@@ -33,7 +33,6 @@ export function DiceAutoConfigModal({
   onClose,
   onResetAll,
 }: DiceAutoConfigModalProps) {
-  console.count("[dice render] DiceAutoConfigModal");
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -54,7 +53,6 @@ export function DiceAutoConfigModal({
   }, []);
 
   function updateConfig(nextConfig: Partial<DiceAutoConfig>) {
-    console.log("[dice action] modal config update", nextConfig);
     onChange({ ...config, ...nextConfig });
   }
 
@@ -154,7 +152,6 @@ function AutoModeControl({
   onIncreaseChange,
   onModeChange,
 }: AutoModeControlProps) {
-  console.count(`[dice render] AutoModeControl:${label}`);
 
   return (
     <div>
@@ -207,7 +204,6 @@ type CurrencyFieldProps = {
 };
 
 function CurrencyField({ id, label, value, onChange }: CurrencyFieldProps) {
-  console.count(`[dice render] CurrencyField:${id}`);
 
   return (
     <label className="block" htmlFor={id}>
