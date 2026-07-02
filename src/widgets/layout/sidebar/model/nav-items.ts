@@ -57,22 +57,5 @@ export const navItems: NavItem[] = [
     title: "Rewards",
     type: "link",
   },
-  {
-    href: "#",
-    icon: bonusesIcon,
-    title: "Bonuses",
-    type: "link",
-  },
-  {
-    href: "#",
-    icon: wheelIcon,
-    title: "The Wheel",
-    type: "link",
-  },
-  {
-    href: "#",
-    icon: winnersIcon,
-    title: "Bonus Buy Winners",
-    type: "link",
-  },
+  
 ];
