@@ -1,9 +1,7 @@
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import type ReCAPTCHA from "react-google-recaptcha";
 import { forgotPassword } from "../api/auth-api";
 import { parseAuthError } from "../lib/parse-auth-error";
-import { AuthRecaptcha } from "./AuthRecaptcha";
 
 type ForgotPasswordFormProps = {
   onSubmitted: () => void;
@@ -15,19 +13,15 @@ export function ForgotPasswordForm({
   onBack,
 }: ForgotPasswordFormProps) {
   const [errorMessage, setErrorMessage] = useState("");
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const forgotMutation = useMutation({
-    mutationFn: (variables: { email: string; recaptchaToken: string }) =>
-      forgotPassword({ email: variables.email }, variables.recaptchaToken),
+    mutationFn: (variables: { email: string }) =>
+      forgotPassword({ email: variables.email }),
     onSuccess: () => {
       onSubmitted();
     },
     onError: (error) => {
       setErrorMessage(parseAuthError(error));
-    },
-    onSettled: () => {
-      recaptchaRef.current?.reset();
     },
   });
 
@@ -35,17 +29,10 @@ export function ForgotPasswordForm({
     event.preventDefault();
     setErrorMessage("");
 
-    const recaptchaToken = recaptchaRef.current?.getValue();
-    if (!recaptchaToken) {
-      setErrorMessage("Please complete the reCAPTCHA.");
-      return;
-    }
-
     const formData = new FormData(event.currentTarget);
 
     forgotMutation.mutate({
       email: String(formData.get("email") || "").trim(),
-      recaptchaToken,
     });
   }
 
@@ -95,10 +82,6 @@ export function ForgotPasswordForm({
             required
           />
         </label>
-      </div>
-
-      <div className="mt-5">
-        <AuthRecaptcha ref={recaptchaRef} />
       </div>
 
       {errorMessage ? (

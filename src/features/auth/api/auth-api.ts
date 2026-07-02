@@ -28,7 +28,7 @@ const authClient = axios.create({
 
 const authRequestIds = new WeakMap<InternalAxiosRequestConfig, number>();
 const SENSITIVE_FIELD_PATTERN =
-  /password|token|authorization|cookie|recaptcha|captcha|secret/i;
+  /password|token|authorization|cookie|secret/i;
 
 let refreshRequest: Promise<unknown> | null = null;
 
@@ -85,10 +85,8 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-export function registerUser(payload: RegisterRequest, recaptchaToken: string) {
-  return authClient.post<RegisterResponse>("/auth/local/register", payload, {
-    headers: { "recaptcha-token": recaptchaToken },
-  });
+export function registerUser(payload: RegisterRequest) {
+  return authClient.post<RegisterResponse>("/auth/local/register", payload);
 }
 
 export function verifyEmail(payload: VerifyEmailRequest) {
@@ -98,10 +96,8 @@ export function verifyEmail(payload: VerifyEmailRequest) {
   );
 }
 
-export function loginUser(payload: LoginRequest, recaptchaToken: string) {
-  return authClient.post<LoginResponse>("/auth/local/login", payload, {
-    headers: { "recaptcha-token": recaptchaToken },
-  });
+export function loginUser(payload: LoginRequest) {
+  return authClient.post<LoginResponse>("/auth/local/login", payload);
 }
 
 export async function getCurrentUser() {
@@ -130,16 +126,10 @@ export function refreshSession() {
   return refreshRequest;
 }
 
-export function forgotPassword(
-  payload: ForgotPasswordRequest,
-  recaptchaToken: string,
-) {
+export function forgotPassword(payload: ForgotPasswordRequest) {
   return authClient.post<ForgotPasswordResponse>(
     "/auth/local/forgot-password",
     payload,
-    {
-      headers: { "recaptcha-token": recaptchaToken },
-    },
   );
 }
 

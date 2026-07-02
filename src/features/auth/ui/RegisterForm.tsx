@@ -1,10 +1,8 @@
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import type ReCAPTCHA from "react-google-recaptcha";
 import { registerUser } from "../api/auth-api";
 import { getVerificationToken } from "../lib/get-verification-token";
 import { parseAuthError } from "../lib/parse-auth-error";
-import { AuthRecaptcha } from "./AuthRecaptcha";
 
 type RegisterFormProps = {
   onRegistered: (payload: {
@@ -16,24 +14,19 @@ type RegisterFormProps = {
 
 export function RegisterForm({ onRegistered }: RegisterFormProps) {
   const [errorMessage, setErrorMessage] = useState("");
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const registerMutation = useMutation({
     mutationFn: (variables: {
       username: string;
       email: string;
       password: string;
-      recaptchaToken: string;
     }) =>
-      registerUser(
-        {
-          username: variables.username,
-          email: variables.email,
-          password: variables.password,
-          affiliateCode: "doctor",
-        },
-        variables.recaptchaToken,
-      ),
+      registerUser({
+        username: variables.username,
+        email: variables.email,
+        password: variables.password,
+        affiliateCode: "doctor",
+      }),
     onSuccess: (response, variables) => {
       const verificationToken = getVerificationToken(response.data);
 
@@ -53,20 +46,11 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
     onError: (error) => {
       setErrorMessage(parseAuthError(error));
     },
-    onSettled: () => {
-      recaptchaRef.current?.reset();
-    },
   });
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage("");
-
-    const recaptchaToken = recaptchaRef.current?.getValue();
-    if (!recaptchaToken) {
-      setErrorMessage("Please complete the reCAPTCHA.");
-      return;
-    }
 
     const formData = new FormData(event.currentTarget);
 
@@ -76,7 +60,6 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
       username: String(formData.get("username") || ""),
       email,
       password: String(formData.get("password") || ""),
-      recaptchaToken,
     });
   }
 
@@ -136,10 +119,6 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
           />
           <span>I am 18 years old or older</span>
         </label>
-      </div>
-
-      <div className="mt-4">
-        <AuthRecaptcha ref={recaptchaRef} />
       </div>
 
       {errorMessage ? (
