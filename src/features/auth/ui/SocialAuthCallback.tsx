@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getCurrentSession } from "../api/auth-api";
 import {
   readUserBalances,
+  readUserProfileImage,
   readUsername,
 } from "../lib/read-auth-response";
 import { useAuthSessionStore } from "../model/auth-session-store";
@@ -34,6 +35,7 @@ export function SocialAuthCallback() {
       .then((response) => {
         const username = readUsername(response.data.user);
         const balances = readUserBalances(response.data.user);
+        const profileImgUrl = readUserProfileImage(response.data.user);
 
         if (!response.data.authenticated || !username) {
           throw new Error("Social auth session was not returned.");
@@ -43,7 +45,7 @@ export function SocialAuthCallback() {
           return;
         }
 
-        setSession(username, balances);
+        setSession(username, balances, profileImgUrl);
         setStatus("success");
         router.replace(consumeSocialAuthReturnPath());
       })

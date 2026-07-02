@@ -3,19 +3,26 @@ import type { UserBalance } from "../lib/read-auth-response";
 
 type AuthSessionStore = {
   username: string | null;
+  profileImgUrl: string | null;
   balances: UserBalance[];
   isAuthenticated: boolean;
-  setSession: (username: string, balances?: UserBalance[] | null) => void;
+  setSession: (
+    username: string,
+    balances?: UserBalance[] | null,
+    profileImgUrl?: string | null,
+  ) => void;
   clearSession: () => void;
 };
 
 export const useAuthSessionStore = create<AuthSessionStore>()((set) => ({
   username: null,
+  profileImgUrl: null,
   balances: [],
   isAuthenticated: false,
-  setSession: (username, balances = []) => {
+  setSession: (username, balances = [], profileImgUrl = null) => {
     set({
       username,
+      profileImgUrl,
       balances: balances || [],
       isAuthenticated: true,
     });
@@ -23,6 +30,7 @@ export const useAuthSessionStore = create<AuthSessionStore>()((set) => ({
   clearSession: () => {
     set({
       username: null,
+      profileImgUrl: null,
       balances: [],
       isAuthenticated: false,
     });

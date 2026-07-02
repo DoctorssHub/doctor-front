@@ -3,16 +3,18 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ArrowIcon from "@/assets/aside/arrowSidebar.svg";
-import avatarProfile from "@/assets/shared/avatarProfile.svg";
+import { getUsernameInitial } from "@/features/profile/lib/profile-format";
 import { HeaderProfileDropdown } from "./header-profile-dropdown";
 
 type HeaderProfileMenuProps = {
+  imageUrl: string | null;
   isLogoutPending: boolean;
   username: string;
   onLogout: () => void;
 };
 
 export function HeaderProfileMenu({
+  imageUrl,
   isLogoutPending,
   username,
   onLogout,
@@ -52,10 +54,7 @@ export function HeaderProfileMenu({
   }, [isOpen]);
 
   return (
-    <div
-      className="relative shrink-0"
-      ref={containerRef}
-    >
+    <div className="relative shrink-0" ref={containerRef}>
       <button
         aria-expanded={isOpen}
         aria-label="Open profile dropdown"
@@ -63,16 +62,7 @@ export function HeaderProfileMenu({
         type="button"
         onClick={() => setIsOpen((currentValue) => !currentValue)}
       >
-        <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--color-brand)] ring-2 ring-[var(--color-brand)]">
-          <Image
-            alt=""
-            aria-hidden="true"
-            className="size-10 object-cover"
-            height={40}
-            src={avatarProfile}
-            width={40}
-          />
-        </span>
+        <HeaderAvatar imageUrl={imageUrl} username={username} />
         <span className="max-w-[160px] truncate">{username}</span>
         <Image
           alt=""
@@ -94,5 +84,46 @@ export function HeaderProfileMenu({
         />
       ) : null}
     </div>
+  );
+}
+
+function HeaderAvatar({
+  imageUrl,
+  username,
+}: {
+  imageUrl: string | null;
+  username: string;
+}) {
+  return (
+    <span
+      className="flex size-10 shrink-0 items-center justify-center rounded-full p-[2px]"
+      style={{
+        background:
+          "linear-gradient(0deg, #ff3b41 0%, #c82831 45%, #4a0a0d 100%)",
+      }}
+    >
+      <span
+        className="flex size-full items-center justify-center overflow-hidden rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 30%, #3a1417 0%, #1a1016 55%, #120d12 100%)",
+        }}
+      >
+        {imageUrl ? (
+          <Image
+            alt={`${username} avatar`}
+            className="size-full origin-bottom -translate-x-0.5 translate-y-1 scale-110 object-cover"
+            height={40}
+            src={imageUrl}
+            unoptimized
+            width={40}
+          />
+        ) : (
+          <span className="text-sm font-bold text-(--color-text-primary)">
+            {getUsernameInitial(username)}
+          </span>
+        )}
+      </span>
+    </span>
   );
 }

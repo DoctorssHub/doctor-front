@@ -7,6 +7,7 @@ import { useAuthModalStore, useAuthSessionStore } from "@/features/auth";
 import { getCurrentSession, logoutUser } from "@/features/auth/api/auth-api";
 import {
   readUserBalances,
+  readUserProfileImage,
   readUsername,
 } from "@/features/auth/lib/read-auth-response";
 import { Button } from "@/shared/ui/button";
@@ -19,12 +20,13 @@ export function HeaderAuthButton() {
       openAuthModal: state.openAuthModal,
     })),
   );
-  const { balances, clearSession, isAuthenticated, setSession, username } =
+  const { balances, clearSession, isAuthenticated, profileImgUrl, setSession, username } =
     useAuthSessionStore(
       useShallow((state) => ({
         balances: state.balances,
         clearSession: state.clearSession,
         isAuthenticated: state.isAuthenticated,
+        profileImgUrl: state.profileImgUrl,
         setSession: state.setSession,
         username: state.username,
       })),
@@ -47,9 +49,10 @@ export function HeaderAuthButton() {
       .then((response) => {
         const nextUsername = readUsername(response.data.user);
         const nextBalances = readUserBalances(response.data.user);
+        const nextProfileImgUrl = readUserProfileImage(response.data.user);
 
         if (isMounted && response.data.authenticated && nextUsername) {
-          setSession(nextUsername, nextBalances);
+          setSession(nextUsername, nextBalances, nextProfileImgUrl);
           return;
         }
 
@@ -74,6 +77,7 @@ export function HeaderAuthButton() {
         <div className="flex min-w-0 items-center gap-2 max-tablet:gap-1.5">
           <HeaderBalances balances={balances} />
           <HeaderProfileMenu
+            imageUrl={profileImgUrl}
             isLogoutPending={logoutMutation.isPending}
             username={displayUsername}
             onLogout={() => logoutMutation.mutate()}
