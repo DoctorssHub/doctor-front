@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mcqueen.casino";
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://mc-queen-casino.vercel.app";
 const siteDescription =
   "Step into McQueen Casino for high-energy games, rewards, and leaderboard battles made for every lucky streak.";
 const previewImage = {
