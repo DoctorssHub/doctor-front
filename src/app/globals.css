@@ -813,6 +813,33 @@ html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-conten
   animation-delay: 380ms;
 }
 
+.profile-page-entrance .profile-card-entrance,
+.profile-page-entrance .profile-tabs-entrance,
+.scroll-reveal .profile-section-entrance {
+  filter: blur(8px);
+  opacity: 0;
+  transform: translate3d(0, 24px, 0) scale(0.988);
+  will-change: opacity, transform, filter;
+}
+
+html[data-loader-phase="hidden"] .profile-page-entrance .profile-card-entrance,
+html[data-loader-phase="hidden"] .profile-page-entrance .profile-tabs-entrance,
+.scroll-reveal.is-visible .profile-section-entrance {
+  animation: profile-section-in 960ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html[data-loader-phase="hidden"] .profile-page-entrance .profile-card-entrance {
+  animation-delay: 120ms;
+}
+
+html[data-loader-phase="hidden"] .profile-page-entrance .profile-tabs-entrance {
+  animation-delay: 260ms;
+}
+
+.scroll-reveal.is-visible .profile-section-entrance {
+  animation-delay: 80ms;
+}
+
 @media (min-width: 48rem) {
   .leaderboard-card-winner-offset {
     --leaderboard-card-rest-transform: translate3d(0, -2rem, 0) scale(1);
@@ -1014,6 +1041,20 @@ html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-conten
   }
 }
 
+@keyframes profile-section-in {
+  from {
+    filter: blur(8px);
+    opacity: 0;
+    transform: translate3d(0, 24px, 0) scale(0.988);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bet-history-row-in,
   .dice-history-chip-in,
@@ -1037,6 +1078,9 @@ html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-conten
   .leaderboard-copy-entrance,
   .leaderboard-decoration-entrance,
   .leaderboard-footer-entrance,
+  .profile-card-entrance,
+  .profile-section-entrance,
+  .profile-tabs-entrance,
   .rewards-card-entrance,
   .rewards-copy-entrance,
   .rewards-detail-back-entrance,

@@ -21,6 +21,7 @@ function getMinimumLoaderBeforeExitMs(pathname: string) {
   return pathname === "/leaderboard" ||
     pathname === "/all-games" ||
     pathname.startsWith("/all-games/") ||
+    pathname === "/profile" ||
     pathname === "/rewards" ||
     pathname.startsWith("/rewards/")
     ? LEADERBOARD_LOADER_BEFORE_EXIT_MS
