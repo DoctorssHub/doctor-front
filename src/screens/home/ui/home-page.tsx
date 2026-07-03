@@ -11,9 +11,9 @@ import {
   OnboardingSection,
   PromotionsSection,
   RewardsBanner,
-  ScrollReveal,
 } from "@/widgets/homepage";
 import { LeaderboardSection } from "@/widgets/leaderboard";
+import { ScrollReveal } from "@/shared/ui/scroll-reveal";
 
 const sectionRevealDelays = [0, 40, 70, 90, 70, 90, 70];
 

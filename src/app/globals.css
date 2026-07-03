@@ -407,7 +407,7 @@ button:disabled {
   will-change: opacity, transform;
 }
 
-.homepage-scroll-reveal {
+.scroll-reveal {
   filter: blur(6px);
   opacity: 0;
   transform: translate3d(0, 22px, 0) scale(0.992);
@@ -416,13 +416,167 @@ button:disabled {
     transform 620ms cubic-bezier(0.16, 1, 0.3, 1),
     filter 620ms cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--scroll-reveal-delay, 0ms);
+  width: 100%;
   will-change: opacity, transform, filter;
 }
 
-.homepage-scroll-reveal.is-visible {
+.scroll-reveal.is-visible {
   filter: blur(0);
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
+}
+
+.leaderboard-section-entrance .leaderboard-copy-entrance,
+.scroll-reveal .leaderboard-copy-entrance {
+  filter: blur(8px);
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-copy-entrance,
+.scroll-reveal.is-visible .leaderboard-copy-entrance {
+  animation: leaderboard-copy-in 820ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-copy-entrance-subtitle,
+.scroll-reveal.is-visible .leaderboard-copy-entrance-subtitle {
+  animation-delay: 160ms;
+}
+
+.leaderboard-card-entrance {
+  --leaderboard-card-x: 0px;
+  --leaderboard-card-rest-transform: translate3d(0, 0, 0) scale(1);
+  will-change: opacity, transform, filter;
+}
+
+.leaderboard-section-entrance .leaderboard-card-entrance,
+.scroll-reveal .leaderboard-card-entrance {
+  filter: blur(10px);
+  opacity: 0;
+  transform: translate3d(var(--leaderboard-card-x), 46px, 0) scale(0.94);
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-card-entrance,
+.scroll-reveal.is-visible .leaderboard-card-entrance {
+  animation: leaderboard-card-in 1280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.leaderboard-card-entrance-left {
+  --leaderboard-card-x: -72px;
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-card-entrance-left,
+.scroll-reveal.is-visible .leaderboard-card-entrance-left {
+  animation-delay: 120ms;
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-card-entrance-center,
+.scroll-reveal.is-visible .leaderboard-card-entrance-center {
+  animation-delay: 0ms;
+}
+
+.leaderboard-card-entrance-right {
+  --leaderboard-card-x: 72px;
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-card-entrance-right,
+.scroll-reveal.is-visible .leaderboard-card-entrance-right {
+  animation-delay: 220ms;
+}
+
+.leaderboard-decoration-entrance {
+  will-change: opacity, transform, filter;
+}
+
+.leaderboard-section-entrance .leaderboard-decoration-entrance,
+.scroll-reveal .leaderboard-decoration-entrance {
+  filter: blur(10px);
+  opacity: 0;
+  transform: translate3d(
+      var(--leaderboard-decoration-x, 0),
+      var(--leaderboard-decoration-y, 22px),
+      0
+    )
+    scale(0.92);
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-decoration-entrance,
+.scroll-reveal.is-visible .leaderboard-decoration-entrance {
+  animation: leaderboard-decoration-in 960ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.leaderboard-decoration-left {
+  --leaderboard-decoration-x: -34px;
+  --leaderboard-decoration-y: 18px;
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-decoration-left,
+.scroll-reveal.is-visible .leaderboard-decoration-left {
+  animation-delay: 420ms;
+}
+
+.leaderboard-decoration-right {
+  --leaderboard-decoration-x: 28px;
+  --leaderboard-decoration-y: 18px;
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-decoration-right,
+.scroll-reveal.is-visible .leaderboard-decoration-right {
+  animation-delay: 470ms;
+}
+
+.leaderboard-decoration-rocket {
+  --leaderboard-decoration-x: 42px;
+  --leaderboard-decoration-y: 34px;
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-decoration-rocket,
+.scroll-reveal.is-visible .leaderboard-decoration-rocket {
+  animation-delay: 380ms;
+}
+
+.leaderboard-card-symbol-entrance {
+  will-change: opacity, transform;
+}
+
+.leaderboard-section-entrance .leaderboard-card-symbol-entrance,
+.scroll-reveal .leaderboard-card-symbol-entrance {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0)
+    rotate(calc(var(--leaderboard-symbol-rotation, 0deg) - 6deg)) scale(0.96);
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-card-symbol-entrance,
+.scroll-reveal.is-visible .leaderboard-card-symbol-entrance {
+  animation: leaderboard-symbol-in 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-card-symbol-delay,
+.scroll-reveal.is-visible .leaderboard-card-symbol-delay {
+  animation-delay: 260ms;
+}
+
+.leaderboard-footer-entrance {
+  will-change: opacity, transform, filter;
+}
+
+.leaderboard-section-entrance .leaderboard-footer-entrance,
+.scroll-reveal .leaderboard-footer-entrance {
+  filter: blur(8px);
+  opacity: 0;
+  transform: translate3d(0, 22px, 0) scale(0.98);
+}
+
+html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-footer-entrance,
+.scroll-reveal.is-visible .leaderboard-footer-entrance {
+  animation: leaderboard-footer-in 920ms cubic-bezier(0.16, 1, 0.3, 1) 720ms both;
+}
+
+@media (min-width: 48rem) {
+  .leaderboard-card-winner-offset {
+    --leaderboard-card-rest-transform: translate3d(0, -2rem, 0) scale(1);
+    transform: var(--leaderboard-card-rest-transform);
+  }
 }
 
 .game-fullscreen-root:fullscreen {
@@ -458,6 +612,81 @@ button:disabled {
   }
 }
 
+@keyframes leaderboard-copy-in {
+  from {
+    filter: blur(8px);
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes leaderboard-card-in {
+  from {
+    filter: blur(10px);
+    opacity: 0;
+    transform: translate3d(var(--leaderboard-card-x), 46px, 0) scale(0.94);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: var(--leaderboard-card-rest-transform);
+  }
+}
+
+@keyframes leaderboard-decoration-in {
+  from {
+    filter: blur(10px);
+    opacity: 0;
+    transform: translate3d(
+        var(--leaderboard-decoration-x, 0),
+        var(--leaderboard-decoration-y, 22px),
+        0
+      )
+      scale(0.92);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes leaderboard-symbol-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0)
+      rotate(calc(var(--leaderboard-symbol-rotation, 0deg) - 6deg)) scale(0.96);
+  }
+
+  to {
+    opacity: var(--leaderboard-symbol-opacity, 0.4);
+    transform: translate3d(0, 0, 0)
+      rotate(var(--leaderboard-symbol-rotation, 0deg)) scale(1);
+  }
+}
+
+@keyframes leaderboard-footer-in {
+  from {
+    filter: blur(8px);
+    opacity: 0;
+    transform: translate3d(0, 22px, 0) scale(0.98);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bet-history-row-in,
   .dice-history-chip-in,
@@ -467,12 +696,28 @@ button:disabled {
   .global-loader-shadow,
   .game-page-shell-in,
   .game-page-table-in,
-  .homepage-scroll-reveal {
+  .leaderboard-card-entrance,
+  .leaderboard-card-symbol-entrance,
+  .leaderboard-copy-entrance,
+  .leaderboard-decoration-entrance,
+  .leaderboard-footer-entrance,
+  .scroll-reveal {
     animation: none;
     filter: none;
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .leaderboard-card-symbol-entrance {
+    opacity: var(--leaderboard-symbol-opacity, 0.4);
+    transform: rotate(var(--leaderboard-symbol-rotation, 0deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (min-width: 48rem) {
+  .leaderboard-card-winner-offset {
+    transform: var(--leaderboard-card-rest-transform);
   }
 }
 

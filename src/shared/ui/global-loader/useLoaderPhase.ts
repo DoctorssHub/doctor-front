@@ -9,8 +9,17 @@ const EXIT_MS = 480;
 const READINESS_DELAY_MS = 80;
 const CRITICAL_QUERY_SETTLE_MS = 260;
 const NAVIGATION_TIMEOUT_MS = 5000;
+const LEADERBOARD_LOADER_TOTAL_MS = 1500;
+const LEADERBOARD_LOADER_BEFORE_EXIT_MS = Math.max(
+  0,
+  LEADERBOARD_LOADER_TOTAL_MS - EXIT_MS,
+);
 
 type LoaderPhase = "hidden" | "visible" | "exiting";
+
+function getMinimumLoaderBeforeExitMs(pathname: string) {
+  return pathname === "/leaderboard" ? LEADERBOARD_LOADER_BEFORE_EXIT_MS : 0;
+}
 
 export function useLoaderPhase(): LoaderPhase {
   const pathname = usePathname();
@@ -22,6 +31,7 @@ export function useLoaderPhase(): LoaderPhase {
   const pendingRef = useRef(true);
   const seenFetchRef = useRef(activeFetchCount > 0);
   const fetchCountRef = useRef(activeFetchCount);
+  const loaderStartedAtRef = useRef(0);
   const readinessTimerRef = useRef<number | null>(null);
   const hideTimerRef = useRef<number | null>(null);
   const watchdogTimerRef = useRef<number | null>(null);
@@ -73,7 +83,17 @@ export function useLoaderPhase(): LoaderPhase {
 
     const awaitingFirstFetch =
       hasCriticalQueries(currentPathname) && !seenFetchRef.current;
-    const delayMs = awaitingFirstFetch ? CRITICAL_QUERY_SETTLE_MS : READINESS_DELAY_MS;
+    const settleDelayMs = awaitingFirstFetch
+      ? CRITICAL_QUERY_SETTLE_MS
+      : READINESS_DELAY_MS;
+    const minimumBeforeExitMs = getMinimumLoaderBeforeExitMs(currentPathname);
+    if (loaderStartedAtRef.current === 0) {
+      loaderStartedAtRef.current = Date.now();
+    }
+
+    const elapsedMs = Date.now() - loaderStartedAtRef.current;
+    const remainingMinimumMs = Math.max(0, minimumBeforeExitMs - elapsedMs);
+    const delayMs = Math.max(settleDelayMs, remainingMinimumMs);
 
     readinessTimerRef.current = window.setTimeout(() => {
       requestAnimationFrame(() => {
@@ -86,6 +106,8 @@ export function useLoaderPhase(): LoaderPhase {
 
   // Initial page load: watchdog to force-hide if queries never settle
   useEffect(() => {
+    loaderStartedAtRef.current = Date.now();
+
     watchdogTimerRef.current = window.setTimeout(() => {
       hideLoader();
     }, NAVIGATION_TIMEOUT_MS);
@@ -103,6 +125,7 @@ export function useLoaderPhase(): LoaderPhase {
     clearAllTimers();
     pendingRef.current = true;
     seenFetchRef.current = false;
+    loaderStartedAtRef.current = Date.now();
     setPhase("visible");
 
     watchdogTimerRef.current = window.setTimeout(() => {
