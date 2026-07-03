@@ -1,8 +1,14 @@
 "use client";
 
 import { useCallback, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 import type { GameMode, Risk } from "@/entities/game/model/types";
+import {
+  debitGamePointsBalanceFromAuthSession,
+  debitGamePointsBalanceFromMeResponse,
+} from "@/features/auth";
+import type { MeResponse } from "@/features/auth/api/auth-types";
 import {
   placePlinkoBet,
   readPlinkoBet,
@@ -47,6 +53,7 @@ export function usePlinkoBetting({
   minBet,
   onAuthRequired,
 }: UsePlinkoBettingParams) {
+  const queryClient = useQueryClient();
   const {
     isAutoBetting,
     requestAutoBetStop,
@@ -72,9 +79,16 @@ export function usePlinkoBetting({
 
       const bet = readPlinkoBet(await placePlinkoBet(request), request);
 
+      const debitedUser = debitGamePointsBalanceFromMeResponse(
+        queryClient.getQueryData<MeResponse>(["me"]),
+        bet.betSize,
+      );
+
+      queryClient.setQueryData<MeResponse | undefined>(["me"], debitedUser);
+      debitGamePointsBalanceFromAuthSession(bet.betSize);
       addRound({ bet, request });
     },
-    [addRound],
+    [addRound, queryClient],
   );
 
   const handleBetClick = useCallback(

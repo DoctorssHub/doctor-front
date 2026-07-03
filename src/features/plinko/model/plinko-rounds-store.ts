@@ -24,7 +24,7 @@ type PlinkoRoundsStore = {
   resetRounds: () => void;
 };
 
-const initialRecentMultipliers = [5.6, 0.5, 1];
+const initialRecentMultipliers: number[] = [];
 const cleanupTimeoutIds = new Set<number>();
 const historyRoundIds = new Set<string>();
 const roundById = new Map<string, ActiveRound>();

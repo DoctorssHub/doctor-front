@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import type { GameConfig } from "@/entities/game/model/types";
+import type { ActiveRound } from "@/features/plinko/model/active-round";
 import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
 import { usePlinkoRoundsStore } from "@/features/plinko/model/plinko-rounds-store";
 import { PlinkoBoard } from "@/features/plinko/ui/board/PlinkoBoard";
@@ -11,11 +12,13 @@ import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 type PlinkoBoardPanelProps = {
   config: GameConfig;
   isFullscreen?: boolean;
+  onRoundLanded?: (round: ActiveRound) => void;
 };
 
 export function PlinkoBoardPanel({
   config,
   isFullscreen = false,
+  onRoundLanded,
 }: PlinkoBoardPanelProps) {
   const {
     activeRounds,
@@ -43,8 +46,12 @@ export function PlinkoBoardPanel({
       gameSounds.playResult({ didWin, lossSound: "pocket" });
 
       handleRoundAnimationComplete(roundId);
+
+      if (completedRound) {
+        onRoundLanded?.(completedRound);
+      }
     },
-    [activeRounds, handleRoundAnimationComplete],
+    [activeRounds, handleRoundAnimationComplete, onRoundLanded],
   );
 
   return (
