@@ -14,12 +14,40 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mcqueen.casino";
+const siteDescription =
+  "Step into McQueen Casino for high-energy games, rewards, and leaderboard battles made for every lucky streak.";
+const previewImage = {
+  url: "/img.png",
+  width: 384,
+  height: 466,
+  alt: "McQueen Casino preview",
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "McQueen Casino",
     template: "%s | McQueen Casino",
   },
-  description: "McQueen Casino rewards, games, and leaderboard page.",
+  description: siteDescription,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "McQueen Casino",
+    description: siteDescription,
+    url: "/",
+    siteName: "McQueen Casino",
+    images: [previewImage],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "McQueen Casino",
+    description: siteDescription,
+    images: [previewImage],
+  },
   manifest: "/site.webmanifest",
   icons: {
     icon: [
