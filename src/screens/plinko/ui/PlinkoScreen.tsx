@@ -15,6 +15,7 @@ import type { ActiveRound } from "@/features/plinko/model/active-round";
 import { PlinkoBoardPanel, PlinkoSidebar } from "@/features/plinko/ui";
 import { ProvablyFairBar } from "@/features/provably-fair";
 import { GameFullscreenShell } from "@/shared";
+import { ScrollReveal } from "@/shared/ui/scroll-reveal";
 import { BetHistoryTable } from "@/widgets/bet-history";
 
 export function PlinkoScreen() {
@@ -85,11 +86,13 @@ export function PlinkoScreen() {
           </section>
         )}
       </GameFullscreenShell>
-      <BetHistoryTable
-        className="game-page-table-in mx-auto mt-8 w-full max-w-[1017px]"
-        game="plinko"
-        variant="game-live"
-      />
+      <ScrollReveal delayMs={90}>
+        <BetHistoryTable
+          className="game-page-table-in mx-auto mt-8 w-full max-w-[1017px]"
+          game="plinko"
+          variant="game-live"
+        />
+      </ScrollReveal>
     </main>
   );
 }

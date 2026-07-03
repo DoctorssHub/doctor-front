@@ -398,13 +398,70 @@ button:disabled {
 }
 
 .game-page-shell-in {
-  animation: game-page-shell-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  filter: blur(10px);
+  opacity: 0;
+  transform: translate3d(0, 34px, 0) scale(0.972);
   will-change: opacity, transform, filter;
 }
 
-.game-page-table-in {
-  animation: game-page-table-in 420ms cubic-bezier(0.22, 1, 0.36, 1) 90ms both;
+.game-page-shell-in > :first-child,
+.game-page-shell-in > :last-child,
+.game-page-shell-in > :first-child > :first-child,
+.game-page-shell-in > :first-child > :nth-child(2) {
+  opacity: 0;
+  will-change: opacity, transform, filter;
+}
+
+.game-page-shell-in > :first-child {
+  transform: translate3d(0, 20px, 0) scale(0.988);
+}
+
+.game-page-shell-in > :last-child {
+  filter: blur(6px);
+  transform: translate3d(0, 16px, 0);
+}
+
+.game-page-shell-in > :first-child > :first-child {
+  --game-panel-piece-x: -34px;
+  filter: blur(8px);
+  transform: translate3d(var(--game-panel-piece-x), 24px, 0) scale(0.97);
+}
+
+.game-page-shell-in > :first-child > :nth-child(2) {
+  --game-panel-piece-x: 34px;
+  filter: blur(8px);
+  transform: translate3d(var(--game-panel-piece-x), 24px, 0) scale(0.97);
+}
+
+html[data-loader-phase="hidden"] .game-page-shell-in {
+  animation: game-page-shell-in 1180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html[data-loader-phase="hidden"] .game-page-shell-in > :first-child {
+  animation: game-page-stage-in 1050ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+}
+
+html[data-loader-phase="hidden"] .game-page-shell-in > :last-child {
+  animation: game-page-stage-in 860ms cubic-bezier(0.16, 1, 0.3, 1) 520ms both;
+}
+
+html[data-loader-phase="hidden"] .game-page-shell-in > :first-child > :first-child {
+  animation: game-page-panel-piece-in 980ms cubic-bezier(0.16, 1, 0.3, 1) 260ms both;
+}
+
+html[data-loader-phase="hidden"] .game-page-shell-in > :first-child > :nth-child(2) {
+  animation: game-page-panel-piece-in 1040ms cubic-bezier(0.16, 1, 0.3, 1) 360ms both;
+}
+
+.scroll-reveal .game-page-table-in {
+  filter: blur(8px);
+  opacity: 0;
+  transform: translate3d(0, 24px, 0) scale(0.99);
   will-change: opacity, transform;
+}
+
+.scroll-reveal.is-visible .game-page-table-in {
+  animation: game-page-table-in 920ms cubic-bezier(0.16, 1, 0.3, 1) 90ms both;
 }
 
 .scroll-reveal {
@@ -572,6 +629,190 @@ html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-foot
   animation: leaderboard-footer-in 920ms cubic-bezier(0.16, 1, 0.3, 1) 720ms both;
 }
 
+.games-page-entrance .games-page-copy-entrance,
+.games-page-entrance .games-grid-entrance,
+.scroll-reveal .games-table-entrance,
+.scroll-reveal .games-faq-entrance {
+  filter: blur(8px);
+  opacity: 0;
+  transform: translate3d(0, 22px, 0) scale(0.99);
+  will-change: opacity, transform, filter;
+}
+
+html[data-loader-phase="hidden"] .games-page-entrance .games-page-copy-entrance,
+html[data-loader-phase="hidden"] .games-page-entrance .games-grid-entrance,
+.scroll-reveal.is-visible .games-table-entrance,
+.scroll-reveal.is-visible .games-faq-entrance {
+  animation: games-section-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html[data-loader-phase="hidden"] .games-page-entrance .games-grid-entrance {
+  animation-delay: 120ms;
+}
+
+.scroll-reveal.is-visible .games-table-entrance {
+  animation-delay: 80ms;
+}
+
+.scroll-reveal.is-visible .games-faq-entrance {
+  animation-delay: 120ms;
+}
+
+.games-page-entrance .games-card-entrance {
+  filter: blur(10px);
+  opacity: 0;
+  transform: translate3d(var(--games-card-x, 0), 42px, 0) scale(0.94);
+  will-change: opacity, transform, filter;
+}
+
+html[data-loader-phase="hidden"] .games-page-entrance .games-card-entrance {
+  animation: games-card-in 1180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.games-card-entrance-1 {
+  --games-card-x: -54px;
+}
+
+html[data-loader-phase="hidden"] .games-page-entrance .games-card-entrance-1 {
+  animation-delay: 180ms;
+}
+
+.games-card-entrance-2 {
+  --games-card-x: 54px;
+}
+
+html[data-loader-phase="hidden"] .games-page-entrance .games-card-entrance-2 {
+  animation-delay: 280ms;
+}
+
+.games-card-entrance-3 {
+  --games-card-x: -42px;
+}
+
+html[data-loader-phase="hidden"] .games-page-entrance .games-card-entrance-3 {
+  animation-delay: 400ms;
+}
+
+.games-card-entrance-4 {
+  --games-card-x: 42px;
+}
+
+html[data-loader-phase="hidden"] .games-page-entrance .games-card-entrance-4 {
+  animation-delay: 500ms;
+}
+
+.rewards-page-entrance .rewards-copy-entrance,
+.rewards-page-entrance .rewards-toolbar-entrance,
+.rewards-page-entrance .rewards-grid-entrance,
+.rewards-page-entrance .rewards-pagination-entrance,
+.scroll-reveal .rewards-faq-entrance {
+  filter: blur(8px);
+  opacity: 0;
+  transform: translate3d(0, 22px, 0) scale(0.99);
+  will-change: opacity, transform, filter;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-copy-entrance,
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-toolbar-entrance,
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-grid-entrance,
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-pagination-entrance,
+.scroll-reveal.is-visible .rewards-faq-entrance {
+  animation: rewards-section-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-toolbar-entrance {
+  animation-delay: 120ms;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-grid-entrance {
+  animation-delay: 220ms;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-pagination-entrance,
+.scroll-reveal.is-visible .rewards-faq-entrance {
+  animation-delay: 120ms;
+}
+
+.rewards-page-entrance .rewards-card-entrance {
+  filter: blur(10px);
+  opacity: 0;
+  transform: translate3d(var(--rewards-card-x, 0), 42px, 0) scale(0.94);
+  will-change: opacity, transform, filter;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance {
+  animation: rewards-card-in 1180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.rewards-card-entrance-1,
+.rewards-card-entrance-5 {
+  --rewards-card-x: -54px;
+}
+
+.rewards-card-entrance-2,
+.rewards-card-entrance-6 {
+  --rewards-card-x: 0px;
+}
+
+.rewards-card-entrance-3,
+.rewards-card-entrance-7 {
+  --rewards-card-x: 54px;
+}
+
+.rewards-card-entrance-4,
+.rewards-card-entrance-8 {
+  --rewards-card-x: 28px;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance-1,
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance-5 {
+  animation-delay: 280ms;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance-2,
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance-6 {
+  animation-delay: 380ms;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance-3,
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance-7 {
+  animation-delay: 480ms;
+}
+
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance-4,
+html[data-loader-phase="hidden"] .rewards-page-entrance .rewards-card-entrance-8 {
+  animation-delay: 580ms;
+}
+
+.rewards-detail-entrance .rewards-detail-back-entrance,
+.rewards-detail-entrance .rewards-detail-image-entrance,
+.rewards-detail-entrance .rewards-detail-heading-entrance,
+.rewards-detail-entrance .rewards-detail-content-entrance {
+  filter: blur(8px);
+  opacity: 0;
+  transform: translate3d(0, 24px, 0) scale(0.99);
+  will-change: opacity, transform, filter;
+}
+
+html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-back-entrance,
+html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-image-entrance,
+html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-heading-entrance,
+html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-content-entrance {
+  animation: rewards-section-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-image-entrance {
+  animation-delay: 120ms;
+}
+
+html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-heading-entrance {
+  animation-delay: 260ms;
+}
+
+html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-content-entrance {
+  animation-delay: 380ms;
+}
+
 @media (min-width: 48rem) {
   .leaderboard-card-winner-offset {
     --leaderboard-card-rest-transform: translate3d(0, -2rem, 0) scale(1);
@@ -588,27 +829,57 @@ html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-foot
 
 @keyframes game-page-shell-in {
   from {
-    filter: blur(6px);
+    filter: blur(10px);
     opacity: 0;
-    transform: translateY(18px) scale(0.985);
+    transform: translate3d(0, 34px, 0) scale(0.972);
   }
 
   to {
     filter: blur(0);
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes game-page-stage-in {
+  from {
+    filter: blur(6px);
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) scale(0.988);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes game-page-panel-piece-in {
+  from {
+    filter: blur(8px);
+    opacity: 0;
+    transform: translate3d(var(--game-panel-piece-x, 0), 24px, 0) scale(0.97);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 @keyframes game-page-table-in {
   from {
+    filter: blur(8px);
     opacity: 0;
-    transform: translateY(14px);
+    transform: translate3d(0, 24px, 0) scale(0.99);
   }
 
   to {
+    filter: blur(0);
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -687,6 +958,62 @@ html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-foot
   }
 }
 
+@keyframes games-section-in {
+  from {
+    filter: blur(8px);
+    opacity: 0;
+    transform: translate3d(0, 22px, 0) scale(0.99);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes games-card-in {
+  from {
+    filter: blur(10px);
+    opacity: 0;
+    transform: translate3d(var(--games-card-x, 0), 42px, 0) scale(0.94);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes rewards-section-in {
+  from {
+    filter: blur(8px);
+    opacity: 0;
+    transform: translate3d(0, 22px, 0) scale(0.99);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes rewards-card-in {
+  from {
+    filter: blur(10px);
+    opacity: 0;
+    transform: translate3d(var(--rewards-card-x, 0), 42px, 0) scale(0.94);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bet-history-row-in,
   .dice-history-chip-in,
@@ -695,12 +1022,31 @@ html[data-loader-phase="hidden"] .leaderboard-section-entrance .leaderboard-foot
   .global-loader-logo-wrap,
   .global-loader-shadow,
   .game-page-shell-in,
+  .game-page-shell-in > :first-child,
+  .game-page-shell-in > :last-child,
+  .game-page-shell-in > :first-child > :first-child,
+  .game-page-shell-in > :first-child > :nth-child(2),
   .game-page-table-in,
+  .games-card-entrance,
+  .games-faq-entrance,
+  .games-grid-entrance,
+  .games-page-copy-entrance,
+  .games-table-entrance,
   .leaderboard-card-entrance,
   .leaderboard-card-symbol-entrance,
   .leaderboard-copy-entrance,
   .leaderboard-decoration-entrance,
   .leaderboard-footer-entrance,
+  .rewards-card-entrance,
+  .rewards-copy-entrance,
+  .rewards-detail-back-entrance,
+  .rewards-detail-content-entrance,
+  .rewards-detail-heading-entrance,
+  .rewards-detail-image-entrance,
+  .rewards-faq-entrance,
+  .rewards-grid-entrance,
+  .rewards-pagination-entrance,
+  .rewards-toolbar-entrance,
   .scroll-reveal {
     animation: none;
     filter: none;

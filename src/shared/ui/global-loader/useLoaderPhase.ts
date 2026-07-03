@@ -18,7 +18,13 @@ const LEADERBOARD_LOADER_BEFORE_EXIT_MS = Math.max(
 type LoaderPhase = "hidden" | "visible" | "exiting";
 
 function getMinimumLoaderBeforeExitMs(pathname: string) {
-  return pathname === "/leaderboard" ? LEADERBOARD_LOADER_BEFORE_EXIT_MS : 0;
+  return pathname === "/leaderboard" ||
+    pathname === "/all-games" ||
+    pathname.startsWith("/all-games/") ||
+    pathname === "/rewards" ||
+    pathname.startsWith("/rewards/")
+    ? LEADERBOARD_LOADER_BEFORE_EXIT_MS
+    : 0;
 }
 
 export function useLoaderPhase(): LoaderPhase {

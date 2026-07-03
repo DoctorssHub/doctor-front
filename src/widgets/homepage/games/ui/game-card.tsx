@@ -5,6 +5,7 @@ import type { Game } from "../model/games";
 import { GameMark } from "./game-mark";
 
 type GameCardProps = {
+  className?: string;
   game: Game;
   variant?: "default" | "wide";
 };
@@ -15,7 +16,11 @@ const defaultCardClasses =
 const wideCardClasses =
   "h-[250px] w-full max-[1023px]:h-[220px] max-[767px]:h-[191px]";
 
-export function GameCard({ game, variant = "default" }: GameCardProps) {
+export function GameCard({
+  className = "",
+  game,
+  variant = "default",
+}: GameCardProps) {
   const isWide = variant === "wide";
 
   return (
@@ -23,7 +28,7 @@ export function GameCard({ game, variant = "default" }: GameCardProps) {
       aria-label={`Play ${game.title}`}
       className={`group relative block overflow-hidden rounded-xl border border-(--color-border) border-b-[3px] bg-(--color-surface-game) transition duration-300 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-text-primary) ${
         isWide ? wideCardClasses : defaultCardClasses
-      }`}
+      } ${className}`}
       href={game.href}
       style={{
         background: "#0e1519",
