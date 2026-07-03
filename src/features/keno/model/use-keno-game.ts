@@ -12,6 +12,7 @@ import {
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { useLiveBetRevealStore } from "@/shared/model/live-bet-reveal-store";
 import {
   formatBetAmount,
   readBetAmount,
@@ -234,6 +235,10 @@ export function useKenoGame() {
 
       queryClient.setQueryData<MeResponse | undefined>(["me"], creditedUser);
       creditGamePointsBalanceToAuthSession(lastBetResult.payout);
+    }
+
+    if (lastBetResult) {
+      useLiveBetRevealStore.getState().markBetRevealed(lastBetResult.betId);
     }
 
     completeReveal();

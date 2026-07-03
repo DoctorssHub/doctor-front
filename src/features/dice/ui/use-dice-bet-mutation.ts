@@ -10,6 +10,7 @@ import {
 } from "@/features/auth";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { useLiveBetRevealStore } from "@/shared/model/live-bet-reveal-store";
 import { placeDiceBet } from "../api/dice-api";
 import type { DiceBetRequest, DiceBetResponse } from "../api/dice-types";
 
@@ -38,6 +39,7 @@ export function useDiceBetMutation() {
 
       setResult(response);
       setResultHistory((history) => [...history, response].slice(-6));
+      useLiveBetRevealStore.getState().markBetRevealed(response.betId);
 
       const creditedUser = creditGamePointsBalanceToMeResponse(
         queryClient.getQueryData<MeResponse>(["me"]),
