@@ -407,6 +407,24 @@ button:disabled {
   will-change: opacity, transform;
 }
 
+.homepage-scroll-reveal {
+  filter: blur(6px);
+  opacity: 0;
+  transform: translate3d(0, 22px, 0) scale(0.992);
+  transition:
+    opacity 620ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 620ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--scroll-reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+
+.homepage-scroll-reveal.is-visible {
+  filter: blur(0);
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
 .game-fullscreen-root:fullscreen {
   height: 100dvh !important;
   max-height: 100dvh !important;
@@ -448,8 +466,13 @@ button:disabled {
   .global-loader-logo-wrap,
   .global-loader-shadow,
   .game-page-shell-in,
-  .game-page-table-in {
+  .game-page-table-in,
+  .homepage-scroll-reveal {
     animation: none;
+    filter: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

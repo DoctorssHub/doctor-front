@@ -5,3 +5,4 @@ export { HeroSection } from "./hero";
 export { OnboardingSection } from "./onboarding";
 export { PromotionsSection } from "./promotions";
 export { RewardsBanner } from "./rewards";
+export { ScrollReveal } from "./scroll-reveal";
