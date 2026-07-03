@@ -3,12 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import type { DiceBetRequest, DiceBetResponse } from "../api/dice-types";
-import {
-  getDiceBetNetResult,
-  getNextAutoBetSize,
-  shouldStopForAutoLimits,
-} from "../lib/dice-auto-betting";
-import { formatDiceNumber } from "../lib/dice-calculations";
+import { runDiceAutoBetSequence } from "../lib/dice-auto-betting";
 import {
   DEFAULT_DICE_AUTO_CONFIG,
   type DiceAutoConfig,
@@ -16,13 +11,6 @@ import {
 } from "../model/dice-game-options";
 
 const AUTO_BET_COUNT_DEFAULT = "10";
-const AUTO_BET_DELAY_MS = 550;
-
-function waitForNextAutoBet() {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, AUTO_BET_DELAY_MS);
-  });
-}
 
 type UseDiceAutoBettingParams = {
   isValidBetSize: (betSize: number, balance: number) => boolean;
@@ -83,54 +71,23 @@ export function useDiceAutoBetting({
     plannedBets,
     payload,
   }: RunAutoBetsParams) => {
-    let availableBalance = initialBalance;
-    let currentBetSize = initialBetSize;
-    let remainingBets = plannedBets;
-    let netProfit = 0;
-
     shouldStopAutoRef.current = false;
     setIsAutoRunning(true);
     setIsAutoStopRequested(false);
 
     try {
-      while (!shouldStopAutoRef.current && remainingBets > 0) {
-        if (!isValidBetSize(currentBetSize, availableBalance)) {
-          break;
-        }
-
-        const currentPayload = {
-          ...payload,
-          betSize: formatDiceNumber(currentBetSize),
-        };
-
-        gameSounds.playBetStart("dice");
-        const response = await mutateBet(currentPayload);
-        const netResult = getDiceBetNetResult(response);
-
-        netProfit += netResult;
-        availableBalance += netResult;
-
-        if (!isInfinite) {
-          remainingBets -= 1;
-        }
-
-        if (
-          shouldStopAutoRef.current ||
-          remainingBets <= 0 ||
-          shouldStopForAutoLimits(netProfit, config)
-        ) {
-          break;
-        }
-
-        currentBetSize = getNextAutoBetSize(
-          currentBetSize,
-          initialBetSize,
-          response,
-          config,
-        );
-
-        await waitForNextAutoBet();
-      }
+      await runDiceAutoBetSequence({
+        config,
+        initialBalance,
+        initialBetSize,
+        isInfinite,
+        isValidBetSize,
+        mutateBet,
+        onBetStart: () => gameSounds.playBetStart("dice"),
+        payload,
+        plannedBets,
+        shouldStop: () => shouldStopAutoRef.current,
+      });
     } finally {
       shouldStopAutoRef.current = false;
       setIsAutoRunning(false);
