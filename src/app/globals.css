@@ -389,7 +389,11 @@ button:disabled {
   pointer-events: none;
 }
 
-.global-loader-exit .global-loader-logo-wrap {
+.global-loader-logo {
+  will-change: opacity, transform;
+}
+
+.global-loader-exit .global-loader-logo {
   animation: global-loader-logo-exit 480ms ease-in forwards;
 }
 
@@ -1019,6 +1023,7 @@ html[data-loader-phase="hidden"] .rewards-detail-entrance .rewards-detail-conten
   .dice-history-chip-in,
   .dice-history-chip-out,
   .dice-mode-panel,
+  .global-loader-logo,
   .global-loader-logo-wrap,
   .global-loader-shadow,
   .game-page-shell-in,
