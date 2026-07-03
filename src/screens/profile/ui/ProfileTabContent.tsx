@@ -12,6 +12,7 @@ import {
   ProfileWallets,
   type ProfileTab,
 } from "@/features/profile";
+import { ScrollReveal } from "@/shared/ui/scroll-reveal";
 import { BetHistoryTable } from "@/widgets/bet-history";
 
 type ProfileTabContentProps = {
@@ -73,34 +74,53 @@ export function ProfileTabContent({ user }: ProfileTabContentProps) {
 
   return (
     <>
-      <ProfileTabs activeTab={activeTab} onTabChange={handleTabChange} />
+      <div className="profile-tabs-entrance">
+        <ProfileTabs activeTab={activeTab} onTabChange={handleTabChange} />
+      </div>
 
       {activeTab === "profile" ? (
         <div className="flex flex-col gap-8">
-          <section className="flex flex-col gap-6">
-            <ProfileSectionHeading size="lg" title="Profile" />
-            <ProfileUsernameField username={user.username} />
-          </section>
+          <ScrollReveal delayMs={80}>
+            <section className="profile-section-entrance flex flex-col gap-6">
+              <ProfileSectionHeading size="lg" title="Profile" />
+              <ProfileUsernameField username={user.username} />
+            </section>
+          </ScrollReveal>
 
-          <section className="flex flex-col gap-4">
-            <ProfileSectionHeading title="Statistics" />
-            <ProfileStatistics />
-          </section>
+          <ScrollReveal delayMs={120}>
+            <section className="profile-section-entrance flex flex-col gap-4">
+              <ProfileSectionHeading title="Statistics" />
+              <ProfileStatistics />
+            </section>
+          </ScrollReveal>
 
-          <section className="flex flex-col gap-4">
-            <ProfileSectionHeading title="Preferences" />
-            <ProfilePreferences />
-          </section>
+          <ScrollReveal delayMs={120}>
+            <section className="profile-section-entrance flex flex-col gap-4">
+              <ProfileSectionHeading title="Preferences" />
+              <ProfilePreferences />
+            </section>
+          </ScrollReveal>
 
-          <section className="flex flex-col gap-4">
-            <ProfileSectionHeading title="Crypto wallets" />
-            <ProfileWallets addresses={user.userCryptoAddresses} />
-          </section>
+          <ScrollReveal delayMs={120}>
+            <section className="profile-section-entrance flex flex-col gap-4">
+              <ProfileSectionHeading title="Crypto wallets" />
+              <ProfileWallets addresses={user.userCryptoAddresses} />
+            </section>
+          </ScrollReveal>
         </div>
       ) : activeTab === "connections" ? (
-        <ProfileConnections user={user} />
+        <ScrollReveal delayMs={100}>
+          <div className="profile-section-entrance">
+            <ProfileConnections user={user} />
+          </div>
+        </ScrollReveal>
       ) : (
-        <BetHistoryTable variant="profile" />
+        <ScrollReveal delayMs={100}>
+          <BetHistoryTable
+            className="profile-section-entrance"
+            variant="profile"
+          />
+        </ScrollReveal>
       )}
     </>
   );

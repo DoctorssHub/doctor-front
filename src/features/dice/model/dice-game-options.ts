@@ -14,6 +14,6 @@ export const DEFAULT_DICE_AUTO_CONFIG: DiceAutoConfig = {
   onWinIncrease: "0.00",
   onLossMode: "reset",
   onLossIncrease: "0.00",
-  stopOnProfit: "1.00",
-  stopOnLoss: "1.00",
+  stopOnProfit: "0.00",
+  stopOnLoss: "0.00",
 };

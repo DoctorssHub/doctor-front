@@ -1,10 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { DiceAutoConfig } from "../../model/dice-game-options";
-import redCoinIcon from "@/assets/shared/red-coin.svg";
+import { AutoModeControl } from "./AutoModeControl";
+import { CurrencyField } from "./CurrencyField";
+import { sanitizeDecimalInput } from "./dice-auto-config-utils";
 
 type DiceAutoConfigModalProps = {
   config: DiceAutoConfig;
@@ -14,18 +15,6 @@ type DiceAutoConfigModalProps = {
   onResetAll: () => void;
 };
 
-function sanitizeDecimalInput(value: string) {
-  const normalizedValue = value.replace(",", ".");
-  const [integerPart = "", ...fractionParts] = normalizedValue
-    .replace(/[^\d.]/g, "")
-    .split(".");
-  const fractionPart = fractionParts.join("");
-
-  return fractionParts.length > 0
-    ? `${integerPart}.${fractionPart}`
-    : integerPart;
-}
-
 export function DiceAutoConfigModal({
   config,
   onApply,
@@ -33,7 +22,6 @@ export function DiceAutoConfigModal({
   onClose,
   onResetAll,
 }: DiceAutoConfigModalProps) {
-
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     const previousPaddingRight = document.body.style.paddingRight;
@@ -134,102 +122,5 @@ export function DiceAutoConfigModal({
       </div>
     </div>,
     portalTarget,
-  );
-}
-
-type AutoModeControlProps = {
-  increaseValue: string;
-  label: string;
-  mode: DiceAutoConfig["onWinMode"];
-  onIncreaseChange: (value: string) => void;
-  onModeChange: (mode: DiceAutoConfig["onWinMode"]) => void;
-};
-
-function AutoModeControl({
-  increaseValue,
-  label,
-  mode,
-  onIncreaseChange,
-  onModeChange,
-}: AutoModeControlProps) {
-
-  return (
-    <div>
-      <p className="mb-2 text-xs font-bold text-white">{label}</p>
-      <div className="flex h-11 w-[470px] items-center rounded-lg border border-[#1b1f26] bg-[#0e121c] p-3 text-xs font-semibold leading-[1.33] text-[#c7cbd4] max-[620px]:w-full">
-        <button
-          className={`h-7 rounded-[4px] border border-[#1b1f26] px-3 py-1.5 text-[10px] font-semibold leading-none transition ${
-            mode === "reset"
-              ? "bg-[#c82831] text-[#fff7f7] hover:bg-[#d93a43]"
-              : "bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] text-[#c7cbd4] hover:text-white"
-          }`}
-          onClick={() => onModeChange("reset")}
-          type="button"
-        >
-          Reset
-        </button>
-        <button
-          className={`ml-1 h-7 rounded-[4px] border border-[#1b1f26] px-3 py-1.5 text-[10px] font-semibold leading-none transition ${
-            mode === "increase"
-              ? "bg-[#c82831] text-[#fff7f7] hover:bg-[#d93a43]"
-              : "bg-[linear-gradient(180deg,rgb(27_31_38/40%)_0%,rgb(43_48_59/40%)_100%)] text-[#c7cbd4] hover:text-white"
-          }`}
-          onClick={() => onModeChange("increase")}
-          type="button"
-        >
-          Increase By
-        </button>
-        <input
-          aria-label={`${label} increase percent`}
-          className="ml-auto w-16 bg-transparent text-right text-xs font-semibold leading-[1.33] text-[#c7cbd4] outline-none"
-          inputMode="decimal"
-          onChange={(event) => onIncreaseChange(event.target.value)}
-          pattern="[0-9]*[.]?[0-9]*"
-          type="text"
-          value={increaseValue}
-        />
-        <span className="ml-2 text-xs font-semibold leading-[1.33] text-[#c7cbd4]">
-          %
-        </span>
-      </div>
-    </div>
-  );
-}
-
-type CurrencyFieldProps = {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-};
-
-function CurrencyField({ id, label, value, onChange }: CurrencyFieldProps) {
-
-  return (
-    <label className="block" htmlFor={id}>
-      <span className="mb-2 block text-xs font-bold text-white">{label}</span>
-      <span className="flex h-11 w-[470px] items-center rounded-lg border border-[#1b1f26] bg-[#0e121c] p-3 text-xs font-semibold leading-[1.33] text-[#c7cbd4] max-[620px]:w-full">
-        <Image
-          src={redCoinIcon}
-          alt=""
-          width={16}
-          height={16}
-          className="mr-2"
-          aria-hidden="true"
-        />
-        <input
-          className="min-w-0 flex-1 bg-transparent text-xs font-semibold leading-[1.33] text-[#c7cbd4] outline-none"
-          id={id}
-          inputMode="decimal"
-          onChange={(event) => onChange(event.target.value)}
-          pattern="[0-9]*[.]?[0-9]*"
-          type="text"
-          value={value}
-        />
-        <span className="ml-2 text-xs font-semibold leading-[1.33] text-[#c7cbd4]">
-          $0.00
-        </span>
-      </span>
-    </label>
   );
 }

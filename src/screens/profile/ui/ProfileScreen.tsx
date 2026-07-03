@@ -38,12 +38,14 @@ export function ProfileScreen() {
     <main className="relative isolate min-h-screen overflow-x-hidden bg-(--color-page) text-white">
       <div className="relative z-10 mx-auto flex w-full max-w-[900px] flex-col gap-8 px-4 py-10 max-[1023px]:py-8">
         {profileQuery.isSuccess && profileQuery.data ? (
-          <>
-            <ProfileCard user={profileQuery.data} />
+          <div className="profile-page-entrance flex flex-col gap-8">
+            <div className="profile-card-entrance">
+              <ProfileCard user={profileQuery.data} />
+            </div>
             <Suspense fallback={null}>
               <ProfileTabContent user={profileQuery.data} />
             </Suspense>
-          </>
+          </div>
         ) : profileQuery.isError && !isAuthError ? (
           <ProfileErrorState onRetry={() => profileQuery.refetch()} />
         ) : (
