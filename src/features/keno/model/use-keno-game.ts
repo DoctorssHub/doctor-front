@@ -3,7 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
+import {
+  creditGamePointsBalanceToAuthSession,
+  creditGamePointsBalanceToMeResponse,
+  debitGamePointsBalanceFromAuthSession,
+  debitGamePointsBalanceFromMeResponse,
+} from "@/features/auth";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
+import type { MeResponse } from "@/features/auth/api/auth-types";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import {
   formatBetAmount,
@@ -26,6 +33,7 @@ export function useKenoGame() {
   const queryClient = useQueryClient();
   const isMountedRef = useRef(true);
   const revealCompleteResolverRef = useRef<(() => void) | null>(null);
+  const creditedResultIdsRef = useRef(new Set<string>());
   const [localErrorMessage, setLocalErrorMessage] = useState<string | null>(
     null,
   );
@@ -61,9 +69,15 @@ export function useKenoGame() {
     useMutation({
       mutationFn: async (payload: KenoBetRequest) =>
         (await placeKenoBet(payload)).data,
-      onSuccess: async (data: KenoBetResponse) => {
+      onSuccess: (data: KenoBetResponse) => {
+        const debitedUser = debitGamePointsBalanceFromMeResponse(
+          queryClient.getQueryData<MeResponse>(["me"]),
+          data.betSize,
+        );
+
+        queryClient.setQueryData<MeResponse | undefined>(["me"], debitedUser);
+        debitGamePointsBalanceFromAuthSession(data.betSize);
         setRoundResult(data);
-        await queryClient.invalidateQueries({ queryKey: ["me"] });
       },
     });
   const gameBalance = getKenoGameBalance(meQuery.data);
@@ -211,6 +225,17 @@ export function useKenoGame() {
 
     gameSounds.playResult({ didWin, lossSound: "revealed" });
 
+    if (lastBetResult && !creditedResultIdsRef.current.has(lastBetResult.betId)) {
+      creditedResultIdsRef.current.add(lastBetResult.betId);
+      const creditedUser = creditGamePointsBalanceToMeResponse(
+        queryClient.getQueryData<MeResponse>(["me"]),
+        lastBetResult.payout,
+      );
+
+      queryClient.setQueryData<MeResponse | undefined>(["me"], creditedUser);
+      creditGamePointsBalanceToAuthSession(lastBetResult.payout);
+    }
+
     completeReveal();
 
     showResultModal();
@@ -219,6 +244,7 @@ export function useKenoGame() {
   }, [
     completeReveal,
     lastBetResult,
+    queryClient,
     resolvePendingReveal,
     showResultModal,
   ]);

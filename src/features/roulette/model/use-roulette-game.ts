@@ -1,6 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import {
+  creditGamePointsBalanceToAuthSession,
+  creditGamePointsBalanceToMeResponse,
+  debitGamePointsBalanceFromAuthSession,
+  debitGamePointsBalanceFromMeResponse,
+} from "@/features/auth";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import type { MeResponse } from "@/features/auth/api/auth-types";
@@ -9,10 +15,7 @@ import type {
   RouletteBetRequest,
   RouletteBetResponse,
 } from "../api/roulette-types";
-import {
-  applyRouletteBalanceResult,
-  getGamePointsBalance,
-} from "../lib/roulette-balance";
+import { getGamePointsBalance } from "../lib/roulette-balance";
 import { getRouletteErrorMessage } from "../lib/roulette-errors";
 import { buildRouletteBetPayload } from "./roulette-bets";
 import { useAutoRouletteBetting } from "./use-auto-roulette-betting";
@@ -26,6 +29,7 @@ type RouletteBetMutationVariables = {
 export function useRouletteGame() {
   const queryClient = useQueryClient();
   const betModeRef = useRef<"manual" | "auto">("manual");
+  const creditedResultIdsRef = useRef(new Set<string>());
   const [isResultAnimating, setIsResultAnimating] = useState(false);
   const [isWinModalVisible, setIsWinModalVisible] = useState(false);
   const {
@@ -77,10 +81,21 @@ export function useRouletteGame() {
 
     gameSounds.playResult({ didWin, lossSound: "pocket" });
 
+    if (result && !creditedResultIdsRef.current.has(result.betId)) {
+      creditedResultIdsRef.current.add(result.betId);
+      const creditedUser = creditGamePointsBalanceToMeResponse(
+        queryClient.getQueryData<MeResponse>(["me"]),
+        result.payout,
+      );
+
+      queryClient.setQueryData<MeResponse | undefined>(["me"], creditedUser);
+      creditGamePointsBalanceToAuthSession(result.payout);
+    }
+
     addResultToHistory();
     setIsResultAnimating(false);
     setIsWinModalVisible(didWin);
-  }, [addResultToHistory, result]);
+  }, [addResultToHistory, queryClient, result]);
 
   useEffect(() => {
     if (!isWinModalVisible) {
@@ -124,10 +139,14 @@ export function useRouletteGame() {
     },
     onSuccess: (response, variables) => {
       setIsResultAnimating(true);
-      finishSpin(response, { clearBets: variables.clearBetsOnSuccess });
-      queryClient.setQueryData<MeResponse>(["me"], (user) =>
-        applyRouletteBalanceResult(user, response),
+      const debitedUser = debitGamePointsBalanceFromMeResponse(
+        queryClient.getQueryData<MeResponse>(["me"]),
+        response.betSize,
       );
+
+      queryClient.setQueryData<MeResponse | undefined>(["me"], debitedUser);
+      debitGamePointsBalanceFromAuthSession(response.betSize);
+      finishSpin(response, { clearBets: variables.clearBetsOnSuccess });
 
       scheduleNextAutoBet((nextVariables) => {
         betMutation.mutate(nextVariables);
