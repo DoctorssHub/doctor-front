@@ -27,8 +27,13 @@ export function RewardsGrid({ isFetching, nowMs, rewards }: RewardsGridProps) {
 
   return (
     <div className="grid grid-cols-[repeat(auto-fill,303px)] gap-4 max-mobile:grid-cols-1">
-      {rewards.items.map((reward) => (
-        <RewardCard key={reward.id} nowMs={nowMs} reward={reward} />
+      {rewards.items.map((reward, index) => (
+        <RewardCard
+          className={`rewards-card-entrance rewards-card-entrance-${(index % 8) + 1}`}
+          key={reward.id}
+          nowMs={nowMs}
+          reward={reward}
+        />
       ))}
     </div>
   );

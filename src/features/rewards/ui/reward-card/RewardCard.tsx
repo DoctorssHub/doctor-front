@@ -5,15 +5,20 @@ import type { Reward } from "../../model/types";
 import { RewardTimeLeft } from "./RewardTimeLeft";
 
 type RewardCardProps = {
+  className?: string;
   nowMs: number;
   reward: Reward;
 };
 
-export function RewardCard({ nowMs, reward }: RewardCardProps) {
+export function RewardCard({
+  className = "",
+  nowMs,
+  reward,
+}: RewardCardProps) {
   return (
     <Link
       aria-label={`Open ${reward.title}`}
-      className="group relative block h-[374px] w-[303px] cursor-pointer overflow-hidden rounded-[12px] border border-(--color-border-strong) bg-(--color-surface-elevated) shadow-(--shadow-inset-soft) transition-[box-shadow] duration-300 hover:shadow-[0_3px_14px_0_rgba(34,197,94,0.09)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#22c55e] max-mobile:w-full"
+      className={`group relative block h-[374px] w-[303px] cursor-pointer overflow-hidden rounded-[12px] border border-(--color-border-strong) bg-(--color-surface-elevated) shadow-(--shadow-inset-soft) transition-[box-shadow] duration-300 hover:shadow-[0_3px_14px_0_rgba(34,197,94,0.09)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#22c55e] max-mobile:w-full ${className}`}
       href={`/rewards/${reward.id}`}
     >
       <span

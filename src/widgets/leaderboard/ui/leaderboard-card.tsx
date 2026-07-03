@@ -20,7 +20,7 @@ export function LeaderboardCard({
   return (
     <article
       className={`relative z-30 w-[250px] rounded-[18px] border border-(--color-border-leaderboard) p-6 shadow-(--shadow-inset-soft) max-tablet:h-[296px] max-tablet:w-[343px] max-tablet:p-4 ${cardBackground} ${
-        player.winner ? "md:-translate-y-8" : ""
+        player.winner ? "leaderboard-card-winner-offset" : ""
       } ${className}`}
     >
       <AvatarRank

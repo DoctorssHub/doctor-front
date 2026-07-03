@@ -1,5 +1,6 @@
 import diceIcon from "@/assets/aside/dice.svg";
 import gamesIcon from "@/assets/aside/games.svg";
+import homeIcon from "@/assets/aside/home.svg";
 import kenoIcon from "@/assets/aside/keno.svg";
 import leaderboardIcon from "@/assets/aside/leaderboard.svg";
 import plinkoIcon from "@/assets/aside/plinko.svg";
@@ -9,6 +10,12 @@ import rouletteIcon from "@/assets/aside/roulette.svg";
 import type { NavItem } from "./types";
 
 export const navItems: NavItem[] = [
+  {
+    href: "/",
+    icon: homeIcon,
+    title: "Home",
+    type: "link",
+  },
   {
     href: "/leaderboard",
     icon: leaderboardIcon,

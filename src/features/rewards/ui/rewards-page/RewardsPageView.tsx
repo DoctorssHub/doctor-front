@@ -49,8 +49,8 @@ export function RewardsPageView() {
   };
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <header className="flex max-w-3xl flex-col gap-2">
+    <div className="rewards-page-entrance flex w-full flex-col gap-6">
+      <header className="rewards-copy-entrance flex max-w-3xl flex-col gap-2">
         <div className="flex items-center gap-3">
           <Image alt="" height={28} src={rewardsIcon} width={28} />
           <h1 className="text-[32px] leading-tight font-semibold text-(--color-text-primary) max-tablet:text-2xl">
@@ -63,12 +63,14 @@ export function RewardsPageView() {
         </p>
       </header>
 
-      <RewardsToolbar
-        onSearchChange={setSearch}
-        onSortChange={handleSortChange}
-        search={search}
-        sort={sort}
-      />
+      <div className="rewards-toolbar-entrance">
+        <RewardsToolbar
+          onSearchChange={setSearch}
+          onSortChange={handleSortChange}
+          search={search}
+          sort={sort}
+        />
+      </div>
 
       {rewardsQuery.isError ? (
         <div className="rounded-lg border border-(--color-border-strong) bg-(--color-surface-control)/65 px-5 py-8 text-center">
@@ -88,19 +90,23 @@ export function RewardsPageView() {
           </Button>
         </div>
       ) : (
-        <RewardsGrid
-          isFetching={rewardsQuery.isFetching}
-          nowMs={nowMs}
-          rewards={rewards}
-        />
+        <div className="rewards-grid-entrance">
+          <RewardsGrid
+            isFetching={rewardsQuery.isFetching}
+            nowMs={nowMs}
+            rewards={rewards}
+          />
+        </div>
       )}
 
       {rewards ? (
-        <RewardsPagination
-          currentPage={rewards.page}
-          onPageChange={setPage}
-          totalPages={rewards.totalPages}
-        />
+        <div className="rewards-pagination-entrance">
+          <RewardsPagination
+            currentPage={rewards.page}
+            onPageChange={setPage}
+            totalPages={rewards.totalPages}
+          />
+        </div>
       ) : null}
     </div>
   );

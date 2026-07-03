@@ -2,10 +2,14 @@ import { games } from "../model/games";
 import { GameCard } from "./game-card";
 
 type GamesGridProps = {
+  animateCards?: boolean;
   variant?: "homepage" | "all-games";
 };
 
-export function GamesGrid({ variant = "homepage" }: GamesGridProps) {
+export function GamesGrid({
+  animateCards = false,
+  variant = "homepage",
+}: GamesGridProps) {
   const isAllGames = variant === "all-games";
 
   return (
@@ -16,8 +20,13 @@ export function GamesGrid({ variant = "homepage" }: GamesGridProps) {
           : "grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
       }
     >
-      {games.map((game) => (
+      {games.map((game, index) => (
         <GameCard
+          className={
+            animateCards
+              ? `games-card-entrance games-card-entrance-${index + 1}`
+              : undefined
+          }
           game={game}
           key={game.title}
           variant={isAllGames ? "wide" : "default"}

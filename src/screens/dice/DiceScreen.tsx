@@ -4,6 +4,7 @@ import { useDiceGame } from "@/features/dice";
 import { DiceBetControls, DiceGamePanel } from "@/features/dice/ui";
 import { ProvablyFairBar } from "@/features/provably-fair";
 import { GameFullscreenShell } from "@/shared";
+import { ScrollReveal } from "@/shared/ui/scroll-reveal";
 import { BetHistoryTable } from "@/widgets/bet-history";
 
 export function DiceScreen() {
@@ -34,11 +35,13 @@ export function DiceScreen() {
           </div>
         )}
       </GameFullscreenShell>
-      <BetHistoryTable
-        className="game-page-table-in mx-auto mt-8 w-full max-w-[1017px]"
-        game="dice"
-        variant="game-live"
-      />
+      <ScrollReveal delayMs={90}>
+        <BetHistoryTable
+          className="game-page-table-in mx-auto mt-8 w-full max-w-[1017px]"
+          game="dice"
+          variant="game-live"
+        />
+      </ScrollReveal>
     </main>
   );
 }
