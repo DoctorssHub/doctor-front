@@ -1,5 +1,6 @@
 import { FaqSection } from "@/widgets/faq";
 import { LeaderboardSection, LeaderboardTable } from "@/widgets";
+import { ScrollReveal } from "@/shared/ui/scroll-reveal";
 
 import {
   leaderboardFaqItems,
@@ -8,10 +9,13 @@ import {
 import { LeaderboardCountdown } from "./ui/leaderboard-countdown";
 import { LeaderboardEligibilityNotice } from "./ui/leaderboard-eligibility-notice";
 
+const sectionRevealDelays = [70, 90];
+
 const LeaderboardScreen = () => {
   return (
     <main className="mx-auto min-h-screen overflow-hidden bg-(--color-page) text-white">
       <LeaderboardSection
+        animateOnMount
         contentClassName="mx-auto max-w-[1150px]"
         footer={<LeaderboardCountdown />}
         subtitle="Be a Top 1000 player in January and win a live Bonus Buy with TheDoctor"
@@ -20,23 +24,27 @@ const LeaderboardScreen = () => {
         viewAllHref={null}
       />
       <div className="mx-auto flex flex-col items-center max-w-[890px] px-4">
-        <LeaderboardEligibilityNotice />
-        <a
-          className="mx-auto mt-7 inline-flex h-10 items-center justify-center rounded-lg bg-(--color-brand-strong) px-6 text-sm font-bold text-(--color-brand-contrast) shadow-(--shadow-brand-glow) transition hover:bg-(--color-brand-hover)"
-          href="https://degencity.com/r/thedoctor"
-          rel="noreferrer"
-          target="_blank"
-        >
-          Join the leaderboard
-        </a>
-        <LeaderboardTable />
-        <div className="mt-11 pb-12">
-          <FaqSection
-            items={leaderboardFaqItems}
-            title="Competition Rules & Eligibility"
-            toggleLabels={leaderboardFaqToggleLabels}
-          />
-        </div>
+        <ScrollReveal delayMs={sectionRevealDelays[0]}>
+          <LeaderboardEligibilityNotice />
+          <a
+            className="mx-auto mt-7 inline-flex h-10 items-center justify-center rounded-lg bg-(--color-brand-strong) px-6 text-sm font-bold text-(--color-brand-contrast) shadow-(--shadow-brand-glow) transition hover:bg-(--color-brand-hover)"
+            href="https://degencity.com/r/thedoctor"
+            rel="noreferrer"
+            target="_blank"
+          >
+            Join the leaderboard
+          </a>
+          <LeaderboardTable />
+        </ScrollReveal>
+        <ScrollReveal delayMs={sectionRevealDelays[1]}>
+          <div className="mt-11 pb-12">
+            <FaqSection
+              items={leaderboardFaqItems}
+              title="Competition Rules & Eligibility"
+              toggleLabels={leaderboardFaqToggleLabels}
+            />
+          </div>
+        </ScrollReveal>
       </div>
     </main>
   );

@@ -3,6 +3,7 @@
 import { KenoGamePanel } from "@/features/keno";
 import { ProvablyFairBar } from "@/features/provably-fair";
 import { GameFullscreenShell } from "@/shared";
+import { ScrollReveal } from "@/shared/ui/scroll-reveal";
 import { BetHistoryTable } from "@/widgets/bet-history";
 
 export function KenoScreen() {
@@ -19,11 +20,13 @@ export function KenoScreen() {
       >
         {({ isFullscreen }) => <KenoGamePanel isFullscreen={isFullscreen} />}
       </GameFullscreenShell>
-      <BetHistoryTable
-        className="game-page-table-in mx-auto mt-8 w-full max-w-[1017px]"
-        game="keno"
-        variant="game-live"
-      />
+      <ScrollReveal delayMs={90}>
+        <BetHistoryTable
+          className="game-page-table-in mx-auto mt-8 w-full max-w-[1017px]"
+          game="keno"
+          variant="game-live"
+        />
+      </ScrollReveal>
     </main>
   );
 }
