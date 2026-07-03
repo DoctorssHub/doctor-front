@@ -1,7 +1,7 @@
 import { io, type Socket } from "socket.io-client";
 
 const SOCKET_URL =
-  process.env.NEXT_PUBLIC_SOCKET_URL ?? "https://api.thedoctor-dev.com";
+  process.env.NEXT_PUBLIC_SOCKET_URL ?? "https://thedoctor-be-staging.fly.dev";
 
 // Live bets are broadcast on the `/events` namespace as `NewLiveBet`.
 export const NEW_LIVE_BET_EVENT = "NewLiveBet";

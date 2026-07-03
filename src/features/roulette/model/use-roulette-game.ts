@@ -9,6 +9,7 @@ import {
 } from "@/features/auth";
 import { getCurrentUser } from "@/features/auth/api/auth-api";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { useLiveBetRevealStore } from "@/shared/model/live-bet-reveal-store";
 import type { MeResponse } from "@/features/auth/api/auth-types";
 import { getRouletteConfig, placeRouletteBet } from "../api/roulette-api";
 import type {
@@ -90,6 +91,10 @@ export function useRouletteGame() {
 
       queryClient.setQueryData<MeResponse | undefined>(["me"], creditedUser);
       creditGamePointsBalanceToAuthSession(result.payout);
+    }
+
+    if (result) {
+      useLiveBetRevealStore.getState().markBetRevealed(result.betId);
     }
 
     addResultToHistory();
