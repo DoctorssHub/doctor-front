@@ -35,7 +35,7 @@ export function DiceScreen() {
         )}
       </GameFullscreenShell>
       <BetHistoryTable
-        className="game-page-table-in mx-auto mt-8 max-w-240"
+        className="game-page-table-in mx-auto mt-8 w-full max-w-[1017px]"
         game="dice"
         variant="game-live"
       />
