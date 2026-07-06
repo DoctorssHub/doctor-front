@@ -54,13 +54,13 @@ export function HeaderBalances({ balances }: { balances: UserBalance[] }) {
 
   return (
     <div
-      className="relative shrink-0"
+      className="relative min-w-0 shrink"
       ref={containerRef}
     >
       <button
         aria-expanded={isOpen}
         aria-label="Open balance dropdown"
-        className="flex h-10 cursor-pointer items-center gap-3 rounded-[6px] bg-[#1b1f26] px-3 py-2 text-[16px] leading-[125%] font-normal text-[#fdfdfd] transition hover:bg-[#202638] max-tablet:gap-2 max-tablet:px-2 max-tablet:text-[13px]"
+        className="flex h-10 min-w-0 cursor-pointer items-center gap-3 rounded-[6px] bg-[#1b1f26] px-3 py-2 text-[16px] leading-[125%] font-normal text-[#fdfdfd] transition hover:bg-[#202638] max-tablet:gap-1.5 max-tablet:px-2 max-tablet:text-[13px]"
         type="button"
         onClick={() => setIsOpen((currentValue) => !currentValue)}
       >

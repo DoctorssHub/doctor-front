@@ -57,13 +57,13 @@ export function HeaderProfileMenu({
     <div className="relative shrink-0" ref={containerRef}>
       <button
         aria-expanded={isOpen}
-        aria-label="Open profile dropdown"
-        className="flex h-10 cursor-pointer items-center gap-2 text-[16px] leading-[125%] font-normal text-[#fdfdfd] transition hover:text-white max-tablet:text-[13px]"
+        aria-label={`Open profile dropdown for ${username}`}
+        className="flex h-10 cursor-pointer items-center gap-2 text-[16px] leading-[125%] font-normal text-[#fdfdfd] transition hover:text-white max-tablet:gap-1.5 max-tablet:text-[13px]"
         type="button"
         onClick={() => setIsOpen((currentValue) => !currentValue)}
       >
         <HeaderAvatar imageUrl={imageUrl} username={username} />
-        <span className="max-w-[160px] truncate">{username}</span>
+        <span className="max-w-[160px] max-tablet:sr-only">{username}</span>
         <Image
           alt=""
           aria-hidden="true"
@@ -96,7 +96,7 @@ function HeaderAvatar({
 }) {
   return (
     <span
-      className="flex size-10 shrink-0 items-center justify-center rounded-full p-[2px]"
+      className="flex size-10 shrink-0 items-center justify-center rounded-full p-[2px] max-tablet:size-9"
       style={{
         background:
           "linear-gradient(0deg, #ff3b41 0%, #c82831 45%, #4a0a0d 100%)",
