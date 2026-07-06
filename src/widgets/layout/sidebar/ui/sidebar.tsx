@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { memo } from "react";
 
+import { isNavHrefActive } from "../lib/nav-active";
 import { navItems } from "../model/nav-items";
 import { ClaimCard } from "./claim-card";
 import { NavDropdown } from "./nav-dropdown";
@@ -19,6 +21,7 @@ type SidebarProps = {
 
 type SidebarNavProps = {
   isCollapsed: boolean;
+  onNavigate?: () => void;
 };
 
 export function Sidebar({
@@ -59,7 +62,10 @@ export function Sidebar({
         </button>
         <div className="flex h-full w-full flex-col items-center justify-start gap-3 pt-3">
           <ClaimCard isCollapsed={isCollapsed} />
-          <SidebarNav isCollapsed={isCollapsed} />
+          <SidebarNav
+            isCollapsed={isCollapsed}
+            onNavigate={onMobileClose}
+          />
           <a
             aria-label={isCollapsed ? "Help & Support" : undefined}
             className={`-mx-4 mt-auto flex h-20 w-[calc(100%+32px)] items-center border-t border-[#1b1f26] p-4 text-[18px] font-semibold text-(--color-text-primary) transition hover:bg-(--color-surface-hover) ${
@@ -68,6 +74,7 @@ export function Sidebar({
             href="https://discord.com/invite/thedoctor"
             rel="noreferrer"
             target="_blank"
+            onClick={onMobileClose}
           >
             <Image
               alt="Help and support"
@@ -85,25 +92,41 @@ export function Sidebar({
   );
 }
 
-const SidebarNav = memo(function SidebarNav({ isCollapsed }: SidebarNavProps) {
+const SidebarNav = memo(function SidebarNav({
+  isCollapsed,
+  onNavigate,
+}: SidebarNavProps) {
+  const pathname = usePathname();
+
   return (
     <nav className="flex w-full flex-col gap-1">
-      {navItems.map((item) =>
-        item.type === "dropdown" ? (
+      {navItems.map((item) => {
+        const isActive = isNavHrefActive(pathname, item.href);
+
+        return item.type === "dropdown" ? (
           <NavDropdown
+            activeHref={
+              item.children.find((child) =>
+                isNavHrefActive(pathname, child.href),
+              )?.href ?? null
+            }
+            isActive={isActive}
             isCollapsed={isCollapsed}
             item={item}
             key={item.title}
+            onNavigate={onNavigate}
           />
         ) : (
           <NavLink
             iconSize={20}
+            isActive={isActive}
             isCollapsed={isCollapsed}
             item={item}
             key={item.title}
+            onNavigate={onNavigate}
           />
-        ),
-      )}
+        );
+      })}
     </nav>
   );
 });

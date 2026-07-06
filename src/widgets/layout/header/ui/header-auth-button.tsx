@@ -73,7 +73,7 @@ export function HeaderAuthButton() {
 
   if (isAuthenticated && displayUsername) {
     return (
-      <div className="flex min-w-0 items-center gap-3 max-tablet:gap-2">
+      <div className="flex min-w-0 items-center gap-3 max-tablet:max-w-[calc(100vw-104px)] max-tablet:gap-2">
         <div className="flex min-w-0 items-center gap-2 max-tablet:gap-1.5">
           <HeaderBalances balances={balances} />
           <HeaderProfileMenu

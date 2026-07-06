@@ -18,7 +18,7 @@ export function HomeHeader({
       className="
     fixed inset-x-0 top-0 z-80 flex h-16 items-center justify-between px-8
     border-b border-(--color-border-strong) bg-(--color-header-surface)
-    max-tablet:grid max-tablet:grid-cols-[40px_1fr_auto] max-tablet:items-center max-tablet:overflow-hidden max-tablet:px-4
+    max-tablet:grid max-tablet:grid-cols-[40px_minmax(0,1fr)] max-tablet:items-center max-tablet:overflow-hidden max-tablet:px-4
     "
     >
       <div className="flex items-center gap-6 max-tablet:contents">
@@ -38,7 +38,7 @@ export function HomeHeader({
         </button>
         <Link
           aria-label="Go to homepage"
-          className="block size-12 max-tablet:size-10 max-tablet:self-center max-tablet:justify-self-center"
+          className="block size-12 max-tablet:hidden"
           href="/"
         >
           <Image
@@ -51,7 +51,7 @@ export function HomeHeader({
           />
         </Link>
       </div>
-      <div className="max-tablet:self-center max-tablet:justify-self-end">
+      <div className="min-w-0 max-tablet:self-center max-tablet:justify-self-end">
         <HeaderAuthButton />
       </div>
     </header>
