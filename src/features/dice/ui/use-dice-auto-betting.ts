@@ -2,8 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { getTurboAutoBetDelay } from "@/shared/lib/turbo-mode";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import type { DiceBetRequest, DiceBetResponse } from "../api/dice-types";
-import { runDiceAutoBetSequence } from "../lib/dice-auto-betting";
+import {
+  AUTO_BET_DELAY_MS,
+  runDiceAutoBetSequence,
+} from "../lib/dice-auto-betting";
 import {
   DEFAULT_DICE_AUTO_CONFIG,
   type DiceAutoConfig,
@@ -40,6 +45,9 @@ export function useDiceAutoBetting({
     DEFAULT_DICE_AUTO_CONFIG,
   );
   const [isAutoConfigOpen, setIsAutoConfigOpen] = useState(false);
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
 
   useEffect(() => {
     return () => {
@@ -80,6 +88,11 @@ export function useDiceAutoBetting({
         config,
         initialBalance,
         initialBetSize,
+        autoBetDelayMs: getTurboAutoBetDelay(
+          "dice",
+          AUTO_BET_DELAY_MS,
+          isTurboModeEnabled,
+        ),
         isInfinite,
         isValidBetSize,
         mutateBet,
@@ -93,7 +106,7 @@ export function useDiceAutoBetting({
       setIsAutoRunning(false);
       setIsAutoStopRequested(false);
     }
-  }, [isValidBetSize, mutateBet]);
+  }, [isTurboModeEnabled, isValidBetSize, mutateBet]);
 
   const handleAutoConfigApply = useCallback(() => {
     setIsAutoConfigOpen(false);

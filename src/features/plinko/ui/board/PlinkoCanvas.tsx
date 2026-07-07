@@ -2,6 +2,8 @@
 
 import { memo, useCallback, useEffect, useRef } from "react";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { getPlinkoTurboTimingScale } from "@/shared/lib/turbo-mode";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { useDevicePixelRatio } from "@/shared/lib/useDevicePixelRatio";
 import type { ActiveRound } from "@/features/plinko/model/active-round";
 import {
@@ -38,6 +40,10 @@ export const PlinkoCanvas = memo(function PlinkoCanvas({
   const boardHeight = getBoardHeight(rows, layout);
   const boardWidth = getBoardWidth(layout);
   const pixelRatio = useDevicePixelRatio();
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
+  const timingScale = getPlinkoTurboTimingScale(isTurboModeEnabled);
   const {
     activeRoundsRef,
     getRoundMotion,
@@ -49,6 +55,7 @@ export const PlinkoCanvas = memo(function PlinkoCanvas({
     activeRounds,
     layout,
     rows,
+    timingScale,
   });
 
   useEffect(() => {

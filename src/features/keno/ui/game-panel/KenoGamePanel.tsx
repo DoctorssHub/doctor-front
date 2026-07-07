@@ -23,13 +23,13 @@ export function KenoGamePanel({ isFullscreen = false }: KenoGamePanelProps) {
     >
       <KenoSidebar {...game} />
       <KenoNumberGrid
-        key={game.resultRoundId}
         isFullscreen={isFullscreen}
         isInteractionLocked={game.isInteractionLocked}
         isRevealingResults={game.isRevealingResults}
         onResultsReset={game.onResultsReset}
         onRevealComplete={game.onRevealComplete}
         resultNumbers={game.resultNumbers}
+        resultRoundId={game.resultRoundId}
         roundSelectedNumbers={game.roundSelectedNumbers}
       />
       {game.lastBetResult && game.isResultModalVisible ? (

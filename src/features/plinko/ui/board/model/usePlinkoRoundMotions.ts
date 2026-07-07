@@ -6,23 +6,26 @@ import {
   createBallMotion,
   type BallMotion,
 } from "@/features/plinko/lib/board/canvas/physics";
+import { applyTimingScale } from "@/features/plinko/lib/board/canvas/physics-timing";
 import type { ActiveRound } from "@/features/plinko/model/active-round";
 
 type UsePlinkoRoundMotionsParams = {
   activeRounds: ActiveRound[];
   layout: BoardLayout;
   rows: number;
+  timingScale?: number;
 };
 
 export function usePlinkoRoundMotions({
   activeRounds,
   layout,
   rows,
+  timingScale = 1,
 }: UsePlinkoRoundMotionsParams) {
   const activeRoundsRef = useRef(activeRounds);
   const startedAtByRoundRef = useRef(new Map<string, number>());
   const ballMotionByRoundRef = useRef(new Map<string, BallMotion>());
-  const boardKeyRef = useRef(`${layout}:${rows}`);
+  const boardKeyRef = useRef(`${layout}:${rows}:${timingScale}`);
   const completedRoundIdsRef = useRef(new Set<string>());
 
   useEffect(() => {
@@ -62,12 +65,15 @@ export function usePlinkoRoundMotions({
           return;
         }
 
-        const ballMotion = createBallMotion({
-          bucketIndex: round.bet.bucketIndex,
-          layout,
-          rows,
-          seed: round.bet.betId,
-        });
+        const ballMotion = applyTimingScale(
+          createBallMotion({
+            bucketIndex: round.bet.bucketIndex,
+            layout,
+            rows,
+            seed: round.bet.betId,
+          }),
+          timingScale,
+        );
 
         ballMotionByRoundRef.current.set(round.id, ballMotion);
 
@@ -76,7 +82,7 @@ export function usePlinkoRoundMotions({
         }
       });
     },
-    [layout, rows],
+    [layout, rows, timingScale],
   );
 
   useEffect(() => {
@@ -89,7 +95,7 @@ export function usePlinkoRoundMotions({
   }, [syncActiveRoundMotions]);
 
   useEffect(() => {
-    const nextBoardKey = `${layout}:${rows}`;
+    const nextBoardKey = `${layout}:${rows}:${timingScale}`;
 
     if (boardKeyRef.current === nextBoardKey) {
       return;
@@ -97,7 +103,7 @@ export function usePlinkoRoundMotions({
 
     boardKeyRef.current = nextBoardKey;
     rebuildActiveRoundMotions();
-  }, [layout, rebuildActiveRoundMotions, rows]);
+  }, [layout, rebuildActiveRoundMotions, rows, timingScale]);
 
   const getRoundMotion = useCallback((roundId: string) => {
     return ballMotionByRoundRef.current.get(roundId);
