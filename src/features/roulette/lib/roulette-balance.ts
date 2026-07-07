@@ -1,12 +1,12 @@
 import type { MeResponse } from "@/features/auth/api/auth-types";
+import {
+  getGamePointsBalanceValue,
+  readFormattedBalanceValue,
+} from "../../../shared/lib/game-points-balance";
 import type { RouletteBetResponse } from "../api/roulette-types";
 
 export function getGamePointsBalance(user: MeResponse | undefined) {
-  const balance = user?.userBalances.find(
-    (item) => item.balanceType === "GAME_POINTS",
-  );
-
-  return Number(balance?.value ?? 0);
+  return getGamePointsBalanceValue(user?.userBalances);
 }
 
 function formatBalanceValue(value: number) {
@@ -35,9 +35,9 @@ export function applyRouletteBalanceResult(
         return balance;
       }
 
-      const currentValue = Number(balance.value);
+      const currentValue = readFormattedBalanceValue(balance.value);
 
-      if (!Number.isFinite(currentValue)) {
+      if (currentValue === null) {
         return balance;
       }
 

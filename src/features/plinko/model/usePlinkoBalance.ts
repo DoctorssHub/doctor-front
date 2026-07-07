@@ -1,7 +1,10 @@
 "use client";
 
 import { useAuthSessionStore } from "@/features/auth";
-import type { UserBalance } from "@/features/auth/lib/read-auth-response";
+import {
+  findGamePointsBalance,
+  readFormattedBalanceValue,
+} from "../../../shared/lib/game-points-balance";
 
 const FALLBACK_GAME_POINTS_BALANCE_TYPE = "GAME_POINTS";
 
@@ -10,29 +13,9 @@ export function usePlinkoBalance() {
   const gamePointsBalance = findGamePointsBalance(balances);
 
   return {
-    availableBalance: readNumericValue(gamePointsBalance?.value),
+    availableBalance: readFormattedBalanceValue(gamePointsBalance?.value),
     balanceLabel: gamePointsBalance?.value,
     balanceType:
       gamePointsBalance?.balanceType || FALLBACK_GAME_POINTS_BALANCE_TYPE,
   };
-}
-
-function readNumericValue(value: string | undefined) {
-  if (!value) {
-    return null;
-  }
-
-  const parsedValue = Number(value.replace(/,/g, ""));
-
-  return Number.isFinite(parsedValue) ? parsedValue : null;
-}
-
-function findGamePointsBalance(balances: UserBalance[]) {
-  return balances.find((balance) => isGamePointsBalanceType(balance.balanceType));
-}
-
-function isGamePointsBalanceType(balanceType: string) {
-  const normalizedBalanceType = balanceType.replace(/[_\s-]+/g, "").toLowerCase();
-
-  return normalizedBalanceType.includes("gamepoint");
 }
