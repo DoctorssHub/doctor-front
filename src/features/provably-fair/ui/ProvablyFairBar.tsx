@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import { memo, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import rulesIcon from "@/assets/shared/rulesIcon.svg";
+import closeIcon from "@/assets/games/provably-fair/closeIcon.svg";
 import fullScreenIcon from "@/assets/games/provably-fair/fullScreen.svg";
 import muteIcon from "@/assets/games/provably-fair/muteIcon.svg";
 import settingIcon from "@/assets/games/provably-fair/settingIcon.svg";
@@ -10,6 +13,10 @@ import { isTurboModeAvailable } from "@/shared/lib/turbo-mode";
 import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { useGameSoundStore } from "@/shared/model/game-sound-store";
 import type { StaticImageData } from "next/image";
+import { getModalPortalTarget } from "../lib/modal-portal-target";
+import { lockPageScroll } from "../lib/page-scroll-lock";
+import { getGameRules } from "../model/game-rules";
+import type { GameRuleStep } from "../model/game-rules";
 import type { ProvablyFairGame } from "../model/provably-fair-games";
 import { ProvablyFairButton } from "./ProvablyFairButton";
 
@@ -27,6 +34,7 @@ export const ProvablyFairBar = memo(function ProvablyFairBar({
   onToggleFullscreen,
 }: ProvablyFairBarProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -74,11 +82,28 @@ export const ProvablyFairBar = memo(function ProvablyFairBar({
               setIsSettingsOpen((current) => !current);
             }}
           />
-          {isSettingsOpen ? <GameSettingsPopover game={game} /> : null}
+          {isSettingsOpen ? (
+            <GameSettingsPopover
+              game={game}
+              onOpenRules={() => {
+                setIsSettingsOpen(false);
+                setIsRulesOpen(true);
+              }}
+            />
+          ) : null}
         </div>
       </div>
 
       <ProvablyFairButton game={game} />
+
+      {isRulesOpen ? (
+        <GameRulesModal
+          game={game}
+          onClose={() => {
+            setIsRulesOpen(false);
+          }}
+        />
+      ) : null}
     </section>
   );
 });
@@ -111,7 +136,12 @@ function FairnessIconButton({
   );
 }
 
-function GameSettingsPopover({ game }: { game: ProvablyFairGame }) {
+type GameSettingsPopoverProps = {
+  game: ProvablyFairGame;
+  onOpenRules: () => void;
+};
+
+function GameSettingsPopover({ game, onOpenRules }: GameSettingsPopoverProps) {
   const isTurboModeEnabled = useGameSettingsStore(
     (state) => state.isTurboModeEnabled,
   );
@@ -129,7 +159,15 @@ function GameSettingsPopover({ game }: { game: ProvablyFairGame }) {
   const soundIcon = volume === 0 ? muteIcon : volumeIcon;
 
   return (
-    <div className="absolute bottom-[calc(100%+28px)] left-0 z-20 flex h-[164px] w-[248px] flex-col justify-between rounded-[24px] bg-[#0a0d19] p-6 shadow-[0_18px_44px_rgb(0_0_0/28%)]">
+    <div className="absolute bottom-[calc(100%+28px)] left-0 z-20 flex w-[248px] flex-col gap-5 rounded-[24px] bg-[#0a0d19] p-6 shadow-[0_18px_44px_rgb(0_0_0/28%)]">
+      <button
+        className="flex h-10 w-full items-center justify-center gap-2 rounded-[10px] bg-(--color-brand) px-4 text-sm leading-none font-semibold text-[#071018] transition hover:brightness-110"
+        onClick={onOpenRules}
+        type="button"
+      >
+        <Image alt="" height={16} src={rulesIcon} width={16} />
+        <span>Game Rules</span>
+      </button>
       {isTurboModeAvailable(game) ? (
         <SettingsSwitch
           checked={isTurboModeEnabled}
@@ -160,6 +198,108 @@ function GameSettingsPopover({ game }: { game: ProvablyFairGame }) {
         />
       </div>
     </div>
+  );
+}
+
+type GameRulesModalProps = {
+  game: ProvablyFairGame;
+  onClose: () => void;
+};
+
+function GameRulesModal({ game, onClose }: GameRulesModalProps) {
+  const rules = getGameRules(game);
+
+  useEffect(() => {
+    return lockPageScroll(document.body, document.documentElement);
+  }, []);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#030712]/70 px-4 py-6 backdrop-blur-[2px]"
+      onClick={onClose}
+    >
+      <div
+        aria-labelledby="game-rules-title"
+        aria-modal="true"
+        className="max-h-[calc(100vh-48px)] w-[478px] max-w-[calc(100vw-32px)] overflow-y-auto rounded-[24px] bg-[#151a23] px-6 py-5 shadow-[0_24px_70px_rgb(0_0_0/45%)]"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+        role="dialog"
+      >
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <Image
+              alt=""
+              className="invert"
+              height={16}
+              src={rulesIcon}
+              width={16}
+            />
+            <h2
+              className="text-lg leading-none font-semibold text-[#fdfdfd]"
+              id="game-rules-title"
+            >
+              {rules.title}
+            </h2>
+          </div>
+          <button
+            aria-label="Close game rules"
+            className="grid h-6 w-6 shrink-0 place-items-center rounded-[6px] transition hover:bg-white/10"
+            onClick={onClose}
+            type="button"
+          >
+            <Image alt="" height={16} src={closeIcon} width={16} />
+          </button>
+        </div>
+
+        <ol className="space-y-3 text-sm leading-relaxed text-[#fdfdfd]">
+          {rules.steps.map((step, index) => (
+            <RuleStep index={index} key={`${index}-${step.text}`} step={step} />
+          ))}
+        </ol>
+      </div>
+    </div>,
+    getModalPortalTarget(document),
+  );
+}
+
+type RuleStepProps = {
+  index: number;
+  step: GameRuleStep;
+};
+
+function RuleStep({ index, step }: RuleStepProps) {
+  return (
+    <li>
+      <span className="font-semibold">{index + 1}.</span>{" "}
+      <span>{step.text}</span>
+      {step.items ? (
+        <ul className="mt-2 ml-5 list-disc space-y-2 text-xs leading-relaxed text-[#fdfdfd]">
+          {step.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : null}
+    </li>
   );
 }
 
