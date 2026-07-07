@@ -1,6 +1,8 @@
 "use client";
 
 import { memo } from "react";
+import { getTurboTimingScale } from "@/shared/lib/turbo-mode";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { RouletteBall } from "./RouletteBall";
 import { RouletteWheelCenter } from "./RouletteWheelCenter";
 import { RouletteWheelImageLayer } from "./RouletteWheelImageLayer";
@@ -18,11 +20,16 @@ export const RouletteWheel = memo(function RouletteWheel({
   onLandingComplete,
   resultNumber,
 }: RouletteWheelProps) {
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
+  const timingScale = getTurboTimingScale("roulette", isTurboModeEnabled);
   const { ballRef, centerRef, initialBallTransform, wheelRef } =
     useRouletteWheelAnimation({
       isSpinning,
       onLandingComplete,
       resultNumber,
+      timingScale,
     });
 
   return (

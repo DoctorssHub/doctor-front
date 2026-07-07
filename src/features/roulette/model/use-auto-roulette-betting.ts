@@ -1,4 +1,6 @@
 import { useCallback, useRef, useState } from "react";
+import { getTurboAutoBetDelay } from "@/shared/lib/turbo-mode";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { sanitizeIntegerInput } from "@/shared/ui/game-sidebar/lib/numeric-input";
 import type { RouletteBetRequest } from "../api/roulette-types";
 
@@ -20,6 +22,14 @@ export function useAutoRouletteBetting() {
   const isAutoRunningRef = useRef(false);
   const [isAutoInfinite, setIsAutoInfinite] = useState(false);
   const [isAutoRunning, setIsAutoRunning] = useState(false);
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
+  const nextSpinDelayMs = getTurboAutoBetDelay(
+    "roulette",
+    AUTO_NEXT_SPIN_DELAY_MS,
+    isTurboModeEnabled,
+  );
 
   const clearAutoTimeout = useCallback(() => {
     if (autoTimeoutRef.current !== null) {
@@ -82,8 +92,8 @@ export function useAutoRouletteBetting() {
         clearBetsOnSuccess: false,
         payload: autoPayloadRef.current,
       });
-    }, AUTO_NEXT_SPIN_DELAY_MS);
-  }, [isAutoInfinite, stopAutoBetting]);
+    }, nextSpinDelayMs);
+  }, [isAutoInfinite, nextSpinDelayMs, stopAutoBetting]);
 
   return {
     handleAutoBetCountChange,
