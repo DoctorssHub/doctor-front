@@ -1,4 +1,6 @@
 import { useCallback, useRef } from "react";
+import { getTurboAutoBetDelay } from "@/shared/lib/turbo-mode";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { delay } from "../lib/keno-delay";
 import { validateKenoAutoBet } from "../lib/keno-auto-bet-validation";
 import { useKenoBettingStore } from "./keno-betting-store";
@@ -36,6 +38,9 @@ export function useKenoAutoBet({
   waitForRevealComplete,
 }: UseKenoAutoBetParams) {
   const shouldStopAutoBetRef = useRef(false);
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
 
   const requestStop = useCallback(() => {
     shouldStopAutoBetRef.current = true;
@@ -85,7 +90,13 @@ export function useKenoAutoBet({
           index += 1;
 
           if (isAutoBetsInfinite || index < autoBetsCount) {
-            await delay(AUTO_BET_DELAY_MS);
+            await delay(
+              getTurboAutoBetDelay(
+                "keno",
+                AUTO_BET_DELAY_MS,
+                isTurboModeEnabled,
+              ),
+            );
           }
         }
       } catch {
@@ -100,6 +111,7 @@ export function useKenoAutoBet({
     },
     [
       gameBalance,
+      isTurboModeEnabled,
       maxBet,
       minBet,
       runKenoBet,

@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { KENO_NUMBERS } from "../../../model/keno-constants";
 import { useKenoControlsStore } from "../../../model/keno-controls-store";
 import { KENO_MULTIPLIERS } from "../../../model/keno-multipliers";
@@ -21,6 +22,7 @@ type KenoNumberGridProps = {
   onResultsReset: () => void;
   onRevealComplete: () => void;
   resultNumbers: number[];
+  resultRoundId: number;
   roundSelectedNumbers: number[];
 };
 
@@ -31,6 +33,7 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
   onResultsReset,
   onRevealComplete,
   resultNumbers,
+  resultRoundId,
   roundSelectedNumbers,
 }: KenoNumberGridProps) {
   const {
@@ -48,9 +51,14 @@ export const KenoNumberGrid = memo(function KenoNumberGrid({
       toggleNumber: state.toggleNumber,
     })),
   );
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
   const { revealedMissNumbers, revealedResultNumbers } = useKenoRevealSequence({
+    isTurboModeEnabled,
     onRevealComplete,
     resultNumbers,
+    resultRoundId,
     roundSelectedNumbers,
   });
   const { setTileRef } = useKenoTileAnimations({
