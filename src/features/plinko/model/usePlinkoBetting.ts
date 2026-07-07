@@ -15,6 +15,8 @@ import {
 } from "@/features/plinko/api/plinko-api";
 import { usePlinkoBettingStore } from "@/features/plinko/model/plinko-betting-store";
 import { usePlinkoControlsStore } from "@/features/plinko/model/plinko-controls-store";
+import { getTurboAutoBetDelay } from "@/shared/lib/turbo-mode";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import type { usePlinkoRoundsStore } from "@/features/plinko/model/plinko-rounds-store";
 import { gameSounds } from "@/shared/lib/sound/use-game-sounds";
 import { readBetAmount } from "@/shared/ui/game-sidebar/lib/bet-amount-controls";
@@ -72,6 +74,9 @@ export function usePlinkoBetting({
     })),
   );
   const shouldStopAutoBetRef = useRef(false);
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
 
   const runPlinkoBet = useCallback(
     async (request: BetRequest) => {
@@ -216,7 +221,13 @@ export function usePlinkoBetting({
           index += 1;
 
           if (isAutoBetsInfinite || index < autoBetsCount) {
-            await delay(AUTO_BET_DELAY_MS);
+            await delay(
+              getTurboAutoBetDelay(
+                "plinko",
+                AUTO_BET_DELAY_MS,
+                isTurboModeEnabled,
+              ),
+            );
           }
         }
       } catch {
@@ -235,6 +246,7 @@ export function usePlinkoBetting({
       isAutoBetting,
       isGameConfigReady,
       isAuthenticated,
+      isTurboModeEnabled,
       maxBet,
       minBet,
       onAuthRequired,
