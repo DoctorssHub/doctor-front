@@ -70,6 +70,7 @@ type RunDiceAutoBetSequenceParams = {
   payload: DiceBetRequest;
   plannedBets: number;
   shouldStop: () => boolean;
+  autoBetDelayMs?: number;
   waitForNextBet?: (delayMs: number) => Promise<void>;
 };
 
@@ -86,6 +87,7 @@ export async function runDiceAutoBetSequence({
   isInfinite,
   isValidBetSize,
   mutateBet,
+  autoBetDelayMs = AUTO_BET_DELAY_MS,
   onBetStart,
   payload,
   plannedBets,
@@ -133,7 +135,7 @@ export async function runDiceAutoBetSequence({
       config,
     );
 
-    await waitForNextBet(AUTO_BET_DELAY_MS);
+    await waitForNextBet(autoBetDelayMs);
   }
 }
 

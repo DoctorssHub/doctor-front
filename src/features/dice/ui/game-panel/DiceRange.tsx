@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useCallback, useState } from "react";
+import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import rangeLineIcon from "@/assets/games/dice/rangeLineIcon.svg";
 import resultPolygonIcon from "@/assets/games/dice/resultPolygonIcon.svg";
 import type { DiceBetResponse } from "../../api/dice-types";
@@ -23,6 +24,9 @@ export function DiceRange({
 }: DiceRangeProps) {
 
   const [draftThreshold, setDraftThreshold] = useState(threshold);
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
   const markerLeft = `clamp(18px, ${draftThreshold}%, calc(100% - 18px))`;
   const visibleResult = result;
   const resultPosition = visibleResult
@@ -72,7 +76,11 @@ export function DiceRange({
 
         {resultPosition && visibleResult ? (
           <div
-            className="absolute -top-[80px] z-10 grid h-[42px] w-[60px] place-items-center rounded-[6px] p-1 text-sm font-semibold text-[#fdfdfd] backdrop-blur-[8px] transition-[left,background] duration-500 ease-out will-change-[left]"
+            className={`absolute -top-[80px] z-10 grid h-[42px] w-[60px] place-items-center rounded-[6px] p-1 text-sm font-semibold text-[#fdfdfd] backdrop-blur-[8px] ${
+              isTurboModeEnabled
+                ? ""
+                : "transition-[left,background] duration-500 ease-out will-change-[left]"
+            }`}
             style={{
               background: resultGradient,
               left: resultPosition,
