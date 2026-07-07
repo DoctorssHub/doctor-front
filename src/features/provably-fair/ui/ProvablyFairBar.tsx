@@ -6,6 +6,7 @@ import fullScreenIcon from "@/assets/games/provably-fair/fullScreen.svg";
 import muteIcon from "@/assets/games/provably-fair/muteIcon.svg";
 import settingIcon from "@/assets/games/provably-fair/settingIcon.svg";
 import volumeIcon from "@/assets/games/provably-fair/volumeIcon.svg";
+import { isTurboModeAvailable } from "@/shared/lib/turbo-mode";
 import { useGameSettingsStore } from "@/shared/model/game-settings-store";
 import { useGameSoundStore } from "@/shared/model/game-sound-store";
 import type { StaticImageData } from "next/image";
@@ -73,7 +74,7 @@ export const ProvablyFairBar = memo(function ProvablyFairBar({
               setIsSettingsOpen((current) => !current);
             }}
           />
-          {isSettingsOpen ? <GameSettingsPopover /> : null}
+          {isSettingsOpen ? <GameSettingsPopover game={game} /> : null}
         </div>
       </div>
 
@@ -110,8 +111,13 @@ function FairnessIconButton({
   );
 }
 
-function GameSettingsPopover() {
-  const [isTurboMode, setIsTurboMode] = useState(true);
+function GameSettingsPopover({ game }: { game: ProvablyFairGame }) {
+  const isTurboModeEnabled = useGameSettingsStore(
+    (state) => state.isTurboModeEnabled,
+  );
+  const toggleTurboMode = useGameSettingsStore(
+    (state) => state.toggleTurboMode,
+  );
   const isMaxBetControlEnabled = useGameSettingsStore(
     (state) => state.isMaxBetControlEnabled,
   );
@@ -124,11 +130,13 @@ function GameSettingsPopover() {
 
   return (
     <div className="absolute bottom-[calc(100%+28px)] left-0 z-20 flex h-[164px] w-[248px] flex-col justify-between rounded-[24px] bg-[#0a0d19] p-6 shadow-[0_18px_44px_rgb(0_0_0/28%)]">
-      <SettingsSwitch
-        checked={isTurboMode}
-        label="Turbo Mode"
-        onChange={() => setIsTurboMode((current) => !current)}
-      />
+      {isTurboModeAvailable(game) ? (
+        <SettingsSwitch
+          checked={isTurboModeEnabled}
+          label="Turbo Mode"
+          onChange={toggleTurboMode}
+        />
+      ) : null}
       <SettingsSwitch
         checked={isMaxBetControlEnabled}
         label="Max Bet"
