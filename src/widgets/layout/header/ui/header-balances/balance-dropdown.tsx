@@ -11,7 +11,7 @@ export function BalanceDropdown({
   onExchangeClick: () => void;
 }) {
   return (
-    <div className="absolute top-full left-1/2 z-50 mt-3 w-[303px] -translate-x-1/2 max-mobile:left-auto max-mobile:right-0 max-mobile:w-[min(303px,calc(100vw-24px))] max-mobile:translate-x-0">
+    <div className="absolute top-full left-1/2 z-50 mt-3 w-[303px] -translate-x-1/2 max-tablet:fixed max-tablet:top-16 max-tablet:right-4 max-tablet:left-auto max-tablet:translate-x-0 max-mobile:right-3 max-mobile:w-[min(303px,calc(100vw-24px))]">
       <div className="origin-top rounded-b-[14px] bg-[#0a0d19] px-4 pt-4 pb-3 shadow-[0_16px_32px_rgb(0_0_0/35%)] ring-1 ring-[#121826] [animation:dice-mode-panel-in_180ms_cubic-bezier(0.22,1,0.36,1)_both]">
         <h2 className="mb-3 text-[14px] leading-[125%] font-bold text-[#fdfdfd]">
           Points Balances
