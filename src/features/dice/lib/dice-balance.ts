@@ -1,12 +1,12 @@
 import type { MeResponse } from "@/features/auth/api/auth-types";
+import {
+  getGamePointsBalanceValue,
+  readFormattedBalanceValue,
+} from "../../../shared/lib/game-points-balance";
 import type { DiceBetResponse } from "../api/dice-types";
 
 export function getDiceGamePointsBalance(user: MeResponse | undefined) {
-  const balance = user?.userBalances.find(
-    (item) => item.balanceType === "GAME_POINTS",
-  );
-
-  return Number(balance?.value ?? 0);
+  return getGamePointsBalanceValue(user?.userBalances);
 }
 
 export function applyDiceBalanceResult(
@@ -31,9 +31,9 @@ export function applyDiceBalanceResult(
         return balance;
       }
 
-      const currentValue = Number(balance.value);
+      const currentValue = readFormattedBalanceValue(balance.value);
 
-      if (!Number.isFinite(currentValue)) {
+      if (currentValue === null) {
         return balance;
       }
 
