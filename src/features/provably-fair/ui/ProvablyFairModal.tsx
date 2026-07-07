@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import closeIcon from "@/assets/games/provably-fair/closeIcon.svg";
+import { getModalPortalTarget } from "../lib/modal-portal-target";
 import type { ProvablyFairGame } from "../model/provably-fair-games";
 import { useProvablyFairModalStore } from "../model/provably-fair-modal-store";
 import { ProvablyFairTabs } from "./ProvablyFairTabs";
@@ -62,8 +64,12 @@ function ProvablyFairModalContent({
     };
   }, []);
 
-  return (
-    <div className="fixed inset-0  z-90 flex items-start justify-center overflow-y-auto bg-[var(--color-auth-backdrop)]/80 p-3 pt-6 text-[var(--color-text-primary)] backdrop-blur-sm tablet:pt-8">
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
+    <div className="fixed inset-0 z-[1000] flex items-start justify-center overflow-y-auto bg-[var(--color-auth-backdrop)]/80 p-3 pt-6 text-[var(--color-text-primary)] backdrop-blur-sm tablet:pt-8">
       <section
         aria-label="Fairness"
         aria-modal="true"
@@ -119,6 +125,7 @@ function ProvablyFairModalContent({
           </div>
         </div>
       </section>
-    </div>
+    </div>,
+    getModalPortalTarget(document),
   );
 }

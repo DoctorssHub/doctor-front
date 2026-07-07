@@ -47,7 +47,7 @@ export function DiceVerifyPreview({ roll }: DiceVerifyPreviewProps) {
               <span className="relative">{roll.toFixed(2)}</span>
             </div>
           ) : null}
-          <div className="h-full w-1/2 rounded-l-full bg-[var(--color-accent-red)]" />
+          <div className="h-full w-1/2 rounded-l-full bg-[#16a34a]" />
           <div className="absolute left-1/2 top-1/2 grid h-8 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-[4px] bg-[#3f4a59]">
             <Image alt="" height={16} src={rangeLineIcon} width={17} />
           </div>
