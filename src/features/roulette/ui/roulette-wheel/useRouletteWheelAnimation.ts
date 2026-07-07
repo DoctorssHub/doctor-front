@@ -25,12 +25,14 @@ type UseRouletteWheelAnimationParams = {
   isSpinning: boolean;
   onLandingComplete?: () => void;
   resultNumber: number | null;
+  timingScale: number;
 };
 
 export function useRouletteWheelAnimation({
   isSpinning,
   onLandingComplete,
   resultNumber,
+  timingScale,
 }: UseRouletteWheelAnimationParams) {
   const wheelRef = useRef<HTMLDivElement | null>(null);
   const centerRef = useRef<HTMLDivElement | null>(null);
@@ -46,6 +48,7 @@ export function useRouletteWheelAnimation({
   const settledCellAngleRef = useRef(0);
   const settledUntilRef = useRef(0);
   const fastUntilRef = useRef(0);
+  const landingDurationMs = Math.max(1, LANDING_DURATION_MS * timingScale);
 
   useEffect(() => {
     function moveBall(angle: number, radius: number) {
@@ -129,9 +132,9 @@ export function useRouletteWheelAnimation({
     if (isSpinning) {
       isSettledRef.current = false;
       settledUntilRef.current = 0;
-      fastUntilRef.current = performance.now() + LANDING_DURATION_MS;
+      fastUntilRef.current = performance.now() + landingDurationMs;
     }
-  }, [isSpinning]);
+  }, [isSpinning, landingDurationMs]);
 
   useEffect(() => {
     if (isSpinning || resultNumber === null) {
@@ -139,7 +142,6 @@ export function useRouletteWheelAnimation({
     }
 
     const landingResultNumber = resultNumber;
-
 
     isLandingRef.current = true;
 
@@ -152,6 +154,7 @@ export function useRouletteWheelAnimation({
     const initialTargetAngle = getResultAngle(
       landingResultNumber,
       wheelAngleRef.current,
+      landingDurationMs,
     );
     const landingDelta = getLandingDelta(startAngle, initialTargetAngle);
 
@@ -169,7 +172,7 @@ export function useRouletteWheelAnimation({
       }
 
       const progress = Math.min(
-        (timestamp - startTimeRef.current) / LANDING_DURATION_MS,
+        (timestamp - startTimeRef.current) / landingDurationMs,
         1,
       );
       const currentTargetAngle = getCurrentResultAngle(
@@ -217,7 +220,7 @@ export function useRouletteWheelAnimation({
     }
 
     landingFrameRef.current = requestAnimationFrame(land);
-  }, [isSpinning, onLandingComplete, resultNumber]);
+  }, [isSpinning, landingDurationMs, onLandingComplete, resultNumber]);
 
   return {
     ballRef,

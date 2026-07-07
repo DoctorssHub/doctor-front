@@ -14,10 +14,14 @@ export function smoothStep(value: number) {
   return clampedValue * clampedValue * (3 - 2 * clampedValue);
 }
 
-export function getResultAngle(resultNumber: number, wheelAngle: number) {
+export function getResultAngle(
+  resultNumber: number,
+  wheelAngle: number,
+  landingDurationMs = LANDING_DURATION_MS,
+) {
   const cellAngle = getResultCellAngle(resultNumber);
 
-  return cellAngle + (wheelAngle - WHEEL_SPEED * (LANDING_DURATION_MS / 1000));
+  return cellAngle + (wheelAngle - WHEEL_SPEED * (landingDurationMs / 1000));
 }
 
 export function getCurrentResultAngle(resultNumber: number, wheelAngle: number) {
